@@ -52,14 +52,14 @@ const products = [
     image: '/natilla.webp',
   },
   {
-    id: 5,
+    id: 6,
     name: 'Vino de Miel y Jengibre 750ml',
     price: 'CUP 614.00',
     description: 'La energía y vitalidad del jengibre en cada copa.',
     image: '/natilla.webp',
   },
   {
-    id: 5,
+    id: 7,
     name: 'Vino de Miel y Jengibre 750ml',
     price: 'CUP 614.00',
     description: 'La energía y vitalidad del jengibre en cada copa.',

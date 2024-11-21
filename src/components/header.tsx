@@ -52,10 +52,14 @@ export default function Header() {
                 </Button>
               </div>
             </div>
-            <Button variant='ghost' className='gap-2 text-gray-700'>
-              <ShoppingCart className='h-5 w-5' />
-              <span>CUP 0,00</span>
-            </Button>
+            <Link href='/checkout'>
+              <Button variant='ghost' asChild className='gap-2 text-gray-700'>
+                <span>
+                  <ShoppingCart className='h-5 w-5' />
+                  <span>CUP 0,00</span>
+                </span>
+              </Button>
+            </Link>
           </div>
         </div>
       </header>

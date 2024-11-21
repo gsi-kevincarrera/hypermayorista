@@ -1,5 +1,6 @@
 import { Button } from './ui/button'
 import Image from 'next/image'
+import { ChevronRight } from 'lucide-react'
 
 export default function Hero() {
   return (
@@ -13,8 +14,9 @@ export default function Hero() {
             Productos al por mayor, negocios al por mayor. Descubre la
             plataforma que impulsa tu comercio al siguiente nivel
           </p>
-          <Button className='bg-white text-primary hover:bg-gray-100'>
-            Ver catálogo de productos
+          <Button className='bg-white text-primary hover:bg-gray-100 group'>
+            Explora Oportunidades de Negocio
+            <ChevronRight className='h-4 w-4 group-hover:scale-125 transition' />
           </Button>
         </div>
         <div className='flex-1'>

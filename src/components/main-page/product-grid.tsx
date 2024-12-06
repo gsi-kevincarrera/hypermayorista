@@ -3,6 +3,7 @@ import { ShoppingCart } from 'lucide-react'
 import Image from 'next/image'
 import { Button } from '../ui/button'
 import { getAllProducts } from '@/db/queries'
+import Link from 'next/link'
 
 export default async function ProductGrid() {
   const products = await getAllProducts()
@@ -20,24 +21,24 @@ export default async function ProductGrid() {
               products.map((product) => (
                 <Card key={product.id} className='flex flex-col h-full'>
                   <CardHeader className='p-0'>
-                    <Image
-                      src={product.imageUrl}
-                      alt={product.name}
-                      className='w-full h-40 object-cover cursor-pointer'
-                      // onClick={() => openProductModal(product)}
-                      width={400}
-                      height={400}
-                    />
+                    <Link href={`/products/${product.id}`}>
+                      <Image
+                        src={product.imageUrl}
+                        alt={product.name}
+                        className='w-full h-40 object-cover cursor-pointer'
+                        width={400}
+                        height={400}
+                      />
+                    </Link>
                   </CardHeader>
                   <CardContent className='px-4 pt-4 flex-grow'>
                     <h4
                       className='font-semibold text-gray-800 mb-1 cursor-pointer'
-                      // onClick={() => openProductModal(product)}
                     >
                       {product.name}
                     </h4>
                     <p className='text-primary font-bold mb-2'>
-                      {product.price}
+                    {product.price} CUP
                     </p>
                     <p className='text-sm text-gray-600 line-clamp-3'>
                       {product.description}
@@ -63,44 +64,6 @@ export default async function ProductGrid() {
           </div>
         </div>
       </div>
-
-      {/* Product Detail Modal */}
-      {/* <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className='max-w-4xl'>
-          <DialogHeader>
-            <DialogTitle>{selectedProduct?.name}</DialogTitle>
-          </DialogHeader>
-          {selectedProduct && (
-            <div className='grid grid-cols-2 gap-6'>
-              <div>
-                <Image
-                  src='/natilla.webp'
-                  alt={selectedProduct.name}
-                  width={400}
-                  height={400}
-                  className='w-full h-auto rounded-lg'
-                />
-              </div>
-              <div className='space-y-4'>
-                <DialogDescription>
-                  {selectedProduct.description}
-                </DialogDescription>
-                <p className='text-2xl font-bold text-primary'>
-                  {selectedProduct.price}
-                </p>
-                <div className='flex gap-4'>
-                  <Button className='flex-1 bg-primary hover:bg-primary text-primary-foreground'>
-                    Añadir al carrito
-                  </Button>
-                  <Button className='flex-1' variant='outline'>
-                    Ir a pagar
-                  </Button>
-                </div>
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog> */}
     </main>
   )
 }

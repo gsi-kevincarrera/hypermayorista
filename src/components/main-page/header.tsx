@@ -75,6 +75,7 @@ export default function Header() {
         </div>
       </header>
 
+      {/* Carousel */}
       <div className='bg-gray-200 py-2 relative'>
         <Carousel className='w-full max-w-screen-xl mx-auto'>
           <CarouselContent>

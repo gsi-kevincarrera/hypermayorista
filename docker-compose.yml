@@ -1,0 +1,17 @@
+version: "3.9"
+services:
+  hypermayorista:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    env_file:
+      - .env
+  db:
+    image: postgress
+    container_name: drizzle-postgres-hypermayorista
+    ports:
+      - "5432:5432"

@@ -1,5 +1,5 @@
-import Hero from '@/components/hero'
-import ProductGrid from '@/components/product-grid'
+import Hero from '@/components/main-page/hero'
+import ProductGrid from '@/components/main-page/product-grid'
 
 export default function Home() {
   return (

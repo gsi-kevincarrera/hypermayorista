@@ -1,0 +1,32 @@
+# Ignorar node_modules porque será instalado dentro del contenedor
+node_modules
+npm-debug.log
+pnpm-debug.log
+
+# Ignorar dependencias de cache y lockfiles innecesarios
+yarn.lock
+*.log
+
+# Archivos y carpetas de control de versiones
+.git
+.gitignore
+
+# Archivos de configuración local
+.env
+*.env.local
+
+# Archivos temporales y de sistema
+.DS_Store
+Thumbs.db
+
+# Salidas de compilación
+dist
+build
+
+# Archivos relacionados con Drizzle que no necesitas en el contenedor
+drizzle/snapshot.json
+drizzle/migrations/*.sql
+
+# Otros innecesarios
+.vscode
+.idea

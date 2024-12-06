@@ -1,4 +1,4 @@
-import { Phone, Mail, X } from 'lucide-react'
+import { Phone, Mail } from 'lucide-react'
 import Link from 'next/link'
 
 export default function Footer() {

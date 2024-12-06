@@ -1,0 +1,20 @@
+# Usa la imagen oficial de Node.js
+FROM node:18
+
+# Establece el directorio de trabajo dentro del contenedor
+WORKDIR /usr/src/app
+
+# Copia los archivos necesarios para instalar dependencias
+COPY package.json pnpm-lock.yaml ./
+
+# Instala las dependencias usando pnpm
+RUN npm install -g pnpm && pnpm install
+
+# Copia el resto de los archivos de la aplicación
+COPY . .
+
+# Expone el puerto que usará la app
+EXPOSE 3000
+
+# Comando por defecto para iniciar la app
+CMD ["pnpm", "start"]

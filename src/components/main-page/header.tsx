@@ -1,7 +1,7 @@
 'use client'
 import { Search, ShoppingCart, UserIcon } from 'lucide-react'
-import { Input } from './ui/input'
-import { Button } from './ui/button'
+import { Input } from '../ui/input'
+import { Button } from '../ui/button'
 import Link from 'next/link'
 import {
   Carousel,

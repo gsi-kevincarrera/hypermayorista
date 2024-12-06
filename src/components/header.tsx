@@ -1,5 +1,5 @@
 'use client'
-import { Search, ShoppingCart } from 'lucide-react'
+import { Search, ShoppingCart, UserIcon } from 'lucide-react'
 import { Input } from './ui/input'
 import { Button } from './ui/button'
 import Link from 'next/link'
@@ -12,6 +12,14 @@ import {
 } from '@/components/ui/carousel'
 import { Card, CardContent } from '@/components/ui/card'
 import { useState } from 'react'
+import { Avatar } from '@radix-ui/react-avatar'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '@radix-ui/react-dropdown-menu'
+import { Clipboard, ArrowRight } from 'lucide-react'
 
 const categories = [
   'Todos los productos',
@@ -52,19 +60,22 @@ export default function Header() {
                 </Button>
               </div>
             </div>
-            <Link href='/checkout'>
-              <Button variant='ghost' asChild className='gap-2 text-gray-700'>
-                <span>
-                  <ShoppingCart className='h-5 w-5' />
-                  <span>CUP 0,00</span>
-                </span>
-              </Button>
-            </Link>
+            <div className='flex items-center gap-2'>
+              <Link href='/checkout'>
+                <Button variant='ghost' asChild className='gap-2 text-gray-700'>
+                  <span>
+                    <ShoppingCart className='h-5 w-5' />
+                    <span>Mi carrito</span>
+                  </span>
+                </Button>
+              </Link>
+              <UserAvatar name='Kevin Carrera' />
+            </div>
           </div>
         </div>
       </header>
 
-      <div className='bg-gray-100 py-2 relative'>
+      <div className='bg-gray-200 py-2 relative'>
         <Carousel className='w-full max-w-screen-xl mx-auto'>
           <CarouselContent>
             {categories.map((category, index) => (
@@ -95,5 +106,33 @@ export default function Header() {
         </Carousel>
       </div>
     </section>
+  )
+}
+
+function UserAvatar({ name }: { name: string }) {
+  const initials = name.toUpperCase().slice(0, 2)
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button className='h-10 w-10 rounded-full'>
+          <Avatar>{initials}</Avatar>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align='end' className='z-50 bg-white'>
+        <DropdownMenuItem className='flex items-center gap-2 p-2'>
+          <UserIcon className='h-4 w-4' />
+          <Link href={'/account'}>Mi cuenta</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem className='flex items-center gap-2 p-2'>
+          <Clipboard className=' h-4 w-4' />
+          <Link href={'/orders'}>Órdenes</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem className='flex items-center gap-2 p-2'>
+          <ArrowRight className=' h-4 w-4' />
+          <Link href={'#'}>Cerrar sesión</Link>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }

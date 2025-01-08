@@ -1,7 +1,7 @@
-import { ArrowLeft } from "lucide-react";
-import { Button } from "../ui/button";
-import { Card, CardContent } from "../ui/card";
-import { Separator } from "../ui/separator";
+import { ArrowLeft } from 'lucide-react'
+import { Button } from '../../../components/ui/button'
+import { Card, CardContent } from '../../../components/ui/card'
+import { Separator } from '../../../components/ui/separator'
 
 interface Props {
   subtotal: number
@@ -13,7 +13,15 @@ interface Props {
   steps: string[]
 }
 
-export default function OrderSummary({subtotal, deliveryFee, total, goForward, goBack, currentStep, steps}: Props) {
+export default function OrderSummary({
+  subtotal,
+  deliveryFee,
+  total,
+  goForward,
+  goBack,
+  currentStep,
+  steps,
+}: Props) {
   return (
     <div className='lg:w-1/3'>
       <Card className='sticky top-4'>

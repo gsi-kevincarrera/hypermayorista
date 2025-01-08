@@ -1,7 +1,7 @@
 'use client'
 import { Search, ShoppingCart, UserIcon } from 'lucide-react'
-import { Input } from '../ui/input'
-import { Button } from '../ui/button'
+import { Input } from './ui/input'
+import { Button } from './ui/button'
 import Link from 'next/link'
 import {
   Carousel,
@@ -32,8 +32,6 @@ const categories = [
 ]
 
 export default function Header() {
-  const [activeCategory, setActiveCategory] = useState(0)
-
   return (
     <section className='sticky top-0 z-10'>
       <header className='bg-white border-b border-gray-200'>
@@ -76,37 +74,45 @@ export default function Header() {
       </header>
 
       {/* Carousel */}
-      <div className='bg-gray-200 py-2 relative'>
-        <Carousel className='w-full max-w-screen-xl mx-auto'>
-          <CarouselContent>
-            {categories.map((category, index) => (
-              <CarouselItem
-                key={index}
-                className='basis-1/4 md:basis-1/6 lg:basis-1/8'
-              >
-                <Card className='bg-transparent border-none'>
-                  <CardContent className='flex items-center justify-center p-2'>
-                    <Button
-                      variant='ghost'
-                      className={`text-sm ${
-                        index === activeCategory
-                          ? 'text-primary font-semibold'
-                          : 'text-gray-700'
-                      }`}
-                      onClick={() => setActiveCategory(index)}
-                    >
-                      {category}
-                    </Button>
-                  </CardContent>
-                </Card>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious className='absolute left-0 top-1/2 -translate-y-1/2 bg-white hover:bg-gray-100' />
-          <CarouselNext className='absolute right-0 top-1/2 -translate-y-1/2 bg-white hover:bg-gray-100' />
-        </Carousel>
-      </div>
+      <HeaderCarousel />
     </section>
+  )
+}
+
+function HeaderCarousel() {
+  const [activeCategory, setActiveCategory] = useState(0)
+
+  return (
+    <div className='bg-gray-200 py-2 relative'>
+      <Carousel className='w-full max-w-screen-xl mx-auto'>
+        <CarouselContent>
+          {categories.map((category, index) => (
+            <CarouselItem
+              key={index}
+              className='basis-1/4 md:basis-1/6 lg:basis-1/8'
+            >
+              <Card className='bg-transparent border-none'>
+                <CardContent className='flex items-center justify-center p-2'>
+                  <Button
+                    variant='ghost'
+                    className={`text-sm ${
+                      index === activeCategory
+                        ? 'text-primary font-semibold'
+                        : 'text-gray-700'
+                    }`}
+                    onClick={() => setActiveCategory(index)}
+                  >
+                    {category}
+                  </Button>
+                </CardContent>
+              </Card>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious className='absolute left-0 top-1/2 -translate-y-1/2 bg-white hover:bg-gray-100' />
+        <CarouselNext className='absolute right-0 top-1/2 -translate-y-1/2 bg-white hover:bg-gray-100' />
+      </Carousel>
+    </div>
   )
 }
 

@@ -1,5 +1,5 @@
-import { CheckCircle } from "lucide-react";
-import { Button } from "../ui/button";
+import { CheckCircle } from 'lucide-react'
+import { Button } from '../../../components/ui/button'
 
 export default function OrderConfirmation() {
   return (

@@ -2,9 +2,7 @@
 
 import { useState } from 'react'
 // import { motion, AnimatePresence } from 'framer-motion'
-import {
-  ShoppingCart,
-} from 'lucide-react'
+import { ShoppingCart } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import CartItems from './cart-items'
 import DeliveryOptions from './delivery-options'
@@ -18,8 +16,8 @@ import {
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbSeparator,
-} from '../ui/breadcrumb'
-import AppBreadcrumb from '../navigation/app-breadcrumb'
+} from '../../../components/ui/breadcrumb'
+import AppBreadcrumb from '../../../components/navigation/app-breadcrumb'
 
 const steps = ['Cart', 'Delivery', 'Payment', 'Confirmation']
 

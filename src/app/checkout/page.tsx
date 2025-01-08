@@ -1,4 +1,4 @@
-import CheckoutProcess from '@/components/checkout/checkout-container'
+import CheckoutProcess from '@/app/checkout/_components/checkout-container'
 
 export default function Cart() {
   return <CheckoutProcess />

@@ -1,92 +1,115 @@
-import { Phone, Mail } from 'lucide-react'
 import Link from 'next/link'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import {
+  Facebook,
+  Twitter,
+  LinkedinIcon as LinkedIn,
+  Instagram,
+} from 'lucide-react'
 
 export default function Footer() {
   return (
-    <footer className='bg-gray-800 text-white'>
-      <div className='container mx-auto px-4 py-8'>
-        <div className='grid grid-cols-1 md:grid-cols-4 gap-8'>
-          {/* Logo and Contact */}
-          <div className='space-y-4'>
-            <Link href='/' className='flex items-center gap-2'>
-              <span className='text-primary'>Hyper.</span>
-              <span className='font-bold text-2xl'>Mayorista</span>
-            </Link>
-            <div className='space-y-2'>
-              <p className='flex items-center gap-2'>
-                <Phone className='h-4 w-4' />
-                Llámanos: +53 55555555
-              </p>
-              <p className='flex items-center gap-2'>
-                <Mail className='h-4 w-4' />
-                Correo: soporte@hypermayorista.com
-              </p>
-              <p>Canal de Soporte de Whatsapp</p>
+    <footer className='bg-gray-900 text-white'>
+      <div className='container mx-auto px-4 sm:px-6 lg:px-8 py-12'>
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8'>
+          <div>
+            <h3 className='text-lg font-semibold mb-4'>About B2B Trade</h3>
+            <p className='text-gray-400'>
+              Empowering businesses worldwide with innovative wholesale
+              solutions.
+            </p>
+          </div>
+          <div>
+            <h3 className='text-lg font-semibold mb-4'>Quick Links</h3>
+            <ul className='space-y-2'>
+              <li>
+                <Link
+                  href='#'
+                  className='text-gray-400 hover:text-white transition-colors'
+                >
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href='#'
+                  className='text-gray-400 hover:text-white transition-colors'
+                >
+                  Products
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href='#'
+                  className='text-gray-400 hover:text-white transition-colors'
+                >
+                  About Us
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href='#'
+                  className='text-gray-400 hover:text-white transition-colors'
+                >
+                  Contact
+                </Link>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3 className='text-lg font-semibold mb-4'>Contact Us</h3>
+            <p className='text-gray-400'>
+              1234 Trade Street, Business City, 56789
+            </p>
+            <p className='text-gray-400'>Email: info@b2btrade.com</p>
+            <p className='text-gray-400'>Phone: (123) 456-7890</p>
+          </div>
+          <div>
+            <h3 className='text-lg font-semibold mb-4'>Newsletter</h3>
+            <p className='text-gray-400 mb-2'>
+              Stay updated with our latest offers
+            </p>
+            <div className='flex space-x-2'>
+              <Input
+                type='email'
+                placeholder='Your email'
+                className='bg-gray-800 border-gray-700'
+              />
+              <Button variant='secondary'>Subscribe</Button>
             </div>
           </div>
-
-          {/* Company Info */}
-          <div className='space-y-4'>
-            <h3 className='text-lg font-semibold text-primary'>
-              Nuestra empresa
-            </h3>
-            <ul className='space-y-2'>
-              <li>
-                <Link href='#' className='hover:text-primary'>
-                  Términos y condiciones
-                </Link>
-              </li>
-              <li>
-                <Link href='#' className='hover:text-primary'>
-                  Sobre nosotros
-                </Link>
-              </li>
-              <li>
-                <Link href='#' className='hover:text-primary'>
-                  Política de cookies
-                </Link>
-              </li>
-              <li>
-                <Link href='#' className='hover:text-primary'>
-                  Aviso de privacidad
-                </Link>
-              </li>
-              <li>
-                <Link href='#' className='hover:text-primary'>
-                  Recogida en la tienda
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* User Info */}
-          <div className='space-y-4'>
-            <h3 className='text-lg font-semibold text-primary'>Usuarios</h3>
-            <ul className='space-y-2'>
-              <li>
-                <Link href='#' className='hover:text-primary'>
-                  Información personal
-                </Link>
-              </li>
-              <li>
-                <Link href='#' className='hover:text-primary'>
-                  Pedidos
-                </Link>
-              </li>
-              <li>
-                <Link href='#' className='hover:text-primary'>
-                  Contactos de entrega
-                </Link>
-              </li>
-            </ul>
-          </div>
         </div>
-      </div>
-      <div className='border-t border-gray-700'>
-        <div className='container mx-auto px-4 py-4'>
-          <p className='text-center text-sm text-gray-400'>
-            2024 Avangenio. Todos los derechos reservados.
+        <div className='mt-8 pt-8 border-t border-gray-800 flex flex-col sm:flex-row justify-between items-center'>
+          <p className='text-gray-400 text-sm'>
+            &copy; 2023 B2B Trade. All rights reserved.
           </p>
+          <div className='flex space-x-4 mt-4 sm:mt-0'>
+            <Link
+              href='#'
+              className='text-gray-400 hover:text-white transition-colors'
+            >
+              <Facebook size={20} />
+            </Link>
+            <Link
+              href='#'
+              className='text-gray-400 hover:text-white transition-colors'
+            >
+              <Twitter size={20} />
+            </Link>
+            <Link
+              href='#'
+              className='text-gray-400 hover:text-white transition-colors'
+            >
+              <LinkedIn size={20} />
+            </Link>
+            <Link
+              href='#'
+              className='text-gray-400 hover:text-white transition-colors'
+            >
+              <Instagram size={20} />
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

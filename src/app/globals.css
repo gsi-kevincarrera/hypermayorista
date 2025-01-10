@@ -66,6 +66,23 @@
   }
 }
 
+.hero-pattern {
+  background-image: url('/hero.webp');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.hero-pattern::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to right, rgba(108, 48, 155, 0.9), rgba(108, 48, 145, 0.7));
+}
+
 @layer base {
   * {
     @apply border-border;

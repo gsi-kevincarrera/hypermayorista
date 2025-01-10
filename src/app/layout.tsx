@@ -4,6 +4,7 @@ import './globals.css'
 import Header from '@/components/header'
 import Footer from '@/components/footer'
 import { Toaster } from '@/components/ui/sonner'
+import { CartProvider } from '@/contexts/cart-context'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -21,7 +22,7 @@ export default function RootLayout({
     <html lang='en'>
       <body className={inter.className}>
         <Header />
-        {children}
+        <CartProvider>{children}</CartProvider>
         <Footer />
         <Toaster richColors closeButton position='top-right' />
       </body>

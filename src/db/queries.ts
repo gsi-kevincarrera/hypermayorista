@@ -12,7 +12,7 @@ export type Filters = {
 export async function getProducts(filters: Filters) {
   const combinedConditions = combineConditions(filters)
   const { page = 1 } = filters
-  const PRODUCTS_PER_PAGE = 15
+  const PRODUCTS_PER_PAGE = 10
 
   try {
     const data = await db
@@ -41,6 +41,34 @@ export async function getProducts(filters: Filters) {
     console.error(error)
     throw new Error('Error fetching products')
   }
+}
+
+export async function getTopRankedProducts() {
+  return await db
+    .select({
+      id: products.id,
+      name: products.name,
+      price: products.price,
+      imageUrl: products.imageUrl,
+      description: products.description,
+      category: products.category,
+    })
+    .from(products)
+    .limit(5)
+}
+
+export async function getLatestAcquisitons() {
+  return await db
+    .select({
+      id: products.id,
+      name: products.name,
+      price: products.price,
+      imageUrl: products.imageUrl,
+      description: products.description,
+      category: products.category,
+    })
+    .from(products)
+    .limit(5)
 }
 
 export async function getProductById(id: number) {

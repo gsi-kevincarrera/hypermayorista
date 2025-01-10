@@ -3,7 +3,7 @@
   "rules": {
     "quotes": ["warn", "single"],
     "semi": ["error", "never"],
-    "no-unused-vars": ["warn"],
+    // "no-unused-vars": ["warn"],
     "no-trailing-spaces": "warn"
   }
 }

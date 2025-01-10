@@ -1,32 +1,27 @@
-import ProductGrid from '@/app/_components/product-grid'
-import { getProducts } from '@/db/queries'
-import Hero from '@/app/_components/hero'
-import ProductGridContainer from './_components/product-grid-container'
-import AppPagination from '@/components/navigation/app-pagination'
+
+import WhyChooseUs from './_components/why-choose-us'
+import CategoriesOverview from './_components/categories-overview'
+import BentoGridShowcase from './_components/bentogrid/bento-grid-showcase'
+import BusinessOverview from './_components/business-overview'
+import Testimonials from './_components/testimonials'
+import About from './_components/about'
+import Hero from './_components/hero'
 
 export default async function Home({
-  searchParams,
 }: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+  // searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
-  const searchP = await searchParams
-  const { data, total, perPage } = await getProducts(searchP)
-  const totalPages = Math.ceil(total / perPage)
+
 
   return (
-    <div className='flex flex-col min-h-screen bg-gray-50'>
+    <main className='min-h-screen'>
       <Hero />
-      <ProductGridContainer>
-        <ProductGrid products={data} />
-        {totalPages > 1 && (
-          <div className='mt-8'>
-            <AppPagination
-              currentPage={Number(searchP.page ?? '1')}
-              totalPages={totalPages}
-            />
-          </div>
-        )}
-      </ProductGridContainer>
-    </div>
+      <WhyChooseUs />
+      <CategoriesOverview />
+      <BentoGridShowcase />
+      <BusinessOverview />
+      <Testimonials />
+      <About />
+    </main>
   )
 }

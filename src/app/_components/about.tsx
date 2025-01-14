@@ -33,7 +33,7 @@ export default function About() {
           </div>
           <div className='relative h-[400px] rounded-lg overflow-hidden shadow-xl'>
             <Image
-              src='/about-image.jpg'
+              src='/about-image.webp'
               alt='Hypermayorista Team'
               fill
               className='object-cover'

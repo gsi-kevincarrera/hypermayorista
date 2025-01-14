@@ -1,7 +1,7 @@
-import { db } from '@/../drizzle.config'
-import { products } from '@/db/schema'
+import { categories, products } from '@/db/schema'
 import { eq, ilike, sql } from 'drizzle-orm'
 import { combineConditions } from './utils'
+import { db } from '@/db'
 
 export type Filters = {
   search?: string
@@ -22,9 +22,12 @@ export async function getProducts(filters: Filters) {
         price: products.price,
         imageUrl: products.imageUrl,
         description: products.description,
-        category: products.category,
+        categoryName: categories.name,
+        minQuantity: products.minQuantity,
+        availableQuantity: products.availableQuantity,
       })
       .from(products)
+      .innerJoin(categories, eq(products.categoryId, categories.id))
       .where(combinedConditions)
       .limit(PRODUCTS_PER_PAGE)
       .offset((Number(page) - 1) * PRODUCTS_PER_PAGE)
@@ -34,6 +37,7 @@ export async function getProducts(filters: Filters) {
         count: sql`count(*)`.mapWith(Number),
       })
       .from(products)
+      .innerJoin(categories, eq(products.categoryId, categories.id))
       .where(combinedConditions)
 
     return { data, total: dataCount.count, perPage: PRODUCTS_PER_PAGE }
@@ -51,9 +55,12 @@ export async function getTopRankedProducts() {
       price: products.price,
       imageUrl: products.imageUrl,
       description: products.description,
-      category: products.category,
+      categoryName: categories.name,
+      minQuantity: products.minQuantity,
+      availableQuantity: products.availableQuantity,
     })
     .from(products)
+    .innerJoin(categories, eq(products.categoryId, categories.id))
     .limit(5)
 }
 
@@ -65,9 +72,12 @@ export async function getLatestAcquisitons() {
       price: products.price,
       imageUrl: products.imageUrl,
       description: products.description,
-      category: products.category,
+      categoryName: categories.name,
+      minQuantity: products.minQuantity,
+      availableQuantity: products.availableQuantity,
     })
     .from(products)
+    .innerJoin(categories, eq(products.categoryId, categories.id))
     .limit(3)
 }
 

@@ -1,6 +1,6 @@
 import { and, eq, ilike } from 'drizzle-orm'
 import { Filters } from './queries'
-import { products } from './schema'
+import { categories, products } from './schema'
 
 export const combineConditions = (filters: Filters) => {
   const conditions = []
@@ -11,7 +11,7 @@ export const combineConditions = (filters: Filters) => {
     conditions.push(ilike(products.name, `%${category}%`))
   }
   if (category) {
-    conditions.push(eq(products.category, category))
+    conditions.push(eq(categories.name, category))
   }
 
   return conditions.length ? and(...conditions) : undefined

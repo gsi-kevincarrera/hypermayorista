@@ -1,10 +1,37 @@
-import { decimal, integer, pgTable, varchar } from 'drizzle-orm/pg-core'
+import {
+  AnyPgColumn,
+  integer,
+  pgTable,
+  real,
+  serial,
+  text,
+  timestamp,
+  varchar,
+} from 'drizzle-orm/pg-core'
 
-export const products = pgTable('products', {
-  id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  name: varchar({ length: 255 }).notNull(),
-  description: varchar({ length: 255 }).notNull(),
-  imageUrl: varchar({ length: 255 }).notNull(),
-  price: decimal('price', { precision: 10, scale: 2 }),
-  category: varchar({ length: 255 }).default('no_category'),
+export const products = pgTable('Products', {
+  id: serial('id').primaryKey(),
+  name: varchar('name', { length: 255 }).notNull(),
+  description: text('description'),
+  price: real('price').notNull(),
+  availableQuantity: integer('available_quantity').notNull(),
+  minQuantity: integer('min_quantity').notNull(),
+  imageUrl: varchar('image_url', { length: 255 }),
+  categoryId: integer('category_id')
+    .notNull()
+    .references(() => categories.id),
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow().$onUpdate(()=> new Date()),
+})
+
+export const categories = pgTable('Categories', {
+  id: serial('id').primaryKey(),
+  name: varchar('name', { length: 255 }).notNull(),
+  description: text('description'),
+  imageUrl: varchar('imageUrl', { length: 255 }),
+  parentId: integer('parentId').references((): AnyPgColumn => categories.id),
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at')
+    .defaultNow()
+    .$onUpdate(() => new Date()),
 })

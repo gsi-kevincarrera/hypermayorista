@@ -1,5 +1,5 @@
 import { categories, products } from '@/db/schema'
-import { eq, ilike, isNull, sql } from 'drizzle-orm'
+import { and, eq, ilike, isNull, sql } from 'drizzle-orm'
 import { combineConditions } from './utils'
 import { db } from '@/db'
 
@@ -108,12 +108,7 @@ export async function getProductById(id: number) {
   return product
 }
 
-export async function getProductsByName(name: string) {
-  return await db.select().from(products).where(ilike(products.name, name))
-}
-
 //Category queries
-
 export async function getMainCategories() {
   try {
     return await db

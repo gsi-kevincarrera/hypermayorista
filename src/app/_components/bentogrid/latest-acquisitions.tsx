@@ -5,48 +5,59 @@ import ProductCard from '@/components/product-card'
 import { useKeenSlider } from 'keen-slider/react'
 import { Product } from '@/types'
 import { useEffect, useRef, useState } from 'react'
-import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
+import {
+  Carousel,
+  CarouselApi,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel'
 
 export default function LatestAcquisitions({
   products,
 }: {
   products: Product[]
 }) {
-    const [api, setApi] = useState<CarouselApi>()
+  const [api, setApi] = useState<CarouselApi>()
 
-    const [current, setCurrent] = useState(0)
-    const [count, setCount] = useState(0)
-    const intervalRef = useRef<NodeJS.Timeout | null>(null)
+  const [current, setCurrent] = useState(0)
+  const [count, setCount] = useState(0)
+  const intervalRef = useRef<NodeJS.Timeout | null>(null)
 
-    useEffect(() => {
-      if (!api) {
-        return
-      }
+  useEffect(() => {
+    if (!api) {
+      return
+    }
 
-      setCount(api.scrollSnapList().length)
+    setCount(api.scrollSnapList().length)
+    setCurrent(api.selectedScrollSnap())
+
+    api.on('select', () => {
       setCurrent(api.selectedScrollSnap())
+    })
+  }, [api])
 
-      api.on('select', () => {
-        setCurrent(api.selectedScrollSnap())
-      })
-    }, [api])
+  useEffect(() => {
+    const startTimer = () => {
+      if (intervalRef.current) clearInterval(intervalRef.current)
+      intervalRef.current = setInterval(() => {
+        api?.scrollNext()
+      }, 5000) // Change slide every 5 seconds
+    }
 
-    useEffect(() => {
-      const startTimer = () => {
-        if (intervalRef.current) clearInterval(intervalRef.current)
-        intervalRef.current = setInterval(() => {
-          api?.scrollNext()
-        }, 5000) // Change slide every 5 seconds
-      }
+    if (api) {
+      startTimer()
+    }
 
-      if (api) {
-        startTimer()
-      }
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current)
+    }
+  }, [api, current])
 
-      return () => {
-        if (intervalRef.current) clearInterval(intervalRef.current)
-      }
-    }, [api, current])
+  if (products.length === 0) {
+    return null
+  }
   return (
     <div className='bg-gray-50 p-6 rounded-lg w-full mt-7'>
       <h3 className='text-xl sm:text-2xl font-semibold mb-4'>

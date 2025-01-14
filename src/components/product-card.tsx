@@ -13,7 +13,7 @@ export default function ProductCard({ product }: Props) {
       <CardHeader className='p-0'>
         <div className='relative h-48 mb-2'>
           <Image
-            src={product.imageUrl ?? '/natilla.webp'}
+            src={product.imageUrl ?? '/imageplaceholder.webp'}
             alt={product.name}
             fill
             className='object-cover rounded-lg'

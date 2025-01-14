@@ -27,14 +27,14 @@ const cartItems = [
     name: 'Gallo Espaguettini al huevo',
     price: 190.0,
     quantity: 2,
-    image: '/natilla.webp',
+    image: '/imageplaceholder.webp',
   },
   {
     id: 2,
     name: 'Vodka Borjska Bianca',
     price: 1600.0,
     quantity: 1,
-    image: '/natilla.webp',
+    image: '/imageplaceholder.webp',
   },
 ]
 

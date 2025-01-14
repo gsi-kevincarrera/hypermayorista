@@ -13,7 +13,11 @@ import { useEffect, useState, useRef } from 'react'
 import { type CarouselApi } from '@/components/ui/carousel'
 import { Category } from '@/types'
 
-export default function CategoriesOverview({ categories }: { categories: Category[] }) {
+export default function CategoriesOverview({
+  categories,
+}: {
+  categories: Category[]
+}) {
   const [api, setApi] = useState<CarouselApi>()
 
   const [current, setCurrent] = useState(0)
@@ -78,7 +82,7 @@ export default function CategoriesOverview({ categories }: { categories: Categor
                     <CardContent className='p-0'>
                       <div className='relative w-full aspect-square'>
                         <Image
-                          src={category.imageUrl ?? '/natilla.webp'}
+                          src={category.imageUrl ?? '/imageplaceholder.webp'}
                           alt={category.name}
                           fill
                           className='object-cover'
@@ -88,9 +92,7 @@ export default function CategoriesOverview({ categories }: { categories: Categor
                             <h3 className='text-lg font-semibold'>
                               {category.name}
                             </h3>
-                            <p className='text-sm'>
-                              +100 productos
-                            </p>
+                            <p className='text-sm'>+100 productos</p>
                           </div>
                         </div>
                       </div>

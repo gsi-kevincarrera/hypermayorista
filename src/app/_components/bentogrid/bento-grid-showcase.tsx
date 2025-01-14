@@ -7,97 +7,22 @@ import CartDrawer from '@/components/cart-drawer'
 import {
   getFeaturedCategories,
   getLatestAcquisitons,
-  getProducts,
   getTopRankedProducts,
 } from '@/db/queries'
-
-// const products = [
-//   {
-//     id: 1,
-//     name: 'Wireless Earbuds',
-//     description: 'High-quality sound, long battery life',
-//     price: 50,
-//     moq: 100,
-//     image: '/product1.jpg',
-//   },
-//   {
-//     id: 2,
-//     name: 'Smart Watch',
-//     description: 'Fitness tracking, notifications',
-//     price: 80,
-//     moq: 50,
-//     image: '/product2.jpg',
-//   },
-//   {
-//     id: 3,
-//     name: 'Portable Charger',
-//     description: '10000mAh, fast charging',
-//     price: 20,
-//     moq: 200,
-//     image: '/product3.jpg',
-//   },
-//   {
-//     id: 4,
-//     name: 'Bluetooth Speaker',
-//     description: 'Waterproof, 360° sound',
-//     price: 30,
-//     moq: 100,
-//     image: '/product4.jpg',
-//   },
-//   {
-//     id: 5,
-//     name: 'Laptop Backpack',
-//     description: 'Anti-theft, USB charging port',
-//     price: 25,
-//     moq: 100,
-//     image: '/product5.jpg',
-//   },
-//   {
-//     id: 6,
-//     name: 'Wireless Mouse',
-//     description: 'Ergonomic design, silent clicks',
-//     price: 15,
-//     moq: 200,
-//     image: '/product6.jpg',
-//   },
-//   {
-//     id: 7,
-//     name: 'LED Desk Lamp',
-//     description: 'Adjustable brightness, touch control',
-//     price: 20,
-//     moq: 100,
-//     image: '/product7.jpg',
-//   },
-//   {
-//     id: 8,
-//     name: 'Fitness Tracker',
-//     description: 'Heart rate monitor, sleep tracking',
-//     price: 40,
-//     moq: 100,
-//     image: '/product8.jpg',
-//   },
-//   {
-//     id: 9,
-//     name: 'Wireless Keyboard',
-//     description: 'Slim design, multi-device',
-//     price: 30,
-//     moq: 100,
-//     image: '/product9.jpg',
-//   },
-// ]
-
-const trendingCategories = [
-  { name: 'Smart Home', count: 1200, image: '/natilla.webp' },
-  { name: 'Wearable Tech', count: 800, image: '/natilla.webp' },
-  { name: 'Office Supplies', count: 1500, image: '/natilla.webp' },
-  { name: 'Eco-Friendly', count: 600, image: '/natilla.webp' },
-]
+import ForYou from './for-you'
+import { getNonSpecialProducts } from '@/db/actions'
 
 export default async function BentoGridShowcase() {
-  const [topRankedProducts, latestAcquisitions, trendingCategories] = await Promise.allSettled([
+  const [
+    topRankedProducts,
+    latestAcquisitions,
+    trendingCategories,
+    forYouProducts,
+  ] = await Promise.allSettled([
     getTopRankedProducts(),
     getLatestAcquisitons(),
     getFeaturedCategories(),
+    getNonSpecialProducts(0),
   ])
   return (
     <section className='py-12 sm:py-16 bg-white' id='products-section'>
@@ -116,7 +41,13 @@ export default async function BentoGridShowcase() {
             />
           </div>
           <div className='flex flex-col justify-between gap-6'>
-            <TrendingCategories trendingCategories={trendingCategories.status === 'fulfilled' ? trendingCategories.value : []} />
+            <TrendingCategories
+              trendingCategories={
+                trendingCategories.status === 'fulfilled'
+                  ? trendingCategories.value
+                  : []
+              }
+            />
             <SpecialOffers />
           </div>
         </div>
@@ -125,6 +56,11 @@ export default async function BentoGridShowcase() {
             latestAcquisitions.status === 'fulfilled'
               ? latestAcquisitions.value
               : []
+          }
+        />
+        <ForYou
+          products={
+            forYouProducts.status === 'fulfilled' ? forYouProducts.value.data : []
           }
         />
       </div>

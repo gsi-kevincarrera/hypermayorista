@@ -20,25 +20,25 @@ const relatedProducts = [
     id: 1,
     name: 'Pasta Penne',
     price: 150.0,
-    image: '/natilla.webp',
+    image: '/imageplaceholder.webp',
   },
   {
     id: 2,
     name: 'Pasta Fusilli',
     price: 160.0,
-    image: '/natilla.webp',
+    image: '/imageplaceholder.webp',
   },
   {
     id: 3,
     name: 'Pasta Farfalle',
     price: 170.0,
-    image: '/natilla.webp',
+    image: '/imageplaceholder.webp',
   },
   {
     id: 4,
     name: 'Pasta Rigatoni',
     price: 180.0,
-    image: '/natilla.webp',
+    image: '/imageplaceholder.webp',
   },
 ]
 
@@ -69,7 +69,7 @@ export default function ProductDetail({ product }: { product: Product }) {
                   }
                 >
                   <Image
-                    src={'/natilla.webp'}
+                    src={'/imageplaceholder.webp'}
                     alt={`${product.name}`}
                     width={80}
                     height={80}
@@ -79,7 +79,7 @@ export default function ProductDetail({ product }: { product: Product }) {
               </div>
               <div className='w-4/5'>
                 <Image
-                  src={'/natilla.webp'}
+                  src={'/imageplaceholder.webp'}
                   alt={product.name}
                   width={400}
                   height={400}

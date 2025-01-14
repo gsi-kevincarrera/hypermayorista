@@ -4,6 +4,7 @@ export type Category = {
   description?: string | null
   imageUrl?: string | null
   parentId?: number | null
+  slug: string | null
 }
 
 export type Product = {
@@ -16,4 +17,5 @@ export type Product = {
   imageUrl?: string | null
   categoryName: string
   color?: string | null
+  slug: string
 }

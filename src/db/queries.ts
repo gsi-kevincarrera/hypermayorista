@@ -117,6 +117,7 @@ export async function getMainCategories() {
         name: categories.name,
         description: categories.description,
         imageUrl: categories.imageUrl,
+        slug: categories.slug,
       })
       .from(categories)
       .where(isNull(categories.parentId))
@@ -135,6 +136,7 @@ export async function getFeaturedCategories() {
         id: categories.id,
         name: categories.name,
         description: categories.description,
+        slug: categories.slug,
         imageUrl: categories.imageUrl,
       })
       .from(categories)
@@ -144,5 +146,35 @@ export async function getFeaturedCategories() {
   } catch (error) {
     console.error(error)
     throw new Error('Error fetching categories')
+  }
+}
+
+export async function getCategoryBySlug(slug: string) {
+  try {
+    const [category] = await db
+      .select({
+        id: categories.id,
+        name: categories.name,
+        description: categories.description,
+        imageUrl: categories.imageUrl,
+      })
+      .from(categories)
+      .where(eq(categories.slug, slug))
+
+    const subcategories = await db
+      .select({
+        id: categories.id,
+        name: categories.name,
+        description: categories.description,
+        imageUrl: categories.imageUrl,
+        slug: categories.slug,
+      })
+      .from(categories)
+      .where(eq(categories.parentId, category.id))
+
+    return { category, subcategories }
+  } catch (error) {
+    console.error(error)
+    throw new Error('Error fetching category')
   }
 }

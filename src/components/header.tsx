@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { User } from 'lucide-react'
+import { usePathname } from 'next/navigation'
 
 const categories = [
   'All',
@@ -24,6 +25,7 @@ const categories = [
 
 export default function Header() {
   const [showSearch, setShowSearch] = useState(false)
+  const pathname = usePathname()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -31,12 +33,16 @@ export default function Header() {
       if (categoriesSection) {
         const rect = categoriesSection.getBoundingClientRect()
         setShowSearch(rect.top <= 0)
+      } else if (pathname !== '/') {
+        setShowSearch(true)
+      } else {
+        setShowSearch(false)
       }
     }
 
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [pathname])
 
   return (
     <header className='fixed top-0 left-0 right-0 bg-white z-50 shadow-md'>

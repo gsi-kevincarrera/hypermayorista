@@ -45,7 +45,7 @@ export async function getNonSpecialProducts(
         )
       )
 
-    return { data, total: dataCount.count}
+    return { data, total: dataCount.count }
   } catch (error) {
     console.error(error)
     throw new Error('Error fetching products')

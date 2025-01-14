@@ -13,15 +13,6 @@ import { useEffect, useState, useRef } from 'react'
 import { type CarouselApi } from '@/components/ui/carousel'
 import { Category } from '@/types'
 
-const categories = [
-  { name: 'Electrónica', count: 5000, image: '/natilla.webp' },
-  { name: 'Vestidos', count: 3500, image: '/natilla.webp' },
-  { name: 'Casa & Jardín', count: 4200, image: '/natilla.webp' },
-  { name: 'Belleza', count: 2800, image: '/natilla.webp' },
-  { name: 'Motocicletas', count: 1900, image: '/natilla.webp' },
-  { name: 'Deportes', count: 3100, image: '/natilla.webp' },
-]
-
 export default function CategoriesOverview({ categories }: { categories: Category[] }) {
   const [api, setApi] = useState<CarouselApi>()
 

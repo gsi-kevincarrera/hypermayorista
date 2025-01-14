@@ -15,4 +15,5 @@ export type Product = {
   minQuantity: number
   imageUrl?: string | null
   categoryName: string
+  color?: string | null
 }

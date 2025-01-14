@@ -1,11 +1,15 @@
-
 import TopRanked from './top-ranked'
 import LatestAcquisitions from './latest-acquisitions'
 import TrendingCategories from './trending-categories'
 import SpecialOffers from './special-offers'
 import AddToCartDrawer from '@/components/add-to-cart-drawer'
 import CartDrawer from '@/components/cart-drawer'
-import { getLatestAcquisitons, getProducts, getTopRankedProducts } from '@/db/queries'
+import {
+  getFeaturedCategories,
+  getLatestAcquisitons,
+  getProducts,
+  getTopRankedProducts,
+} from '@/db/queries'
 
 // const products = [
 //   {
@@ -90,11 +94,11 @@ const trendingCategories = [
 ]
 
 export default async function BentoGridShowcase() {
-  const [topRankedProducts, latestAcquisitions] =
-    await Promise.all([
-      getTopRankedProducts(),
-      getLatestAcquisitons(),
-    ])
+  const [topRankedProducts, latestAcquisitions, trendingCategories] = await Promise.allSettled([
+    getTopRankedProducts(),
+    getLatestAcquisitons(),
+    getFeaturedCategories(),
+  ])
   return (
     <section className='py-12 sm:py-16 bg-white' id='products-section'>
       <div className='container mx-auto px-4 sm:px-6 lg:px-8'>
@@ -103,14 +107,26 @@ export default async function BentoGridShowcase() {
         </h2>
         <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
           <div className='lg:col-span-2 space-y-8'>
-            <TopRanked products={topRankedProducts} />
-            <LatestAcquisitions products={latestAcquisitions} />
+            <TopRanked
+              products={
+                topRankedProducts.status === 'fulfilled'
+                  ? topRankedProducts.value
+                  : []
+              }
+            />
           </div>
-          <div className='space-y-8'>
-            <TrendingCategories trendingCategories={trendingCategories} />
+          <div className='flex flex-col justify-between gap-6'>
+            <TrendingCategories trendingCategories={trendingCategories.status === 'fulfilled' ? trendingCategories.value : []} />
             <SpecialOffers />
           </div>
         </div>
+        <LatestAcquisitions
+          products={
+            latestAcquisitions.status === 'fulfilled'
+              ? latestAcquisitions.value
+              : []
+          }
+        />
       </div>
       <AddToCartDrawer />
       <CartDrawer />

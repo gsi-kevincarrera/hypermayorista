@@ -1,8 +1,9 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { Product, useCart } from '@/contexts/cart-context'
+import { useCart } from '@/contexts/cart-context'
 import { cn } from '@/lib/utils'
+import { Product } from '@/types'
 import { ShoppingCart } from 'lucide-react'
 
 export default function AddToCartButton({ product }: { product: Product }) {

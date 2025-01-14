@@ -1,6 +1,7 @@
+import { Category } from '@/types'
 import Image from 'next/image'
 
-export default function TrendingCategories({ trendingCategories }: { trendingCategories: any[] }) {
+export default function TrendingCategories({ trendingCategories }: { trendingCategories: Category[] }) {
   return (
     <div className='bg-gray-50 p-6 rounded-lg'>
       <h3 className='text-xl sm:text-2xl font-semibold mb-4'>
@@ -13,7 +14,7 @@ export default function TrendingCategories({ trendingCategories }: { trendingCat
             className='relative overflow-hidden rounded-lg cursor-pointer'
           >
             <Image
-              src={category.image}
+              src={category.imageUrl ?? '/natilla.webp'}
               alt={category.name}
               width={200}
               height={150}
@@ -24,7 +25,7 @@ export default function TrendingCategories({ trendingCategories }: { trendingCat
                 <h4 className='text-base sm:text-lg font-semibold'>
                   {category.name}
                 </h4>
-                <p className='text-sm'>{category.count} products</p>
+                <p className='text-sm'>+100 productos</p>
               </div>
             </div>
           </div>

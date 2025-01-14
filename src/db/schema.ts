@@ -1,5 +1,6 @@
 import {
   AnyPgColumn,
+  boolean,
   integer,
   pgTable,
   real,
@@ -20,6 +21,9 @@ export const products = pgTable('Products', {
   categoryId: integer('category_id')
     .notNull()
     .references(() => categories.id),
+  color: varchar('color'),
+  featured: boolean('featured').default(false),
+  latest_acquisition: boolean('latest_acquisition').default(false),
   created_at: timestamp('created_at').defaultNow(),
   updated_at: timestamp('updated_at').defaultNow().$onUpdate(()=> new Date()),
 })
@@ -30,6 +34,7 @@ export const categories = pgTable('Categories', {
   description: text('description'),
   imageUrl: varchar('imageUrl'),
   parentId: integer('parentId').references((): AnyPgColumn => categories.id),
+  featured: boolean('featured').default(false),
   created_at: timestamp('created_at').defaultNow(),
   updated_at: timestamp('updated_at')
     .defaultNow()

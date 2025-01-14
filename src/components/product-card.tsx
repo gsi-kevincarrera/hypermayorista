@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import Image from 'next/image'
 import AddToCartButton from './add-to-cart-button'
-import { Product } from '@/contexts/cart-context'
+import { Product } from '@/types'
 
 interface Props {
   product: Product
@@ -31,7 +31,7 @@ export default function ProductCard({ product }: Props) {
         <div className='flex flex-col items-start text-sm mb-2'>
           <span className='text-lg font-bold'>${product.price}</span>
           <span className='text-gray-500'>
-            mínimo: {product.moq} 5 unidades
+            mínimo: {product.minQuantity} unidades
           </span>
         </div>
       </CardContent>

@@ -49,37 +49,53 @@ export async function getProducts(filters: Filters) {
 }
 
 export async function getTopRankedProducts() {
-  return await db
-    .select({
-      id: products.id,
-      name: products.name,
-      price: products.price,
-      imageUrl: products.imageUrl,
-      description: products.description,
-      categoryName: categories.name,
-      minQuantity: products.minQuantity,
-      availableQuantity: products.availableQuantity,
-    })
-    .from(products)
-    .innerJoin(categories, eq(products.categoryId, categories.id))
-    .limit(5)
+  const TOP_RANKED_PRODUCTS_LIMIT = 6
+  try {
+    return await db
+      .select({
+        id: products.id,
+        name: products.name,
+        price: products.price,
+        imageUrl: products.imageUrl,
+        description: products.description,
+        categoryName: categories.name,
+        minQuantity: products.minQuantity,
+        availableQuantity: products.availableQuantity,
+        color: products.color,
+      })
+      .from(products)
+      .innerJoin(categories, eq(products.categoryId, categories.id))
+      .where(eq(products.featured, true))
+      .limit(TOP_RANKED_PRODUCTS_LIMIT)
+  } catch (error) {
+    console.error(error)
+    throw new Error('Error fetching products')
+  }
 }
 
 export async function getLatestAcquisitons() {
-  return await db
-    .select({
-      id: products.id,
-      name: products.name,
-      price: products.price,
-      imageUrl: products.imageUrl,
-      description: products.description,
-      categoryName: categories.name,
-      minQuantity: products.minQuantity,
-      availableQuantity: products.availableQuantity,
-    })
-    .from(products)
-    .innerJoin(categories, eq(products.categoryId, categories.id))
-    .limit(3)
+  const LATEST_ACQUISITIONS_LIMIT = 10
+  try {
+    return await db
+      .select({
+        id: products.id,
+        name: products.name,
+        price: products.price,
+        imageUrl: products.imageUrl,
+        description: products.description,
+        categoryName: categories.name,
+        minQuantity: products.minQuantity,
+        availableQuantity: products.availableQuantity,
+        color: products.color,
+      })
+      .from(products)
+      .innerJoin(categories, eq(products.categoryId, categories.id))
+      .where(eq(products.latest_acquisition, true))
+      .limit(LATEST_ACQUISITIONS_LIMIT)
+  } catch (error) {
+    console.error(error)
+    throw new Error('Error fetching products')
+  }
 }
 
 export async function getProductById(id: number) {
@@ -110,6 +126,26 @@ export async function getMainCategories() {
       .from(categories)
       .where(isNull(categories.parentId))
       .orderBy(categories.name)
+  } catch (error) {
+    console.error(error)
+    throw new Error('Error fetching categories')
+  }
+}
+
+export async function getFeaturedCategories() {
+  const CATEGORIES_LIMIT = 4
+  try {
+    return await db
+      .select({
+        id: categories.id,
+        name: categories.name,
+        description: categories.description,
+        imageUrl: categories.imageUrl,
+      })
+      .from(categories)
+      .where(eq(categories.featured, true))
+      .orderBy(categories.name)
+      .limit(CATEGORIES_LIMIT)
   } catch (error) {
     console.error(error)
     throw new Error('Error fetching categories')

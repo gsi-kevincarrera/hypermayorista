@@ -3,7 +3,7 @@ import { Card, CardContent } from '@/components/ui/card'
 
 export default function SpecialOffers() {
   return (
-    <div className='bg-gray-50 p-6 rounded-lg'>
+    <div className='bg-gray-50 p-6 rounded-lg '>
       <h3 className='text-xl sm:text-2xl font-semibold mb-4'>Ofertas Especiales</h3>
       <Card className='bg-gradient-to-r from-purple-600 to-purple-800 text-white'>
         <CardContent className='p-6'>

@@ -1,5 +1,6 @@
 'use client'
 
+import { Product } from '@/types'
 import {
   createContext,
   useContext,
@@ -8,16 +9,16 @@ import {
   useEffect,
 } from 'react'
 
-export interface Product {
-  id: number
-  name: string
-  description?: string
-  imageUrl?: string
-  price: number
-  categoryName: string
-  minQuantity: number
-  availableQuantity?: number
-}
+// export interface Product {
+//   id: number
+//   name: string
+//   description?: string
+//   imageUrl?: string
+//   price: number
+//   categoryName: string
+//   minQuantity: number
+//   availableQuantity?: number
+// }
 
 interface CartContextType {
   cart: Product[]

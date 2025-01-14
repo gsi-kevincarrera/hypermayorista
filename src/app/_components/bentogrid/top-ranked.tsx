@@ -1,5 +1,5 @@
 import ProductCard from '@/components/product-card'
-import { Product } from '@/contexts/cart-context'
+import { Product } from '@/types'
 
 export default function TopRanked({ products }: { products: Product[] }) {
   return (

@@ -5,13 +5,19 @@ import BusinessOverview from './_components/business-overview'
 import Testimonials from './_components/testimonials'
 import About from './_components/about'
 import Hero from './_components/hero'
+import { getMainCategories } from '@/db/queries'
 
 export default async function Home() {
+  const [mainCategories] = await Promise.allSettled([getMainCategories()])
   return (
     <main className='min-h-screen'>
       <Hero />
       {/* <WhyChooseUs /> */}
-      <CategoriesOverview />
+      <CategoriesOverview
+        categories={
+          mainCategories.status === 'fulfilled' ? mainCategories.value : []
+        }
+      />
       <BentoGridShowcase />
       <BusinessOverview />
       <Testimonials />

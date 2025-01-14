@@ -1,8 +1,9 @@
 import { categories, products } from '@/db/schema'
-import { eq, ilike, sql } from 'drizzle-orm'
+import { eq, ilike, isNull, sql } from 'drizzle-orm'
 import { combineConditions } from './utils'
 import { db } from '@/db'
 
+//Product queries
 export type Filters = {
   search?: string
   category?: string
@@ -93,4 +94,24 @@ export async function getProductById(id: number) {
 
 export async function getProductsByName(name: string) {
   return await db.select().from(products).where(ilike(products.name, name))
+}
+
+//Category queries
+
+export async function getMainCategories() {
+  try {
+    return await db
+      .select({
+        id: categories.id,
+        name: categories.name,
+        description: categories.description,
+        imageUrl: categories.imageUrl,
+      })
+      .from(categories)
+      .where(isNull(categories.parentId))
+      .orderBy(categories.name)
+  } catch (error) {
+    console.error(error)
+    throw new Error('Error fetching categories')
+  }
 }

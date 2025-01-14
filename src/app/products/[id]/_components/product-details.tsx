@@ -9,10 +9,11 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel'
-import { Product } from '@/types/product'
-import AppBreadcrumb from '../navigation/app-breadcrumb'
+import { Product } from '@/types'
+
 import { ShoppingBag } from 'lucide-react'
 import Link from 'next/link'
+import AppBreadcrumb from '@/components/navigation/app-breadcrumb'
 
 const relatedProducts = [
   {

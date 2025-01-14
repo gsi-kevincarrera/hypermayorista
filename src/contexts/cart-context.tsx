@@ -11,11 +11,12 @@ import {
 export interface Product {
   id: number
   name: string
-  description: string
+  description?: string
   imageUrl?: string
-  price: string | number | null
-  category: string | null
-  moq?: number
+  price: number
+  categoryName: string
+  minQuantity: number
+  availableQuantity?: number
 }
 
 interface CartContextType {

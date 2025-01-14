@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/carousel'
 import { useEffect, useState, useRef } from 'react'
 import { type CarouselApi } from '@/components/ui/carousel'
+import { Category } from '@/types'
 
 const categories = [
   { name: 'Electrónica', count: 5000, image: '/natilla.webp' },
@@ -21,7 +22,7 @@ const categories = [
   { name: 'Deportes', count: 3100, image: '/natilla.webp' },
 ]
 
-export default function CategoriesOverview() {
+export default function CategoriesOverview({ categories }: { categories: Category[] }) {
   const [api, setApi] = useState<CarouselApi>()
 
   const [current, setCurrent] = useState(0)
@@ -58,6 +59,9 @@ export default function CategoriesOverview() {
     }
   }, [api, current])
 
+  if (categories.length === 0) {
+    return <div>No hay categorías disponibles</div>
+  }
   return (
     <section className='py-12 sm:py-16 bg-gray-100' id='categories'>
       <div className='container mx-auto px-4 sm:px-6 lg:px-8'>
@@ -83,7 +87,7 @@ export default function CategoriesOverview() {
                     <CardContent className='p-0'>
                       <div className='relative w-full aspect-square'>
                         <Image
-                          src={category.image}
+                          src={category.imageUrl ?? '/natilla.webp'}
                           alt={category.name}
                           fill
                           className='object-cover'
@@ -94,7 +98,7 @@ export default function CategoriesOverview() {
                               {category.name}
                             </h3>
                             <p className='text-sm'>
-                              {category.count.toLocaleString()} productos
+                              +100 productos
                             </p>
                           </div>
                         </div>

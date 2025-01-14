@@ -16,7 +16,7 @@ export const products = pgTable('Products', {
   price: real('price').notNull(),
   availableQuantity: integer('available_quantity').notNull(),
   minQuantity: integer('min_quantity').notNull(),
-  imageUrl: varchar('image_url', { length: 255 }),
+  imageUrl: varchar('image_url'),
   categoryId: integer('category_id')
     .notNull()
     .references(() => categories.id),
@@ -28,7 +28,7 @@ export const categories = pgTable('Categories', {
   id: serial('id').primaryKey(),
   name: varchar('name', { length: 255 }).notNull(),
   description: text('description'),
-  imageUrl: varchar('imageUrl', { length: 255 }),
+  imageUrl: varchar('imageUrl'),
   parentId: integer('parentId').references((): AnyPgColumn => categories.id),
   created_at: timestamp('created_at').defaultNow(),
   updated_at: timestamp('updated_at')

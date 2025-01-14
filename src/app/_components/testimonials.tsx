@@ -10,41 +10,42 @@ import {
 
 const testimonials = [
   {
-    name: 'Sarah Johnson',
+    name: 'Esteban Reyes',
     role: 'CEO, TechInnovate',
     content:
-      'B2B Trade has revolutionized our supply chain management. The platforms efficiency and global reach have significantly boosted our productivity.',
+      'Hypermayorista ha revolucionado nuestra gestión de la cadena de suministro. La eficiencia de la plataforma y su alcance global han incrementado significativamente nuestra productividad.',
     avatar: '/avatar1.jpg',
   },
   {
-    name: 'Michael Chen',
-    role: 'Procurement Manager, GlobalRetail',
+    name: 'Miguel Fernández',
+    role: 'Gerente de Compras, GlobalRetail',
     content:
-      'The quality of suppliers on B2B Trade is unmatched. We have found reliable partners that have helped us scale our operations seamlessly.',
+      'La calidad de los proveedores en Hypermayorista es incomparable. Hemos encontrado socios confiables que nos han ayudado a escalar nuestras operaciones de manera fluida.',
     avatar: '/avatar2.jpg',
   },
   {
-    name: 'Emma Rodriguez',
-    role: 'Founder, EcoGoods',
+    name: 'Emma Rodríguez',
+    role: 'Fundadora, EcoGoods',
     content:
-      'As a small business, B2B Trade has been instrumental in our growth. The platforms user-friendly interface and support team are exceptional.',
+      'Como pequeña empresa, Hypermayorista ha sido fundamental en nuestro crecimiento. La interfaz fácil de usar de la plataforma y su equipo de soporte son excepcionales.',
     avatar: '/avatar3.jpg',
   },
   {
-    name: 'David Okonkwo',
-    role: 'Operations Director, AfriTech',
+    name: 'David Pérez',
+    role: 'Director de Operaciones, AfriTech',
     content:
-      'Hypermayorista global network has opened up new markets for us. The data-driven insights have been crucial in our international expansion strategy.',
+      'La red global de Hypermayorista ha abierto nuevos mercados para nosotros. Los análisis basados en datos han sido cruciales en nuestra estrategia de expansión internacional.',
     avatar: '/avatar4.jpg',
   },
 ]
+
 
 export default function Testimonials() {
   return (
     <section className='py-16 bg-white'>
       <div className='container mx-auto px-4 sm:px-6 lg:px-8'>
         <h2 className='text-3xl font-bold text-center mb-12'>
-          What Our Clients Say
+          Lo que dicen nuestros clientes
         </h2>
         <Carousel
           opts={{

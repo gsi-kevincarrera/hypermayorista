@@ -9,28 +9,31 @@ interface Props {
 
 export default function ProductCard({ product }: Props) {
   return (
-    <Card className='h-full flex flex-col'>
+    <Card className='h-full flex flex-col bg-transparent border-none shadow-none relative'>
       <CardHeader className='p-0'>
-        <div className='relative h-48'>
+        <div className='relative h-48 mb-2'>
           <Image
-            src={product.imageUrl || '/product1.jpg'}
+            src={product.imageUrl ?? '/natilla.webp'}
             alt={product.name}
             fill
-            className='object-cover rounded-t-lg'
+            className='object-cover rounded-lg'
           />
+          <AddToCartButton product={product} />
         </div>
       </CardHeader>
-      <CardContent className='p-4 flex-grow flex flex-col'>
-        <CardTitle className='text-base sm:text-lg mb-2'>
+      <CardContent className='p-0 flex-grow flex flex-col'>
+        <CardTitle className='text-base font-semibold mb-1'>
           {product.name}
         </CardTitle>
-        <p className='text-sm text-gray-600 mb-2 flex-grow'>
+        <p className='text-sm text-gray-600 mb-2 flex-grow line-clamp-2'>
           {product.description}
         </p>
-        <div className='flex justify-between items-center text-sm mb-2'>
-          <span>${product.price}</span>
+        <div className='flex flex-col items-start text-sm mb-2'>
+          <span className='text-lg font-bold'>${product.price}</span>
+          <span className='text-gray-500'>
+            mínimo: {product.moq} 5 unidades
+          </span>
         </div>
-        <AddToCartButton product={product} />
       </CardContent>
     </Card>
   )

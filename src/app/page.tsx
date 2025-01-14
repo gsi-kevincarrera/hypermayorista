@@ -1,4 +1,3 @@
-
 import WhyChooseUs from './_components/why-choose-us'
 import CategoriesOverview from './_components/categories-overview'
 import BentoGridShowcase from './_components/bentogrid/bento-grid-showcase'
@@ -7,16 +6,11 @@ import Testimonials from './_components/testimonials'
 import About from './_components/about'
 import Hero from './_components/hero'
 
-export default async function Home({
-}: {
-  // searchParams: Promise<{ [key: string]: string | string[] | undefined }>
-}) {
-
-
+export default async function Home() {
   return (
     <main className='min-h-screen'>
       <Hero />
-      <WhyChooseUs />
+      {/* <WhyChooseUs /> */}
       <CategoriesOverview />
       <BentoGridShowcase />
       <BusinessOverview />

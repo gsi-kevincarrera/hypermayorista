@@ -27,9 +27,9 @@ export default function Header() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const productsSection = document.getElementById('products-section')
-      if (productsSection) {
-        const rect = productsSection.getBoundingClientRect()
+      const categoriesSection = document.getElementById('categories')
+      if (categoriesSection) {
+        const rect = categoriesSection.getBoundingClientRect()
         setShowSearch(rect.top <= 0)
       }
     }

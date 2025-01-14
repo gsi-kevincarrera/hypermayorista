@@ -25,12 +25,12 @@ export default function LatestAcquisitions({
     },
   })
   return (
-    <div>
+    <div className='bg-gray-50 p-6 rounded-lg'>
       <h3 className='text-xl sm:text-2xl font-semibold mb-4'>
         Ultimas Adquisiciones
       </h3>
       <div ref={sliderRef} className='keen-slider'>
-        {products.slice(6).map((product) => (
+        {products.map((product) => (
           <div key={product.id} className='keen-slider__slide'>
             <ProductCard product={product} />
           </div>

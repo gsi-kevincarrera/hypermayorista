@@ -68,7 +68,7 @@ export async function getLatestAcquisitons() {
       category: products.category,
     })
     .from(products)
-    .limit(5)
+    .limit(3)
 }
 
 export async function getProductById(id: number) {

@@ -4,39 +4,41 @@ import { ShieldCheck, Truck, Users, Zap } from 'lucide-react'
 const features = [
   {
     icon: <ShieldCheck className='h-6 w-6' />,
-    title: 'Verified Suppliers',
+    title: 'Proveedores Verificados',
     description:
-      'All our suppliers are thoroughly vetted to ensure quality and reliability.',
+      'Todos nuestros proveedores son examinados a fondo para garantizar la calidad y la fiabilidad.',
   },
   {
     icon: <Truck className='h-6 w-6' />,
-    title: 'Global Shipping',
+    title: 'Entregas expandidas',
     description:
-      'We offer competitive shipping rates to destinations worldwide.',
+      'Ofrecemos tarifas de envío competitivas a destinos de todo el país.',
   },
   {
     icon: <Users className='h-6 w-6' />,
-    title: 'Dedicated Support',
+    title: 'Soporte Dedicado',
     description:
-      'Our team is available 24/7 to assist you with any queries or concerns.',
+      'Tenemos un equipo de soporte dedicado para atender cualquiera de tus preocupaciones o dudas.',
   },
   {
     icon: <Zap className='h-6 w-6' />,
-    title: 'Fast Transactions',
+    title: 'Transacciones Rápidas',
     description:
-      'Streamlined processes ensure quick and efficient order fulfillment.',
+      'Los procesos optimizados garantizan un cumplimiento de pedidos rápido y eficiente.',
   },
 ]
 
 export default function WhyChooseUs() {
   return (
-    <section className='py-16 bg-gray-50'>
+    <section className='py-16 bg-white' id='why-us'>
       <div className='container mx-auto px-4'>
-        <h2 className='text-3xl font-bold text-center mb-12'>Why Choose Us</h2>
+        <h2 className='text-3xl font-bold text-center mb-12'>
+          ¿Por qué Elegirnos?
+        </h2>
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8'>
           {features.map((feature, index) => (
             <div key={index}>
-              <Card className='h-full transition-transform duration-300 hover:scale-105'>
+              <Card className='h-full transition-transform duration-300 hover:scale-105 bg-gray-50'>
                 <CardHeader>
                   <CardTitle className='flex items-center space-x-2'>
                     {feature.icon}

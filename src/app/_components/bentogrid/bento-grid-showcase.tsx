@@ -83,10 +83,10 @@ import { getLatestAcquisitons, getProducts, getTopRankedProducts } from '@/db/qu
 // ]
 
 const trendingCategories = [
-  { name: 'Smart Home', count: 1200, image: '/smart-home.jpg' },
-  { name: 'Wearable Tech', count: 800, image: '/wearable-tech.jpg' },
-  { name: 'Office Supplies', count: 1500, image: '/office-supplies.jpg' },
-  { name: 'Eco-Friendly', count: 600, image: '/eco-friendly.jpg' },
+  { name: 'Smart Home', count: 1200, image: '/natilla.webp' },
+  { name: 'Wearable Tech', count: 800, image: '/natilla.webp' },
+  { name: 'Office Supplies', count: 1500, image: '/natilla.webp' },
+  { name: 'Eco-Friendly', count: 600, image: '/natilla.webp' },
 ]
 
 export default async function BentoGridShowcase() {
@@ -96,7 +96,7 @@ export default async function BentoGridShowcase() {
       getLatestAcquisitons(),
     ])
   return (
-    <section className='py-12 sm:py-16 bg-gray-100' id='products-section'>
+    <section className='py-12 sm:py-16 bg-white' id='products-section'>
       <div className='container mx-auto px-4 sm:px-6 lg:px-8'>
         <h2 className='text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12'>
           Nuestros Productos

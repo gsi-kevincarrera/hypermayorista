@@ -7,25 +7,34 @@ export default function About() {
       <div className='container mx-auto px-4 sm:px-6 lg:px-8'>
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-12 items-center'>
           <div>
-            <h2 className='text-3xl font-bold mb-6'>About B2B Trade</h2>
+            <h2 className='text-3xl font-bold mb-6'>
+              Acerca de Hypermayorista
+            </h2>
             <p className='text-gray-600 mb-6'>
-              B2B Trade is a cutting-edge wholesale platform designed to
-              revolutionize the way businesses connect and trade globally. Our
-              mission is to empower companies of all sizes by providing them
-              with the tools and network they need to thrive in the digital age.
+              En <strong>Hypermayorista</strong>, nos dedicamos a ofrecer
+              soluciones innovadoras y eficientes para el comercio mayorista,
+              conectando a empresas de todo el mundo en un solo lugar. Nuestra
+              plataforma optimiza la gestión de compras y ventas, brindando a
+              nuestros usuarios una experiencia fluida y segura.
             </p>
             <p className='text-gray-600 mb-6'>
-              Founded in 2020, we&quot;ve quickly grown to become a trusted partner
-              for thousands of businesses worldwide. Our platform combines
-              advanced technology with a user-centric approach, ensuring a
-              seamless and efficient trading experience for all our users.
+              Gracias a nuestra afiliación con <strong>Avangenio</strong>, una
+              de las empresas más prestigiosas del país, contamos con el
+              respaldo de una entidad de renombre que avala la calidad y
+              fiabilidad de nuestros servicios. Esta alianza nos permite ofrecer
+              a nuestros clientes un nivel de excelencia y confianza sin igual,
+              facilitando el acceso a proveedores de alta calidad y una red de
+              contactos global. Nuestro compromiso es impulsar el crecimiento de
+              tu negocio, ayudándote a expandir tus operaciones y mejorar la
+              eficiencia de tus procesos comerciales, todo con el soporte de un
+              equipo dedicado y siempre a la vanguardia de la tecnología.
             </p>
-            <Button size='lg'>Learn More About Us</Button>
+            <Button size='lg'>Aprende más sobre nosotros</Button>
           </div>
           <div className='relative h-[400px] rounded-lg overflow-hidden shadow-xl'>
             <Image
               src='/about-image.jpg'
-              alt='B2B Trade Team'
+              alt='Hypermayorista Team'
               fill
               className='object-cover'
             />

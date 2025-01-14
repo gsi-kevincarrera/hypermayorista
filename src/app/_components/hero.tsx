@@ -48,14 +48,14 @@ export default function Hero() {
         <div className='flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4'>
           <Input
             type='text'
-            placeholder='Search products...'
+            placeholder='Buscar productos...'
             className='w-full sm:w-64 text-black'
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
           <Select>
             <SelectTrigger className='w-full sm:w-40 bg-white text-black'>
-              <SelectValue placeholder='Category' />
+              <SelectValue placeholder='Categoría' />
             </SelectTrigger>
             <SelectContent>
               {categories.map((cat) => (
@@ -69,7 +69,7 @@ export default function Hero() {
             onClick={handleSearch}
             className='sm:w-auto bg-green-500 hover:bg-green-700'
           >
-            Search
+            Buscar
           </Button>
         </div>
       </div>

@@ -1,5 +1,5 @@
 'use client'
-import { ShoppingCart, X } from 'lucide-react'
+import { ShoppingCart, ShoppingCartIcon, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import {
@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/sheet'
 import Image from 'next/image'
 import { useCart } from '@/contexts/cart-context'
+import { Checkbox } from '@/components/ui/checkbox'
 
 export default function CartDrawer() {
   const { cart, removeFromCart } = useCart()
@@ -31,51 +32,62 @@ export default function CartDrawer() {
           )}
         </Button>
       </SheetTrigger>
-      <SheetContent>
+      <SheetContent className='overflow-y-auto'>
         <SheetHeader>
           <SheetTitle>Tu Carrito</SheetTitle>
           <SheetDescription>
-            {cart.length === 0
-              ? 'Your cart is empty'
-              : `You have ${cart.length} item${
-                  cart.length > 1 ? 's' : ''
-                } in your cart`}
+            <div className='flex justify-between items-center'>
+              {cart.length === 0
+                ? 'Tu carrito esta vacío'
+                : `Tienes ${cart.length} producto${
+                    cart.length > 1 ? 's' : ''
+                  } en tu carrito`}
+              <Button
+                title='Ir al checkout'
+                className='bg-gray-50/80 text-black hover:bg-secondary'
+              >
+                <ShoppingCartIcon className='h-5 w-5' />
+              </Button>
+            </div>
           </SheetDescription>
         </SheetHeader>
         <div className='mt-4 space-y-4'>
           {cart.map((item, index) => (
-            <Card key={index}>
-              <CardContent className='flex items-center justify-between p-4'>
-                <div className='flex items-center space-x-4'>
-                  <Image
-                    src={item.imageUrl ?? '/product1.jpg'}
-                    alt={item.name}
-                    width={50}
-                    height={50}
-                    className='object-cover rounded'
-                  />
-                  <div>
-                    <h4 className='font-semibold'>{item.name}</h4>
-                    <p className='text-sm text-gray-500'>
-                      ${item.price} x {item.moq}
-                    </p>
+            <div key={index} className='flex items-center gap-4'>
+              <Checkbox defaultChecked={true} />
+              <Card className='w-full'>
+                <CardContent className='flex items-center justify-between p-4'>
+                  <div className='flex items-center space-x-4'>
+                    <Image
+                      src={item.imageUrl ?? '/product1.jpg'}
+                      alt={item.name}
+                      width={50}
+                      height={50}
+                      className='object-cover rounded'
+                    />
+                    <div>
+                      <h4 className='font-semibold'>{item.name}</h4>
+                      <p className='text-sm text-gray-500'>
+                        ${item.price} x {item.minQuantity}
+                      </p>
+                    </div>
                   </div>
-                </div>
-                <Button
-                  variant='ghost'
-                  size='icon'
-                  onClick={() => removeFromCart(item.id)}
-                  className='text-red-500 hover:text-red-700'
-                >
-                  <X className='h-5 w-5' />
-                </Button>
-              </CardContent>
-            </Card>
+                  <Button
+                    variant='ghost'
+                    size='icon'
+                    onClick={() => removeFromCart(item.id)}
+                    className='text-red-500 hover:text-red-700'
+                  >
+                    <X className='h-5 w-5' />
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
           ))}
         </div>
         {cart.length > 0 && (
           <SheetFooter className='mt-6'>
-            <Button className='w-full'>Proceed to Checkout</Button>
+            <Button className='w-full'>Ir al Checkout</Button>
           </SheetFooter>
         )}
       </SheetContent>

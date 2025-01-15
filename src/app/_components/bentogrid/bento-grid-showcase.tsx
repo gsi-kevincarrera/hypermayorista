@@ -2,8 +2,6 @@ import TopRanked from './top-ranked'
 import LatestAcquisitions from './latest-acquisitions'
 import TrendingCategories from './trending-categories'
 import SpecialOffers from './special-offers'
-import AddToCartDrawer from '@/components/add-to-cart-drawer'
-import CartDrawer from '@/components/cart-drawer'
 import {
   getFeaturedCategories,
   getLatestAcquisitons,
@@ -60,13 +58,17 @@ export default async function BentoGridShowcase() {
         />
         <ForYou
           products={
-            forYouProducts.status === 'fulfilled' ? forYouProducts.value.data : []
+            forYouProducts.status === 'fulfilled'
+              ? forYouProducts.value.data
+              : []
           }
-          total={forYouProducts.status === 'fulfilled' ? forYouProducts.value.total : 0}
+          total={
+            forYouProducts.status === 'fulfilled'
+              ? forYouProducts.value.total
+              : 0
+          }
         />
       </div>
-      <AddToCartDrawer />
-      <CartDrawer />
     </section>
   )
 }

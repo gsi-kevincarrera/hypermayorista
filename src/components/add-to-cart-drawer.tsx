@@ -20,12 +20,11 @@ export default function AddToCartDrawer() {
 
   const confirmAddToCart = () => {
     if (!selectedProduct) return
-    addToCart({ ...selectedProduct, moq: quantity })
+    addToCart({ ...selectedProduct, minQuantity: quantity })
     setSelectedProduct(null)
     setQuantity(1)
   }
   const goToCheckout = () => {
-    // Implement checkout logic here
     console.log('Going to checkout with:', { ...selectedProduct, quantity })
     setSelectedProduct(null)
     setQuantity(1)
@@ -51,7 +50,7 @@ export default function AddToCartDrawer() {
                 alt={selectedProduct.name}
                 width={80}
                 height={80}
-                className='rounded-md'
+                className='rounded-md aspect-auto'
               />
               <div>
                 <h3 className='font-semibold'>{selectedProduct.name}</h3>
@@ -65,14 +64,14 @@ export default function AddToCartDrawer() {
                 htmlFor='quantity'
                 className='block text-sm font-medium text-gray-700'
               >
-                Quantity
+                Cantidad
               </label>
               <div className='mt-1 flex rounded-md shadow-sm'>
                 <Button
                   type='button'
                   onClick={() =>
                     setQuantity(
-                      Math.max(selectedProduct.moq ?? 1, quantity - 1)
+                      Math.max(selectedProduct.minQuantity ?? 1, quantity - 1)
                     )
                   }
                   className='rounded-l-md'
@@ -88,12 +87,12 @@ export default function AddToCartDrawer() {
                   onChange={(e) =>
                     setQuantity(
                       Math.max(
-                        selectedProduct.moq ?? 1,
+                        selectedProduct.minQuantity ?? 1,
                         parseInt(e.target.value) || 0
                       )
                     )
                   }
-                  min={selectedProduct.moq}
+                  min={selectedProduct.minQuantity}
                 />
                 <Button
                   type='button'
@@ -106,15 +105,19 @@ export default function AddToCartDrawer() {
             </div>
             <div className='mt-4'>
               <p className='text-lg font-semibold'>
-                Total: ${(Number(selectedProduct.price) ?? 0) * quantity}
+                Total: $
+                {new Intl.NumberFormat('es-CU', {
+                  minimumFractionDigits: 0,
+                  maximumFractionDigits: 2,
+                }).format((Number(selectedProduct.price) ?? 0) * quantity)}
               </p>
             </div>
           </div>
         )}
-        <SheetFooter>
-          <Button onClick={confirmAddToCart}>Add to Cart</Button>
+        <SheetFooter className='sm:justify-center'>
+          <Button onClick={confirmAddToCart}>Agregar al carrito</Button>
           <Button onClick={goToCheckout} variant='outline'>
-            Go to Checkout
+            Ir al Checkout
           </Button>
         </SheetFooter>
       </SheetContent>

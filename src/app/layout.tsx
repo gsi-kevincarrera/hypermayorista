@@ -5,6 +5,8 @@ import Header from '@/components/header'
 import Footer from '@/components/footer'
 import { Toaster } from '@/components/ui/sonner'
 import { CartProvider } from '@/contexts/cart-context'
+import AddToCartDrawer from '@/components/add-to-cart-drawer'
+import CartDrawer from '@/components/cart-drawer'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -22,7 +24,11 @@ export default function RootLayout({
     <html lang='en'>
       <body className={inter.className}>
         <Header />
-        <CartProvider>{children}</CartProvider>
+        <CartProvider>
+          {children}
+          <AddToCartDrawer />
+          <CartDrawer />
+        </CartProvider>
         <Footer />
         <Toaster richColors closeButton position='top-right' />
       </body>

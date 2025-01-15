@@ -12,7 +12,7 @@ import {
 import { useEffect, useState, useRef } from 'react'
 import { type CarouselApi } from '@/components/ui/carousel'
 import { Category } from '@/types'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 export default function CategoriesOverview({
   categories,
@@ -24,8 +24,6 @@ export default function CategoriesOverview({
   const [current, setCurrent] = useState(0)
   const [count, setCount] = useState(0)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
-
-  const router = useRouter()
 
   useEffect(() => {
     if (!api) {
@@ -78,31 +76,32 @@ export default function CategoriesOverview({
             {categories.map((category, index) => (
               <CarouselItem
                 key={index}
-                className='pl-2 sm:pl-4 md:basis-1/3 lg:basis-1/4 cursor-pointer'
-                onClick={() => router.push(`/category/${category.slug}`)}
+                className='pl-2 sm:pl-4 md:basis-1/3 lg:basis-1/4'
               >
-                <div className='p-1'>
-                  <Card className='overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-purple-600'>
-                    <CardContent className='p-0'>
-                      <div className='relative w-full aspect-square'>
-                        <Image
-                          src={category.imageUrl ?? '/imageplaceholder.webp'}
-                          alt={category.name}
-                          fill
-                          className='object-cover'
-                        />
-                        <div className='absolute inset-0 bg-gradient-to-t from-black/55 to-transparent flex items-end p-4'>
-                          <div className='text-white'>
-                            <h3 className='text-lg font-semibold'>
-                              {category.name}
-                            </h3>
-                            <p className='text-sm'>+100 productos</p>
+                <Link href={`/category/${category.slug}`}>
+                  <div className='p-1'>
+                    <Card className='overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-purple-600'>
+                      <CardContent className='p-0'>
+                        <div className='relative w-full aspect-square'>
+                          <Image
+                            src={category.imageUrl ?? '/imageplaceholder.webp'}
+                            alt={category.name}
+                            fill
+                            className='object-cover'
+                          />
+                          <div className='absolute inset-0 bg-gradient-to-t from-black/55 to-transparent flex items-end p-4'>
+                            <div className='text-white'>
+                              <h3 className='text-lg font-semibold'>
+                                {category.name}
+                              </h3>
+                              <p className='text-sm'>+100 productos</p>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </Link>
               </CarouselItem>
             ))}
           </CarouselContent>

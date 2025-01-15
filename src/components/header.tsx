@@ -29,9 +29,9 @@ export default function Header() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const categoriesSection = document.getElementById('categories')
-      if (categoriesSection) {
-        const rect = categoriesSection.getBoundingClientRect()
+      const heroSection = document.getElementById('hero')
+      if (heroSection) {
+        const rect = heroSection.getBoundingClientRect()
         setShowSearch(rect.top <= 0)
       } else if (pathname !== '/') {
         setShowSearch(true)
@@ -58,12 +58,12 @@ export default function Header() {
             <div className='hidden sm:flex flex-1 justify-center items-center space-x-2 mx-4'>
               <Input
                 type='text'
-                placeholder='Search products...'
+                placeholder='Buscar productos...'
                 className='w-full max-w-xs'
               />
               <Select>
                 <SelectTrigger className='w-40'>
-                  <SelectValue placeholder='Category' />
+                  <SelectValue placeholder='Categoría' />
                 </SelectTrigger>
                 <SelectContent>
                   {categories.map((cat) => (
@@ -73,7 +73,7 @@ export default function Header() {
                   ))}
                 </SelectContent>
               </Select>
-              <Button>Search</Button>
+              <Button>Buscar</Button>
             </div>
           )}
           <Button variant='ghost' size='icon'>
@@ -84,12 +84,12 @@ export default function Header() {
           <div className='sm:hidden py-2 flex items-center space-x-2'>
             <Input
               type='text'
-              placeholder='Search products...'
+              placeholder='Buscar productos...'
               className='w-full'
             />
             <Select>
               <SelectTrigger className='w-40'>
-                <SelectValue placeholder='Category' />
+                <SelectValue placeholder='Categoría' />
               </SelectTrigger>
               <SelectContent>
                 {categories.map((cat) => (
@@ -99,7 +99,7 @@ export default function Header() {
                 ))}
               </SelectContent>
             </Select>
-            <Button>Search</Button>
+            <Button>Buscar</Button>
           </div>
         )}
       </div>

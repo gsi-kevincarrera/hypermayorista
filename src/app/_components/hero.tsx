@@ -45,7 +45,7 @@ export default function Hero() {
           Conéctate con los mejores proveedores y encuentra las mejores ofertas
           en un solo lugar
         </p>
-        <div className='flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4'>
+        <div className='flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4' id='hero'>
           <Input
             type='text'
             placeholder='Buscar productos...'

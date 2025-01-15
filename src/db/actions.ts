@@ -51,3 +51,42 @@ export async function getNonSpecialProducts(
     throw new Error('Error fetching products')
   }
 }
+
+export async function getProductsByCategory(
+  categoryId: number,
+  offset: number,
+  limit: number = 15
+) {
+  try {
+    const data = await db
+      .select({
+        id: products.id,
+        name: products.name,
+        price: products.price,
+        imageUrl: products.imageUrl,
+        description: products.description,
+        categoryName: categories.name,
+        minQuantity: products.minQuantity,
+        availableQuantity: products.availableQuantity,
+        color: products.color,
+      })
+      .from(products)
+      .innerJoin(categories, eq(products.categoryId, categories.id))
+      .where(eq(categories.id, categoryId))
+      .limit(limit)
+      .offset(offset)
+
+    const [dataCount] = await db
+      .select({
+        count: sql`count(*)`.mapWith(Number),
+      })
+      .from(products)
+      .innerJoin(categories, eq(products.categoryId, categories.id))
+      .where(eq(categories.id, categoryId))
+
+    return { data, total: dataCount.count }
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}

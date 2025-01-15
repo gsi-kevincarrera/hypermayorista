@@ -62,6 +62,7 @@ export default async function BentoGridShowcase() {
           products={
             forYouProducts.status === 'fulfilled' ? forYouProducts.value.data : []
           }
+          total={forYouProducts.status === 'fulfilled' ? forYouProducts.value.total : 0}
         />
       </div>
       <AddToCartDrawer />

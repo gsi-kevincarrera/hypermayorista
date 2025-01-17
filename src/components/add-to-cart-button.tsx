@@ -10,9 +10,12 @@ export default function AddToCartButton({ product }: { product: Product }) {
   const { setSelectedProduct, isInCart } = useCart()
   return (
     <Button
-      onClick={() => setSelectedProduct(product)}
+      onClick={(e) => {
+        setSelectedProduct(product)
+        e.stopPropagation()
+      }}
       className={cn(
-        'absolute top-2 right-2 h-8 w-8 rounded-full bg-gray-400 hover:scale-105'
+        'absolute top-2 right-2 h-8 w-8 rounded-full bg-gray-400 hover:scale-105 z-20'
       )}
       size='icon'
       title='Agregar al carrito'

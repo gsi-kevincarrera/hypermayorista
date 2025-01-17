@@ -99,7 +99,21 @@ export async function getLatestAcquisitons() {
 }
 
 export async function getProductById(id: number) {
-  const [product] = await db.select().from(products).where(eq(products.id, id))
+  const [product] = await db
+    .select({
+      id: products.id,
+      name: products.name,
+      price: products.price,
+      imageUrl: products.imageUrl,
+      description: products.description,
+      categoryName: categories.name,
+      minQuantity: products.minQuantity,
+      availableQuantity: products.availableQuantity,
+      color: products.color,
+    })
+    .from(products)
+    .innerJoin(categories, eq(products.categoryId, categories.id))
+    .where(eq(products.id, id))
 
   if (!product) {
     return null

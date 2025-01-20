@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/select'
 import { User } from 'lucide-react'
 import { usePathname } from 'next/navigation'
+import Image from 'next/image'
 
 const categories = [
   'All',
@@ -52,7 +53,26 @@ export default function Header() {
             href='/'
             className='text-xl sm:text-2xl font-bold text-purple-800'
           >
-            HyperMayorista
+            <div className='flex items-center space-x-3'>
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                width='40'
+                height='40'
+                viewBox='0 0 20 20'
+                fill='none'
+                stroke='currentColor'
+                stroke-width='2'
+                stroke-linecap='round'
+                stroke-linejoin='round'
+                className='text-purple-600'
+              >
+                <path d='M13 2L11 12h6L9 22l2-10H7z'></path>
+              </svg>
+
+              <div className='font-bold text-4xl text-purple-600'>
+                Hyper<span className='text-gray-700'>.Mayorista</span>
+              </div>
+            </div>
           </Link>
           {showSearch && (
             <div className='hidden sm:flex flex-1 justify-center items-center space-x-2 mx-4'>

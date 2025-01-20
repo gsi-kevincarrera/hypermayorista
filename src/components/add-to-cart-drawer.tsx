@@ -66,7 +66,7 @@ export default function AddToCartDrawer() {
           <div className='py-4'>
             <div className='flex items-center space-x-4'>
               <Image
-                src={selectedProduct.imageUrl ?? '/product1.jpg'}
+                src={selectedProduct.imageUrl ?? '/imageplaceholder.webp'}
                 alt={selectedProduct.name}
                 width={80}
                 height={80}

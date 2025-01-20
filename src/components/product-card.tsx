@@ -1,11 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import Image from 'next/image'
 import AddToCartButton from './add-to-cart-button'
-import { Product } from '@/types'
 import Link from 'next/link'
+import { ProductInDB } from '@/types'
 
 interface Props {
-  product: Product
+  product: ProductInDB
 }
 
 export default function ProductCard({ product }: Props) {

@@ -68,7 +68,7 @@ export default function CartDrawer() {
                     <div>
                       <h4 className='font-semibold'>{item.name}</h4>
                       <p className='text-sm text-gray-500'>
-                        ${item.price} x {item.minQuantity}
+                        ${item.price} x {item.selectedQuantity}
                       </p>
                     </div>
                   </div>

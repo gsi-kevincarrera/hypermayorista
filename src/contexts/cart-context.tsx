@@ -1,6 +1,6 @@
 'use client'
 
-import { Product } from '@/types'
+import { ProductInCart, ProductInDB } from '@/types'
 import {
   createContext,
   useContext,
@@ -9,38 +9,29 @@ import {
   useEffect,
 } from 'react'
 
-// export interface Product {
-//   id: number
-//   name: string
-//   description?: string
-//   imageUrl?: string
-//   price: number
-//   categoryName: string
-//   minQuantity: number
-//   availableQuantity?: number
-// }
-
 interface CartContextType {
-  cart: Product[]
-  addToCart: (product: Product) => void
+  cart: ProductInCart[]
+  addToCart: (product: ProductInCart) => void
   removeFromCart: (productId: number) => void
   isInCart: (productId: number) => boolean
-  selectedProduct: Product | null
-  setSelectedProduct: (product: Product | null) => void
+  selectedProduct: ProductInDB | null
+  setSelectedProduct: (product: ProductInDB | null) => void
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [cart, setCart] = useState<Product[]>([])
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
+  const [cart, setCart] = useState<ProductInCart[]>([])
+  const [selectedProduct, setSelectedProduct] = useState<ProductInDB | null>(
+    null
+  )
 
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem('cart') || '[]')
     setCart(storedCart)
   }, [])
 
-  const addToCart = (product: Product) => {
+  const addToCart = (product: ProductInCart) => {
     setCart((prev) => {
       if (!prev.some((item) => item.id === product.id)) {
         const newCart = [...prev, product]

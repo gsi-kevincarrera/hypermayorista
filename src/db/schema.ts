@@ -15,7 +15,7 @@ export const products = pgTable('Products', {
   name: varchar('name', { length: 255 }).notNull(),
   description: text('description'),
   price: real('price').notNull(),
-  availableQuantity: integer('available_quantity').notNull(),
+  stock: integer('available_quantity').notNull(),
   minQuantity: integer('min_quantity').notNull(),
   imageUrl: varchar('image_url'),
   categoryId: integer('category_id')

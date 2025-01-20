@@ -25,7 +25,7 @@ export async function getProducts(filters: Filters) {
         description: products.description,
         categoryName: categories.name,
         minQuantity: products.minQuantity,
-        availableQuantity: products.availableQuantity,
+        stock: products.stock,
       })
       .from(products)
       .innerJoin(categories, eq(products.categoryId, categories.id))
@@ -60,7 +60,7 @@ export async function getTopRankedProducts() {
         description: products.description,
         categoryName: categories.name,
         minQuantity: products.minQuantity,
-        availableQuantity: products.availableQuantity,
+        stock: products.stock,
         color: products.color,
       })
       .from(products)
@@ -85,7 +85,7 @@ export async function getLatestAcquisitons() {
         description: products.description,
         categoryName: categories.name,
         minQuantity: products.minQuantity,
-        availableQuantity: products.availableQuantity,
+        stock: products.stock,
         color: products.color,
       })
       .from(products)
@@ -108,7 +108,7 @@ export async function getProductById(id: number) {
       description: products.description,
       categoryName: categories.name,
       minQuantity: products.minQuantity,
-      availableQuantity: products.availableQuantity,
+      stock: products.stock,
       color: products.color,
     })
     .from(products)

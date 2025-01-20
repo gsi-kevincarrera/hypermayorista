@@ -2,8 +2,6 @@
 import 'keen-slider/keen-slider.min.css'
 
 import ProductCard from '@/components/product-card'
-import { useKeenSlider } from 'keen-slider/react'
-import { Product } from '@/types'
 import { useEffect, useRef, useState } from 'react'
 import {
   Carousel,
@@ -13,11 +11,12 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel'
+import { ProductInDB } from '@/types'
 
 export default function LatestAcquisitions({
   products,
 }: {
-  products: Product[]
+  products: ProductInDB[]
 }) {
   const [api, setApi] = useState<CarouselApi>()
 

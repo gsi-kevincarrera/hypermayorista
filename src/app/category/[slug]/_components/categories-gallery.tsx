@@ -1,12 +1,12 @@
 import ProductGallery from '@/components/product-gallery'
 import { getProductsByCategory } from '@/db/actions'
-import { Product } from '@/types'
+import { ProductInDB } from '@/types'
 
 export default function CategoriesGallery({
   initialProducts,
   total,
 }: {
-  initialProducts: Product[]
+  initialProducts: ProductInDB[]
   total: number
 }) {
   return (

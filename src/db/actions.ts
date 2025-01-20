@@ -18,7 +18,7 @@ export async function getNonSpecialProducts(
         description: products.description,
         categoryName: categories.name,
         minQuantity: products.minQuantity,
-        availableQuantity: products.availableQuantity,
+        stock: products.stock,
         color: products.color,
       })
       .from(products)
@@ -67,7 +67,7 @@ export async function getProductsByCategory(
         description: products.description,
         categoryName: categories.name,
         minQuantity: products.minQuantity,
-        availableQuantity: products.availableQuantity,
+        stock: products.stock,
         color: products.color,
       })
       .from(products)

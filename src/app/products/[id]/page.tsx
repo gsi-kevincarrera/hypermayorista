@@ -1,6 +1,6 @@
 import NotFound from '@/components/navigation/personalized-not-found'
 import { getProductById } from '@/db/queries'
-import ProductDetail from './_components/product-details'
+import ProductDetails from './_components/product-details'
 
 export default async function ProductDetailPage({
   params,
@@ -11,6 +11,6 @@ export default async function ProductDetailPage({
   const product = await getProductById(id)
 
   return (
-    <div>{product ? <ProductDetail product={product} /> : <NotFound />}</div>
+    <div>{product ? <ProductDetails product={product} /> : <NotFound />}</div>
   )
 }

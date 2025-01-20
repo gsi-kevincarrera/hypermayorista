@@ -3,16 +3,15 @@
 import { Button } from '@/components/ui/button'
 import { useCart } from '@/contexts/cart-context'
 import { cn } from '@/lib/utils'
-import { Product } from '@/types'
+import { ProductInDB } from '@/types'
 import { ShoppingCart } from 'lucide-react'
 
-export default function AddToCartButton({ product }: { product: Product }) {
+export default function AddToCartButton({ product }: { product: ProductInDB }) {
   const { setSelectedProduct, isInCart } = useCart()
   return (
     <Button
       onClick={(e) => {
         setSelectedProduct(product)
-        e.stopPropagation()
       }}
       className={cn(
         'absolute top-2 right-2 h-8 w-8 rounded-full bg-gray-400 hover:scale-105 z-20'

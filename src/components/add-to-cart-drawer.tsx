@@ -12,15 +12,32 @@ import {
 } from '@/components/ui/sheet'
 import Image from 'next/image'
 import { useCart } from '@/contexts/cart-context'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { toast } from 'sonner'
 
 export default function AddToCartDrawer() {
   const { setSelectedProduct, selectedProduct, addToCart } = useCart()
-  const [quantity, setQuantity] = useState(1)
+  const [quantity, setQuantity] = useState(selectedProduct?.minQuantity || 1)
+
+  useEffect(() => {
+    if (selectedProduct?.minQuantity) {
+      setQuantity(selectedProduct.minQuantity)
+    }
+  }, [selectedProduct])
 
   const confirmAddToCart = () => {
     if (!selectedProduct) return
-    addToCart({ ...selectedProduct, minQuantity: quantity })
+    if (quantity < selectedProduct.minQuantity) {
+      toast.error(
+        `La cantidad mínima para este producto es ${selectedProduct.minQuantity}`
+      )
+      return
+    }
+    addToCart({
+      ...selectedProduct,
+      selectedQuantity: quantity,
+      total: selectedProduct.price * quantity,
+    })
     setSelectedProduct(null)
     setQuantity(1)
   }
@@ -33,7 +50,10 @@ export default function AddToCartDrawer() {
   return (
     <Sheet
       open={selectedProduct !== null}
-      onOpenChange={() => setSelectedProduct(null)}
+      onOpenChange={() => {
+        setSelectedProduct(null)
+        setQuantity(1)
+      }}
     >
       <SheetContent>
         <SheetHeader>

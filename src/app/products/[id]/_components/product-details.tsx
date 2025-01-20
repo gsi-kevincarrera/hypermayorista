@@ -9,11 +9,11 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel'
-import { Product } from '@/types'
 
 import { ShoppingBag } from 'lucide-react'
 import Link from 'next/link'
 import AppBreadcrumb from '@/components/navigation/app-breadcrumb'
+import { ProductInDB } from '@/types'
 
 const relatedProducts = [
   {
@@ -42,21 +42,10 @@ const relatedProducts = [
   },
 ]
 
-export default function ProductDetail({ product }: { product: Product }) {
+export default function ProductDetails({ product }: { product: ProductInDB }) {
   return (
-    <div className='min-h-screen bg-gray-50'>
+    <div className='min-h-screen bg-gray-50 mt-12'>
       <div className='container mx-auto px-4 py-8'>
-        {/* Breadcrumb */}
-        <AppBreadcrumb
-          items={[
-            {
-              name: 'Detalles del producto',
-              href: `/products/${product.id}`,
-              icon: <ShoppingBag />,
-            },
-          ]}
-        />
-
         {/* Product Detail */}
         <div className='flex flex-col md:flex-row gap-8 mb-16'>
           {/* Image Gallery */}

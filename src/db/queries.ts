@@ -1,5 +1,5 @@
 import { categories, products } from '@/db/schema'
-import { and, eq, ilike, isNull, sql } from 'drizzle-orm'
+import { eq, isNull, sql, getTableColumns } from 'drizzle-orm'
 import { combineConditions } from './utils'
 import { db } from '@/db'
 
@@ -14,18 +14,13 @@ export async function getProducts(filters: Filters) {
   const combinedConditions = combineConditions(filters)
   const { page = 1 } = filters
   const PRODUCTS_PER_PAGE = 10
+  const { updated_at, created_at, ...rest } = getTableColumns(products)
 
   try {
     const data = await db
       .select({
-        id: products.id,
-        name: products.name,
-        price: products.price,
-        imageUrl: products.imageUrl,
-        description: products.description,
+        ...rest,
         categoryName: categories.name,
-        minQuantity: products.minQuantity,
-        stock: products.stock,
       })
       .from(products)
       .innerJoin(categories, eq(products.categoryId, categories.id))
@@ -50,18 +45,12 @@ export async function getProducts(filters: Filters) {
 
 export async function getTopRankedProducts() {
   const TOP_RANKED_PRODUCTS_LIMIT = 6
+  const { updated_at, created_at, ...rest } = getTableColumns(products)
   try {
     return await db
       .select({
-        id: products.id,
-        name: products.name,
-        price: products.price,
-        imageUrl: products.imageUrl,
-        description: products.description,
         categoryName: categories.name,
-        minQuantity: products.minQuantity,
-        stock: products.stock,
-        color: products.color,
+        ...rest,
       })
       .from(products)
       .innerJoin(categories, eq(products.categoryId, categories.id))
@@ -75,18 +64,13 @@ export async function getTopRankedProducts() {
 
 export async function getLatestAcquisitons() {
   const LATEST_ACQUISITIONS_LIMIT = 10
+  const { updated_at, created_at, ...rest } = getTableColumns(products)
+
   try {
     return await db
       .select({
-        id: products.id,
-        name: products.name,
-        price: products.price,
-        imageUrl: products.imageUrl,
-        description: products.description,
         categoryName: categories.name,
-        minQuantity: products.minQuantity,
-        stock: products.stock,
-        color: products.color,
+        ...rest,
       })
       .from(products)
       .innerJoin(categories, eq(products.categoryId, categories.id))
@@ -99,17 +83,12 @@ export async function getLatestAcquisitons() {
 }
 
 export async function getProductById(id: number) {
+  const { updated_at, created_at, ...rest } = getTableColumns(products)
+
   const [product] = await db
     .select({
-      id: products.id,
-      name: products.name,
-      price: products.price,
-      imageUrl: products.imageUrl,
-      description: products.description,
       categoryName: categories.name,
-      minQuantity: products.minQuantity,
-      stock: products.stock,
-      color: products.color,
+      ...rest,
     })
     .from(products)
     .innerJoin(categories, eq(products.categoryId, categories.id))
@@ -124,14 +103,13 @@ export async function getProductById(id: number) {
 
 //Category queries
 export async function getMainCategories() {
+  const { updated_at, created_at, parentId, featured, ...rest } =
+    getTableColumns(categories)
+
   try {
     return await db
       .select({
-        id: categories.id,
-        name: categories.name,
-        description: categories.description,
-        imageUrl: categories.imageUrl,
-        slug: categories.slug,
+        ...rest,
       })
       .from(categories)
       .where(isNull(categories.parentId))
@@ -143,15 +121,14 @@ export async function getMainCategories() {
 }
 
 export async function getFeaturedCategories() {
+  const { updated_at, created_at, parentId, featured, ...rest } =
+    getTableColumns(categories)
+
   const CATEGORIES_LIMIT = 4
   try {
     return await db
       .select({
-        id: categories.id,
-        name: categories.name,
-        description: categories.description,
-        slug: categories.slug,
-        imageUrl: categories.imageUrl,
+        ...rest,
       })
       .from(categories)
       .where(eq(categories.featured, true))
@@ -164,24 +141,20 @@ export async function getFeaturedCategories() {
 }
 
 export async function getCategoryBySlug(slug: string) {
+  const { updated_at, created_at, parentId, featured, ...rest } =
+    getTableColumns(categories)
+
   try {
     const [category] = await db
       .select({
-        id: categories.id,
-        name: categories.name,
-        description: categories.description,
-        imageUrl: categories.imageUrl,
+        ...rest,
       })
       .from(categories)
       .where(eq(categories.slug, slug))
 
     const subcategories = await db
       .select({
-        id: categories.id,
-        name: categories.name,
-        description: categories.description,
-        imageUrl: categories.imageUrl,
-        slug: categories.slug,
+        ...rest,
       })
       .from(categories)
       .where(eq(categories.parentId, category.id))

@@ -2,6 +2,7 @@ import {
   AnyPgColumn,
   boolean,
   integer,
+  jsonb,
   pgTable,
   real,
   serial,
@@ -24,6 +25,7 @@ export const products = pgTable('Products', {
   color: varchar('color'),
   featured: boolean('featured').default(false),
   latest_acquisition: boolean('latest_acquisition').default(false),
+  specifications: jsonb('specifications'),
   created_at: timestamp('created_at').defaultNow(),
   updated_at: timestamp('updated_at')
     .defaultNow()

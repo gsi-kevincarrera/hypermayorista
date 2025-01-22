@@ -14,58 +14,43 @@ export default function Footer() {
       <div className='container mx-auto px-4 sm:px-6 lg:px-8 py-12'>
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8'>
           <div>
-            <h3 className='text-lg font-semibold mb-4'>About B2B Trade</h3>
+            <h3 className='text-lg font-semibold mb-4'>
+              Acerca de HyperMayorista
+            </h3>
             <p className='text-gray-400'>
-              Empowering businesses worldwide with innovative wholesale
-              solutions.
+              Empoderando tu negocio con soluciones innovadoras.
             </p>
           </div>
           <div>
-            <h3 className='text-lg font-semibold mb-4'>Quick Links</h3>
+            <h3 className='text-lg font-semibold mb-4'>Enlaces rápidos</h3>
             <ul className='space-y-2'>
               <li>
                 <Link
-                  href='#'
+                  href='/'
                   className='text-gray-400 hover:text-white transition-colors'
                 >
-                  Home
+                  Menú Principal
                 </Link>
               </li>
               <li>
                 <Link
-                  href='#'
+                  href='/products'
                   className='text-gray-400 hover:text-white transition-colors'
                 >
-                  Products
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href='#'
-                  className='text-gray-400 hover:text-white transition-colors'
-                >
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href='#'
-                  className='text-gray-400 hover:text-white transition-colors'
-                >
-                  Contact
+                  Productos
                 </Link>
               </li>
             </ul>
           </div>
-          <div>
+          {/* <div>
             <h3 className='text-lg font-semibold mb-4'>Contact Us</h3>
             <p className='text-gray-400'>
               1234 Trade Street, Business City, 56789
             </p>
             <p className='text-gray-400'>Email: info@b2btrade.com</p>
             <p className='text-gray-400'>Phone: (123) 456-7890</p>
-          </div>
-          <div>
+          </div> */}
+          {/* <div>
             <h3 className='text-lg font-semibold mb-4'>Newsletter</h3>
             <p className='text-gray-400 mb-2'>
               Stay updated with our latest offers
@@ -78,11 +63,11 @@ export default function Footer() {
               />
               <Button variant='secondary'>Subscribe</Button>
             </div>
-          </div>
+          </div> */}
         </div>
         <div className='mt-8 pt-8 border-t border-gray-800 flex flex-col sm:flex-row justify-between items-center'>
           <p className='text-gray-400 text-sm'>
-            &copy; 2023 B2B Trade. All rights reserved.
+            &copy; 2025 HyperMayorista. Todos los derechos reservados.
           </p>
           <div className='flex space-x-4 mt-4 sm:mt-0'>
             <Link

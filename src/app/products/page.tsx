@@ -53,8 +53,12 @@ export default async function ProductsPage({
               </SheetContent>
             </Sheet>
           </div>
+
+          {/* Products grid */}
           <div className='flex-1'>
             <ProductsGrid data={data as ProductInDB[]} />
+
+            {/* Pagination */}
             <div>
               {totalPages > 1 && (
                 <div className='mt-8'>

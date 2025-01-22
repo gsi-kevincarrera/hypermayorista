@@ -14,5 +14,5 @@ export const combineConditions = (filters: Filters, categoryIds?: number[]) => {
     conditions.push(inArray(products.categoryId, categoryIds))
   }
 
-  return conditions.length ? and(...conditions) : sql`true`
+  return conditions.length ? and(...conditions) : undefined
 }

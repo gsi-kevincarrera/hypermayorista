@@ -10,6 +10,7 @@ import SubcategoriesList from './_components/subcategories-list'
 import { getProductsByCategory } from '@/db/actions'
 import CategoriesGallery from './_components/categories-gallery'
 import { cn } from '@/lib/utils'
+import { ProductInDB } from '@/types'
 
 interface CategoryProps {
   params: Promise<{
@@ -31,10 +32,13 @@ export default async function CategoryPage({ params }: CategoryProps) {
       <div
         className={cn(
           'bg-gray-50 px-16 py-6 rounded-lg w-full mt-7 relative ',
-          {'min-h-[800px]': total > 5, 'min-h-[450px]': total <= 5}
+          { 'min-h-[800px]': total > 5, 'min-h-[450px]': total <= 5 }
         )}
       >
-        <CategoriesGallery initialProducts={data} total={total} />
+        <CategoriesGallery
+          initialProducts={data as ProductInDB[]}
+          total={total}
+        />
       </div>
     </div>
   )

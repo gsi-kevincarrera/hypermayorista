@@ -12,20 +12,16 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { User } from 'lucide-react'
-import { usePathname } from 'next/navigation'
-import Image from 'next/image'
+import { usePathname, useRouter } from 'next/navigation'
 
-const categories = [
-  'All',
-  'Electronics',
-  'Apparel',
-  'Home & Garden',
-  'Beauty',
-  'Automotive',
-]
-
-export default function Header() {
+export default function Header({
+  categories,
+}: {
+  categories: { name: string; id: number }[]
+}) {
   const [showSearch, setShowSearch] = useState(false)
+  const [value, setValue] = useState('')
+  const [category, setCategory] = useState<string | null>(null)
   const pathname = usePathname()
 
   useEffect(() => {
@@ -45,6 +41,14 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [pathname])
 
+  const handleSearch = () => {
+    if (value || category) {
+      window.location.href = `/products?${
+        value && `search=${encodeURIComponent(value)}`
+      }${category ? `&category=${encodeURIComponent(category)}` : ''}`
+    }
+  }
+
   return (
     <header className='fixed top-0 left-0 right-0 bg-white z-50 shadow-md'>
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
@@ -55,7 +59,6 @@ export default function Header() {
           >
             <div className='flex items-center space-x-3'>
               <svg
-                xmlns='http://www.w3.org/2000/svg'
                 width='40'
                 height='40'
                 viewBox='0 0 20 20'
@@ -80,20 +83,22 @@ export default function Header() {
                 type='text'
                 placeholder='Buscar productos...'
                 className='w-full max-w-xs'
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
               />
-              <Select>
+              <Select onValueChange={(cat) => setCategory(cat)}>
                 <SelectTrigger className='w-40'>
                   <SelectValue placeholder='Categoría' />
                 </SelectTrigger>
                 <SelectContent>
                   {categories.map((cat) => (
-                    <SelectItem key={cat} value={cat}>
-                      {cat}
+                    <SelectItem key={cat.id} value={cat.name}>
+                      {cat.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-              <Button>Buscar</Button>
+              <Button onClick={handleSearch}>Buscar</Button>
             </div>
           )}
           <Button variant='ghost' size='icon'>
@@ -113,8 +118,8 @@ export default function Header() {
               </SelectTrigger>
               <SelectContent>
                 {categories.map((cat) => (
-                  <SelectItem key={cat} value={cat}>
-                    {cat}
+                  <SelectItem key={cat.id} value={cat.name}>
+                    {cat.name}
                   </SelectItem>
                 ))}
               </SelectContent>

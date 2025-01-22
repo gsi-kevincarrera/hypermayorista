@@ -7,6 +7,7 @@ import { Toaster } from '@/components/ui/sonner'
 import { CartProvider } from '@/contexts/cart-context'
 import AddToCartDrawer from '@/components/add-to-cart-drawer'
 import CartDrawer from '@/components/cart-drawer'
+import { getAllCategoriesNames } from '@/db/queries'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -15,15 +16,16 @@ export const metadata: Metadata = {
   description: 'Una plataforma para compras en el mercado mayorista',
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const categories = await getAllCategoriesNames()
   return (
     <html lang='en'>
       <body className={inter.className}>
-        <Header />
+        <Header categories={categories} />
         <CartProvider>
           {children}
           <AddToCartDrawer />

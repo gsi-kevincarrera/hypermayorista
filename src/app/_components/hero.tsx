@@ -20,15 +20,19 @@ const categories = [
   'Automotive',
 ]
 
-export default function Hero() {
+export default function Hero({
+  categories,
+}: {
+  categories: { name: string; id: number }[]
+}) {
   const [searchTerm, setSearchTerm] = useState('')
+  const [category, setCategory] = useState<string | null>(null)
 
   const handleSearch = () => {
-
-    if (searchTerm) {
-      window.location.href = `/products?search=${encodeURIComponent(
-        searchTerm
-      )}`
+    if (searchTerm || category) {
+      window.location.href = `/products?${
+        searchTerm && `search=${encodeURIComponent(searchTerm)}`
+      }${category ? `&category=${encodeURIComponent(category)}` : ''}`
     }
   }
   return (
@@ -45,7 +49,10 @@ export default function Hero() {
           Conéctate con los mejores proveedores y encuentra las mejores ofertas
           en un solo lugar
         </p>
-        <div className='flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4' id='hero'>
+        <div
+          className='flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4'
+          id='hero'
+        >
           <Input
             type='text'
             placeholder='Buscar productos...'
@@ -53,14 +60,14 @@ export default function Hero() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <Select>
+          <Select onValueChange={(cat) => setCategory(cat)}>
             <SelectTrigger className='w-full sm:w-40 bg-white text-black'>
               <SelectValue placeholder='Categoría' />
             </SelectTrigger>
             <SelectContent>
               {categories.map((cat) => (
-                <SelectItem key={cat} value={cat}>
-                  {cat}
+                <SelectItem key={cat.id} value={cat.name}>
+                  {cat.name}
                 </SelectItem>
               ))}
             </SelectContent>

@@ -13,13 +13,8 @@ export default function BentoGridGallery({
 }) {
   return (
     <ProductGallery
-      initialProducts={initialProducts as unknown as ProductInDB[]}
-      getProducts={
-        getNonSpecialProducts as unknown as (
-          offset: number,
-          limit: number
-        ) => Promise<{ data: ProductInDB[]; total: number }>
-      }
+      initialProducts={initialProducts}
+      getProducts={getNonSpecialProducts}
       total={total}
     />
   )

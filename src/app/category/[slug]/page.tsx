@@ -35,10 +35,7 @@ export default async function CategoryPage({ params }: CategoryProps) {
           { 'min-h-[800px]': total > 5, 'min-h-[450px]': total <= 5 }
         )}
       >
-        <CategoriesGallery
-          initialProducts={data as ProductInDB[]}
-          total={total}
-        />
+        <CategoriesGallery initialProducts={data} total={total} />
       </div>
     </div>
   )

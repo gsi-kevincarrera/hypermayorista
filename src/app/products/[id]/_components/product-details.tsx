@@ -34,7 +34,7 @@ export default function ProducDetails({
             images={[product.imageUrl ?? '/imageplaceholder.webp']}
           />
           <RelatedProducts relatedProducts={relatedProducts} />
-          <SpecificationsTable specifications={product.specifications ?? {}} />
+          <SpecificationsTable specifications={product.specifications} />
           <ProductDescription description={product.description ?? ''} />
         </div>
 

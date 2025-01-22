@@ -25,21 +25,10 @@ export default async function ProductDetailPage({
   params: Promise<{ id: number }>
 }) {
   const { id } = await params
-  const rawProduct = await getProductById(id)
-  const product = rawProduct
-    ? {
-        ...rawProduct,
-        specifications: rawProduct.specifications as Record<string, string>,
-      }
-    : null
+  const product = await getProductById(id)
 
   const relatedProducts = product
-    ? (await getRelatedProductsByCategory(product.categoryId, product.id)).map(
-        (p) => ({
-          ...p,
-          specifications: p.specifications as Record<string, string>,
-        })
-      )
+    ? await getRelatedProductsByCategory(product.categoryId, product.id)
     : []
 
   return (

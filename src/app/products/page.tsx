@@ -56,7 +56,7 @@ export default async function ProductsPage({
 
           {/* Products grid */}
           <div className='flex-1'>
-            <ProductsGrid data={data as ProductInDB[]} />
+            <ProductsGrid data={data} />
 
             {/* Pagination */}
             <div>

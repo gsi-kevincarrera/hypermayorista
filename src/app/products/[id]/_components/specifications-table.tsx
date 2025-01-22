@@ -8,13 +8,22 @@ import {
 } from '@/components/ui/table'
 
 type SpecificationsProps = {
-  specifications: Record<string, string>
+  specifications: Record<string, string> | unknown
 }
 
 export default function SpecificationsTable({
   specifications,
 }: SpecificationsProps) {
-  const entries = Object.entries(specifications)
+  if (!specifications || typeof specifications !== 'object') {
+    return (
+      <div>
+        <h3 className='text-lg font-semibold mb-4'>Especificaciones</h3>
+        <p className='text-gray-500'>No hay especificaciones disponibles.</p>
+      </div>
+    )
+  }
+
+  const entries = Object.entries(specifications as Record<string, string>)
 
   if (entries.length === 0) {
     return (

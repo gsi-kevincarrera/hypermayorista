@@ -13,12 +13,7 @@ export default function CategoriesGallery({
     <ProductGallery
       initialProducts={initialProducts}
       total={total}
-      getProducts={
-        getProductsByCategory as unknown as (
-          offset: number,
-          limit: number
-        ) => Promise<{ data: ProductInDB[]; total: number }>
-      }
+      getProducts={getProductsByCategory}
     />
   )
 }

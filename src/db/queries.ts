@@ -62,8 +62,6 @@ export async function getProducts(filters: Filters) {
       .innerJoin(categories, eq(products.categoryId, categories.id))
       .where(combinedConditions)
 
-    console.log(dataCount.count)
-
     return { data, total: dataCount.count, perPage: PRODUCTS_PER_PAGE }
   } catch (error) {
     console.error(error)

@@ -76,7 +76,7 @@ export async function getProductsByCategory(
 
     return { data, total: dataCount.count }
   } catch (error) {
-    console.log(error)
+    console.error(error)
     throw error
   }
 }

@@ -27,7 +27,7 @@ export default function ProductCard({ product }: Props) {
           <CardTitle className='text-base font-semibold mb-1'>
             {product.name}
           </CardTitle>
-          <p className='text-sm text-gray-600 mb-2 flex-grow line-clamp-2'>
+          <p className='text-sm text-gray-600 mb-2 flex-grow line-clamp-1'>
             {product.description}
           </p>
           <div className='flex flex-col items-start text-sm mb-2'>

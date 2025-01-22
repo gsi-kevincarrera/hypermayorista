@@ -1,5 +1,13 @@
 import { categories, products } from '@/db/schema'
-import { eq, isNull, sql, getTableColumns, and, not } from 'drizzle-orm'
+import {
+  eq,
+  isNull,
+  sql,
+  getTableColumns,
+  and,
+  not,
+  inArray,
+} from 'drizzle-orm'
 import { combineConditions } from './utils'
 import { db } from '@/db'
 
@@ -12,10 +20,27 @@ export type Filters = {
 }
 
 export async function getProducts(filters: Filters) {
-  const combinedConditions = combineConditions(filters)
-  const { page = 1 } = filters
+  const { page = 1, category } = filters
   const PRODUCTS_PER_PAGE = filters.limit || 10
   const { updated_at, created_at, ...rest } = getTableColumns(products)
+
+  let categoryIds: number[] | undefined = undefined
+
+  if (category) {
+    //  Resolve category ids
+    const categoryQuery = Array.isArray(category)
+      ? inArray(categories.name, category)
+      : eq(categories.name, category)
+
+    const categoryResults = await db
+      .select({ id: categories.id })
+      .from(categories)
+      .where(categoryQuery)
+
+    categoryIds = categoryResults.map((cat) => cat.id)
+  }
+
+  const combinedConditions = combineConditions(filters, categoryIds)
 
   try {
     const data = await db
@@ -36,6 +61,8 @@ export async function getProducts(filters: Filters) {
       .from(products)
       .innerJoin(categories, eq(products.categoryId, categories.id))
       .where(combinedConditions)
+
+    console.log(dataCount.count)
 
     return { data, total: dataCount.count, perPage: PRODUCTS_PER_PAGE }
   } catch (error) {
@@ -192,5 +219,20 @@ export async function getCategoryBySlug(slug: string) {
   } catch (error) {
     console.error(error)
     throw new Error('Error fetching category')
+  }
+}
+
+export async function getAllCategoriesNames() {
+  try {
+    return await db
+      .select({
+        name: categories.name,
+        id: categories.id,
+      })
+      .from(categories)
+      .orderBy(categories.name)
+  } catch (error) {
+    console.error(error)
+    throw new Error('Error fetching categories')
   }
 }

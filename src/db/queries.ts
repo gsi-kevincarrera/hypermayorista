@@ -1,5 +1,5 @@
 import { categories, products } from '@/db/schema'
-import { eq, isNull, sql, getTableColumns } from 'drizzle-orm'
+import { eq, isNull, sql, getTableColumns, and, not } from 'drizzle-orm'
 import { combineConditions } from './utils'
 import { db } from '@/db'
 
@@ -8,12 +8,13 @@ export type Filters = {
   search?: string
   category?: string
   page?: number
+  limit?: number
 }
 
 export async function getProducts(filters: Filters) {
   const combinedConditions = combineConditions(filters)
   const { page = 1 } = filters
-  const PRODUCTS_PER_PAGE = 10
+  const PRODUCTS_PER_PAGE = filters.limit || 10
   const { updated_at, created_at, ...rest } = getTableColumns(products)
 
   try {
@@ -45,7 +46,8 @@ export async function getProducts(filters: Filters) {
 
 export async function getTopRankedProducts() {
   const TOP_RANKED_PRODUCTS_LIMIT = 6
-  const { updated_at, created_at, ...rest } = getTableColumns(products)
+  const { updated_at, created_at, featured, latest_acquisition, ...rest } =
+    getTableColumns(products)
   try {
     return await db
       .select({
@@ -64,7 +66,8 @@ export async function getTopRankedProducts() {
 
 export async function getLatestAcquisitons() {
   const LATEST_ACQUISITIONS_LIMIT = 10
-  const { updated_at, created_at, ...rest } = getTableColumns(products)
+  const { updated_at, created_at, featured, latest_acquisition, ...rest } =
+    getTableColumns(products)
 
   try {
     return await db
@@ -83,7 +86,8 @@ export async function getLatestAcquisitons() {
 }
 
 export async function getProductById(id: number) {
-  const { updated_at, created_at, ...rest } = getTableColumns(products)
+  const { updated_at, created_at, featured, latest_acquisition, ...rest } =
+    getTableColumns(products)
 
   const [product] = await db
     .select({
@@ -99,6 +103,31 @@ export async function getProductById(id: number) {
   }
 
   return product
+}
+
+export async function getRelatedProductsByCategory(
+  categoryId: number,
+  productId: number
+) {
+  const { updated_at, created_at, featured, latest_acquisition, ...rest } =
+    getTableColumns(products)
+
+  try {
+    return await db
+      .select({
+        ...rest,
+        categoryName: categories.name,
+      })
+      .from(products)
+      .innerJoin(categories, eq(products.categoryId, categories.id))
+      .where(
+        and(eq(categories.id, categoryId), not(eq(products.id, productId)))
+      )
+      .orderBy(products.name)
+  } catch (error) {
+    console.error(error)
+    throw new Error('Error fetching category')
+  }
 }
 
 //Category queries

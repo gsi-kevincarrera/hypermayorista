@@ -1,6 +1,6 @@
 'use server'
 
-import { eq, and, sql } from 'drizzle-orm'
+import { eq, and, sql, getTableColumns } from 'drizzle-orm'
 import { db } from '.'
 import { products, categories } from './schema'
 
@@ -8,18 +8,13 @@ export async function getNonSpecialProducts(
   offset: number,
   limit: number = 15
 ) {
+  const { updated_at, created_at, featured, latest_acquisition, ...rest } =
+    getTableColumns(products)
   try {
     const data = await db
       .select({
-        id: products.id,
-        name: products.name,
-        price: products.price,
-        imageUrl: products.imageUrl,
-        description: products.description,
+        ...rest,
         categoryName: categories.name,
-        minQuantity: products.minQuantity,
-        stock: products.stock,
-        color: products.color,
       })
       .from(products)
       .innerJoin(categories, eq(products.categoryId, categories.id))
@@ -57,18 +52,13 @@ export async function getProductsByCategory(
   offset: number,
   limit: number = 15
 ) {
+  const { updated_at, created_at, featured, latest_acquisition, ...rest } =
+    getTableColumns(products)
   try {
     const data = await db
       .select({
-        id: products.id,
-        name: products.name,
-        price: products.price,
-        imageUrl: products.imageUrl,
-        description: products.description,
+        ...rest,
         categoryName: categories.name,
-        minQuantity: products.minQuantity,
-        stock: products.stock,
-        color: products.color,
       })
       .from(products)
       .innerJoin(categories, eq(products.categoryId, categories.id))

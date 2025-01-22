@@ -17,6 +17,7 @@ type BaseProduct = {
   imageUrl?: string | null //TODO This should be an array of images
   color?: string | null //TODO This could be an array of colors
   categoryName: string
+  specifications: Record<string, string>
 }
 
 export type ProductInDB = BaseProduct & {

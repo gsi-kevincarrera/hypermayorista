@@ -59,7 +59,7 @@ export default function CartDrawer() {
                 <CardContent className='flex items-center justify-between p-4'>
                   <div className='flex items-center space-x-4'>
                     <Image
-                      src={item.imageUrl ?? '/product1.jpg'}
+                      src={item.imageUrl ?? '/imageplaceholder.webp'}
                       alt={item.name}
                       width={50}
                       height={50}

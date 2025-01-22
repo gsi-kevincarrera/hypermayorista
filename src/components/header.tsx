@@ -61,9 +61,9 @@ export default function Header() {
                 viewBox='0 0 20 20'
                 fill='none'
                 stroke='currentColor'
-                stroke-width='2'
-                stroke-linecap='round'
-                stroke-linejoin='round'
+                strokeWidth='2'
+                strokeLinecap='round'
+                strokeLinejoin='round'
                 className='text-purple-600'
               >
                 <path d='M13 2L11 12h6L9 22l2-10H7z'></path>

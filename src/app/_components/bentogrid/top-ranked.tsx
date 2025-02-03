@@ -1,4 +1,4 @@
-import ProductCard from '@/components/product-card'
+import ProductCard from '@/components/common/product-card'
 import { ProductInDB } from '@/types'
 
 export default function TopRanked({ products }: { products: ProductInDB[] }) {

@@ -1,4 +1,4 @@
-import ProductGallery from '@/components/product-gallery'
+import ProductGallery from '@/components/common/product-gallery'
 import { Button } from '@/components/ui/button'
 import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'

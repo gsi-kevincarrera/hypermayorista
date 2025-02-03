@@ -1,4 +1,4 @@
-import ProductCard from '@/components/product-card'
+import ProductCard from '@/components/common/product-card'
 import {
   Carousel,
   CarouselContent,

@@ -1,4 +1,4 @@
-import ProductCard from '@/components/product-card'
+import ProductCard from '@/components/common/product-card'
 import { Button } from '@/components/ui/button'
 import { ProductInDB } from '@/types'
 import { Search } from 'lucide-react'

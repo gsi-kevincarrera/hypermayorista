@@ -1,4 +1,4 @@
-import ProductGallery from '@/components/product-gallery'
+import ProductGallery from '@/components/common/product-gallery'
 import { getProductsByCategory } from '@/db/actions'
 import { ProductInDB } from '@/types'
 

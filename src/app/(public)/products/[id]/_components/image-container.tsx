@@ -1,6 +1,6 @@
 'use client'
 
-import CopyUrlDialog from '@/components/copy-url-dialog'
+import CopyUrlDialog from '@/components/common/copy-url-dialog'
 import MainCarousel from './main-carousel'
 import Thumbnails from './thumbnails'
 import { useEffect, useState } from 'react'

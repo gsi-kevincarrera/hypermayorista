@@ -14,7 +14,7 @@ export default async function Home() {
   ])
   return (
     <main className='min-h-screen'>
-      <Hero categories={categoriesNames} />
+      <Hero />
       {/* <WhyChooseUs /> */}
       <CategoriesOverview categories={mainCategories} />
       <BentoGridShowcase />

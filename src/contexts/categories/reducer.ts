@@ -1,8 +1,11 @@
-import { Category } from '@/types'
-
 // Action types
 export const SET_CATEGORIES = 'SET_CATEGORIES'
 export const SET_LOADING = 'SET_LOADING'
+
+type Category = {
+  name: string
+  id: number
+}
 
 interface SetCategoriesAction {
   type: typeof SET_CATEGORIES

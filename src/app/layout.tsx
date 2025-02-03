@@ -10,6 +10,7 @@ import CartDrawer from '@/components/common/cart-drawer'
 import { getAllCategoriesNames } from '@/db/queries'
 import { ClerkProvider } from '@clerk/nextjs'
 import { esES } from '@clerk/localizations'
+import CategoriesProvider from '@/contexts/categories/context'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -51,13 +52,15 @@ export default async function RootLayout({
     <ClerkProvider localization={esES}>
       <html lang='es'>
         <body className={inter.className}>
-          <Header categories={categories} />
-          <CartProvider>
-            {children}
-            <AddToCartDrawer />
-            <CartDrawer />
-          </CartProvider>
-          <Footer />
+          <CategoriesProvider initialCategories={categories}>
+            <Header />
+            <CartProvider>
+              {children}
+              <AddToCartDrawer />
+              <CartDrawer />
+            </CartProvider>
+            <Footer />
+          </CategoriesProvider>
           <Toaster richColors closeButton position='top-right' />
         </body>
       </html>

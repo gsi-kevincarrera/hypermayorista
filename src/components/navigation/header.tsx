@@ -13,12 +13,12 @@ import {
 } from '@/components/ui/select'
 import { usePathname } from 'next/navigation'
 import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs'
+import { useCategories } from '@/contexts/categories/hook'
 
-export default function Header({
-  categories,
-}: {
-  categories: { name: string; id: number }[]
-}) {
+export default function Header() {
+  const {
+    state: { categories },
+  } = useCategories()
   const [showSearch, setShowSearch] = useState(false)
   const [value, setValue] = useState('')
   const [category, setCategory] = useState<string | null>(null)
@@ -91,7 +91,7 @@ export default function Header({
                   <SelectValue placeholder='Categoría' />
                 </SelectTrigger>
                 <SelectContent>
-                  {categories.map((cat) => (
+                  {categories.slice(0, 10).map((cat) => (
                     <SelectItem key={cat.id} value={cat.name}>
                       {cat.name}
                     </SelectItem>

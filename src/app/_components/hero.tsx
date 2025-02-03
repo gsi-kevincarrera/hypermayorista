@@ -10,21 +10,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { useCategories } from '@/contexts/categories/hook'
 
-const categories = [
-  'All',
-  'Electronics',
-  'Apparel',
-  'Home & Garden',
-  'Beauty',
-  'Automotive',
-]
-
-export default function Hero({
-  categories,
-}: {
-  categories: { name: string; id: number }[]
-}) {
+export default function Hero() {
+  const {
+    state: { categories },
+  } = useCategories()
   const [searchTerm, setSearchTerm] = useState('')
   const [category, setCategory] = useState<string | null>(null)
 
@@ -65,7 +56,7 @@ export default function Hero({
               <SelectValue placeholder='Categoría' />
             </SelectTrigger>
             <SelectContent>
-              {categories.map((cat) => (
+              {categories.slice(0, 10).map((cat) => (
                 <SelectItem key={cat.id} value={cat.name}>
                   {cat.name}
                 </SelectItem>

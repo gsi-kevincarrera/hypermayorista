@@ -1,5 +1,11 @@
+'use client'
 import { createContext, useReducer } from 'react'
 import { CategoriesAction, categoriesReducer, CategoriesState } from './reducer'
+
+type Category = {
+  name: string
+  id: number
+}
 
 // Initial state
 const initialState: CategoriesState = {
@@ -20,15 +26,22 @@ export const CategoriesContext = createContext<CategoriesContextType>({
 })
 
 //Context Provider
-export const CategoriesProvider = ({
+const CategoriesProvider = ({
   children,
+  initialCategories,
 }: {
   children: React.ReactNode
+  initialCategories: Category[]
 }) => {
-  const [state, dispatch] = useReducer(categoriesReducer, initialState)
+  const [state, dispatch] = useReducer(categoriesReducer, {
+    ...initialState,
+    categories: initialCategories, // Set initial categories
+  })
   return (
     <CategoriesContext value={{ state, dispatch }}>
       {children}
     </CategoriesContext>
   )
 }
+
+export default CategoriesProvider

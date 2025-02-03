@@ -11,8 +11,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { User } from 'lucide-react'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
+import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs'
 
 export default function Header({
   categories,
@@ -101,9 +101,12 @@ export default function Header({
               <Button onClick={handleSearch}>Buscar</Button>
             </div>
           )}
-          <Button variant='ghost' size='icon'>
-            <User className='h-5 w-5' />
-          </Button>
+          <SignedOut>
+            <SignInButton />
+          </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
         </div>
         {showSearch && (
           <div className='sm:hidden py-2 flex items-center space-x-2'>

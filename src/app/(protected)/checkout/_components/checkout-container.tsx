@@ -16,8 +16,8 @@ import {
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbSeparator,
-} from '../../../components/ui/breadcrumb'
-import AppBreadcrumb from '../../../components/navigation/app-breadcrumb'
+} from '../../../../components/ui/breadcrumb'
+import AppBreadcrumb from '../../../../components/navigation/app-breadcrumb'
 
 const steps = ['Cart', 'Delivery', 'Payment', 'Confirmation']
 

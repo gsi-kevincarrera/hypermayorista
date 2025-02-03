@@ -2,7 +2,6 @@ import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 
 export default function ColorVariants({ colors }: { colors: string[] | null }) {
-  console.log(colors)
   if (!colors?.[0]) return null
   return (
     <div className='space-y-2'>

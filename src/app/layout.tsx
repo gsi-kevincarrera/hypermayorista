@@ -14,6 +14,29 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'Hipermayorista | Compra a lo grande',
   description: 'Una plataforma para compras en el mercado mayorista',
+  keywords: [
+    'Hipermayorista',
+    'Comprar al por mayor',
+    'Mayorista',
+    'Cuba',
+    'Comprar en Cuba',
+  ],
+  openGraph: {
+    type: 'website',
+    locale: 'es_ES',
+    url: 'https://hipermayorista.com',
+    siteName: 'Hipermayorista',
+    title: 'Hipermayorista | Compra a lo grande',
+    description: 'Una plataforma para compras en el mercado mayorista',
+    images: [
+      {
+        url: '/logo.webp',
+        width: 1200,
+        height: 630,
+        alt: 'Hipermayorista',
+      },
+    ],
+  },
 }
 
 export default async function RootLayout({

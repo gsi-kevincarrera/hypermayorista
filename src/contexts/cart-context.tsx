@@ -31,9 +31,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const { isSignedIn } = useAuth()
 
   useEffect(() => {
-    const storedCart = JSON.parse(localStorage.getItem('cart') || '[]')
-    setCart(storedCart)
-  }, [])
+    if (isSignedIn) {
+      const storedCart = JSON.parse(localStorage.getItem('cart') || '[]')
+      setCart(storedCart)
+    }
+  }, [isSignedIn])
 
   const addToCart = (product: ProductInCart) => {
     setCart((prev) => {

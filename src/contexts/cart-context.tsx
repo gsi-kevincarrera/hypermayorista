@@ -34,6 +34,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
     if (isSignedIn) {
       const storedCart = JSON.parse(localStorage.getItem('cart') || '[]')
       setCart(storedCart)
+    } else {
+      setCart([])
     }
   }, [isSignedIn])
 

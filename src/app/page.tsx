@@ -5,13 +5,10 @@ import BusinessOverview from './_components/business-overview'
 import Testimonials from './_components/testimonials'
 import About from './_components/about'
 import Hero from './_components/hero'
-import { getAllCategoriesNames, getMainCategories } from '@/db/queries'
+import { getMainCategories } from '@/db/queries'
 
 export default async function Home() {
-  const [mainCategories, categoriesNames] = await Promise.all([
-    getMainCategories(),
-    getAllCategoriesNames(),
-  ])
+  const mainCategories = await getMainCategories()
   return (
     <main className='min-h-screen'>
       <Hero />

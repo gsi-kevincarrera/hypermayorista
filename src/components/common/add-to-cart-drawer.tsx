@@ -102,18 +102,24 @@ export default function AddToCartDrawer() {
                   type='number'
                   name='quantity'
                   id='quantity'
-                  className='flex-1 rounded-none text-center'
+                  className='flex-1 rounded-none text-center [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
                   value={quantity}
-                  onChange={(e) =>
-                    setQuantity(
-                      Math.max(
-                        selectedProduct.minQuantity ?? 1,
-                        parseInt(e.target.value) || 0
-                      )
-                    )
-                  }
+                  onChange={(e) => {
+                    const val = e.target.value
+                    if (val === '') {
+                      setQuantity(selectedProduct.minQuantity)
+                    } else {
+                      const num = parseInt(val, 10)
+                      if (!isNaN(num)) {
+                        setQuantity(
+                          Math.max(selectedProduct.minQuantity ?? 1, num)
+                        )
+                      }
+                    }
+                  }}
                   min={selectedProduct.minQuantity}
                 />
+
                 <Button
                   type='button'
                   onClick={() => setQuantity(quantity + 1)}

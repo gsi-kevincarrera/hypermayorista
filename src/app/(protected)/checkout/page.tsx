@@ -1,5 +1,5 @@
-import CheckoutProcess from '@/app/(protected)/checkout/_components/checkout-container'
+import Shipping from './_components/shipping'
 
 export default function Cart() {
-  return <CheckoutProcess />
+  return <Shipping />
 }

@@ -40,9 +40,13 @@ export default function Hero() {
           Conéctate con los mejores proveedores y encuentra las mejores ofertas
           en un solo lugar
         </p>
-        <div
+        <form
           className='flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4'
           id='hero'
+          onSubmit={(e) => {
+            e.preventDefault()
+            handleSearch()
+          }}
         >
           <Input
             type='text'
@@ -63,13 +67,10 @@ export default function Hero() {
               ))}
             </SelectContent>
           </Select>
-          <Button
-            onClick={handleSearch}
-            className='sm:w-auto bg-green-500 hover:bg-green-700'
-          >
+          <Button className='sm:w-auto bg-black/60 hover:bg-black/50'>
             Buscar
           </Button>
-        </div>
+        </form>
       </div>
     </section>
   )

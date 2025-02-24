@@ -14,6 +14,7 @@ import {
 import { usePathname } from 'next/navigation'
 import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs'
 import { useCategories } from '@/contexts/categories/hook'
+import HeaderLogo from './header-logo'
 
 export default function Header() {
   const {
@@ -53,32 +54,17 @@ export default function Header() {
     <header className='fixed top-0 left-0 right-0 bg-white z-50 shadow-md'>
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
         <div className='flex items-center justify-between h-16'>
-          <Link
-            href='/'
-            className='text-xl sm:text-2xl font-bold text-purple-800'
-          >
-            <div className='flex items-center space-x-3'>
-              <svg
-                width='40'
-                height='40'
-                viewBox='0 0 20 20'
-                fill='none'
-                stroke='currentColor'
-                strokeWidth='2'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                className='text-purple-600'
-              >
-                <path d='M13 2L11 12h6L9 22l2-10H7z'></path>
-              </svg>
-
-              <div className='font-bold text-4xl text-purple-600'>
-                Hyper<span className='text-gray-700'>.Mayorista</span>
-              </div>
-            </div>
+          <Link href='/'>
+            <HeaderLogo />
           </Link>
           {showSearch && (
-            <div className='hidden sm:flex flex-1 justify-center items-center space-x-2 mx-4'>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault()
+                handleSearch()
+              }}
+              className='hidden sm:flex flex-1 justify-center items-center space-x-2 mx-4'
+            >
               <Input
                 type='text'
                 placeholder='Buscar productos...'
@@ -98,8 +84,8 @@ export default function Header() {
                   ))}
                 </SelectContent>
               </Select>
-              <Button onClick={handleSearch}>Buscar</Button>
-            </div>
+              <Button>Buscar</Button>
+            </form>
           )}
           <SignedOut>
             <SignInButton />

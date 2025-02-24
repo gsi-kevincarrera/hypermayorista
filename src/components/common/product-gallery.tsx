@@ -23,9 +23,11 @@ export default function ProductGallery({
   total: number
 }) {
   const [offset, setOffset] = useState(INITIAL_OFFSET)
-  const [products, setProducts] = useState<ProductInDB[]>(initialProducts)
+  const [products, setProducts] = useState<ProductInDB[]>(() => initialProducts)
   const [isLoading, startTransition] = useTransition()
-  const [isThereMore, setIsThereMore] = useState(initialProducts.length < total)
+  const [isThereMore, setIsThereMore] = useState(
+    () => initialProducts.length < total
+  )
 
   const loadMoreProducts = () => {
     startTransition(async () => {
@@ -46,9 +48,9 @@ export default function ProductGallery({
       {products.map((product) => (
         <ProductCard key={product.id} product={product} />
       ))}
-      <div className='absolute -bottom-16 left-0 right-0 w-full flex justify-center'>
+      <div className='absolute -bottom-12 left-0 right-0 w-full flex justify-center'>
         <Button
-          className='min-w-36 h-16 hover:shadow-lg hover:scale-105 transition'
+          className='min-w-28 h-12 hover:shadow-lg hover:scale-105 transition'
           onClick={loadMoreProducts}
           disabled={isLoading || !isThereMore}
         >

@@ -1,16 +1,4 @@
-import { MapPin, Info, Shield, Clock, CheckCircle } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import { Card, CardContent } from '@/components/ui/card'
-import { Checkbox } from '@/components/ui/checkbox'
+import { MapPin, Shield } from 'lucide-react'
 import OrderSummary from './oder-summary'
 import AddressForm from './adress-form'
 
@@ -31,10 +19,8 @@ export default function Shipping() {
               entrega.
             </p>
           </div>
-
           <AddressForm />
         </div>
-
         <OrderSummary />
       </div>
     </div>

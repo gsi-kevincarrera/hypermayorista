@@ -32,7 +32,7 @@ export default function Loading() {
         <div className='space-y-8'>
           {/* Grid of Products */}
           <div className='grid sm:grid-cols-2 lg:grid-cols-4 gap-6'>
-            {[...Array(6)].map((_, i) => (
+            {[...Array(8)].map((_, i) => (
               <div key={i} className='space-y-3'>
                 <div className='relative'>
                   <Skeleton className='aspect-[4/3] w-full rounded-lg' />

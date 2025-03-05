@@ -1,7 +1,7 @@
 import ProductCard from '@/components/common/product-card'
-import { ProductInDB } from '@/types'
+import { BaseProduct } from '@/types'
 
-export default function TopRanked({ products }: { products: ProductInDB[] }) {
+export default function TopRanked({ products }: { products: BaseProduct[] }) {
   return (
     <div className='bg-gray-50 p-6 rounded-lg'>
       <h3 className='text-xl sm:text-2xl font-semibold mb-4'>

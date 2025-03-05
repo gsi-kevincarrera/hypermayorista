@@ -2,10 +2,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import Image from 'next/image'
 import AddToCartButton from './add-to-cart-button'
 import Link from 'next/link'
-import { ProductInDB } from '@/types'
+import { BaseProduct } from '@/types'
 
 interface Props {
-  product: ProductInDB
+  product: BaseProduct
 }
 
 export default function ProductCard({ product }: Props) {
@@ -16,7 +16,7 @@ export default function ProductCard({ product }: Props) {
         <CardHeader className='p-0'>
           <div className='relative h-48 mb-2'>
             <Image
-              src={product.imageUrl ?? '/imageplaceholder.webp'}
+              src={product.images?.[0] ?? '/imageplaceholder.webp'}
               alt={product.name}
               fill
               className='object-cover rounded-lg'
@@ -31,7 +31,7 @@ export default function ProductCard({ product }: Props) {
             {product.description}
           </p>
           <div className='flex flex-col items-start text-sm mb-2'>
-            <span className='text-lg font-bold'>${product.price}</span>
+            <span className='text-lg font-bold'>${product.basePrice}</span>
             <span className='text-gray-500'>
               mínimo: {product.minQuantity} unidades
             </span>

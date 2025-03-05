@@ -18,37 +18,13 @@ export default function Loading() {
         <div className='bg-white rounded-lg p-6 shadow-sm'>
           {/* "Categorias relacionadas" */}
           {/* Categories Grid */}
-          <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4'>
-            {[...Array(6)].map((_, i) => (
+          <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4'>
+            {[...Array(15)].map((_, i) => (
               <div key={i} className='flex flex-col items-center space-y-3'>
                 <Skeleton className='w-full aspect-square rounded-lg' />
                 <Skeleton className='h-4 w-24' />
               </div>
             ))}
-          </div>
-        </div>
-
-        {/* Featured Section */}
-        <div className='mt-12'>
-          <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
-            {/* Left Column */}
-            <div className='space-y-4'>
-              <Skeleton className='h-8 w-48' /> {/* Section Title */}
-              <Skeleton className='w-full aspect-video rounded-lg' />
-            </div>
-
-            {/* Right Column */}
-            <div className='space-y-4'>
-              <Skeleton className='h-8 w-48' /> {/* Section Title */}
-              <div className='grid grid-cols-2 gap-4'>
-                {[...Array(4)].map((_, i) => (
-                  <Skeleton
-                    key={i}
-                    className='w-full aspect-square rounded-lg'
-                  />
-                ))}
-              </div>
-            </div>
           </div>
         </div>
       </div>

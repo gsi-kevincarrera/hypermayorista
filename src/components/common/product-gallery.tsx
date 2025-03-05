@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import Loading from '@/components/ui/loading'
 import Image from 'next/image'
 import { Card, CardContent } from '@/components/ui/card'
-import { ProductInDB } from '@/types'
+import { BaseProduct } from '@/types'
 
 const NUMBER_OF_PRODUCTS_TO_GET = 10
 const INITIAL_OFFSET = 15
@@ -15,15 +15,15 @@ export default function ProductGallery({
   getProducts,
   total,
 }: {
-  initialProducts: ProductInDB[]
+  initialProducts: BaseProduct[]
   getProducts: (
     offset: number,
     limit: number
-  ) => Promise<{ data: ProductInDB[]; total: number }>
+  ) => Promise<{ data: BaseProduct[]; total: number }>
   total: number
 }) {
   const [offset, setOffset] = useState(INITIAL_OFFSET)
-  const [products, setProducts] = useState<ProductInDB[]>(() => initialProducts)
+  const [products, setProducts] = useState<BaseProduct[]>(() => initialProducts)
   const [isLoading, startTransition] = useTransition()
   const [isThereMore, setIsThereMore] = useState(
     () => initialProducts.length < total

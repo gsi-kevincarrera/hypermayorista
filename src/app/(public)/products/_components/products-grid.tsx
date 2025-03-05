@@ -1,10 +1,10 @@
 import ProductCard from '@/components/common/product-card'
 import { Button } from '@/components/ui/button'
-import { ProductInDB } from '@/types'
+import { BaseProduct } from '@/types'
 import { Search } from 'lucide-react'
 import Link from 'next/link'
 
-export default function ProductsGrid({ data }: { data: ProductInDB[] }) {
+export default function ProductsGrid({ data }: { data: BaseProduct[] }) {
   return (
     <div className='flex-1'>
       {data.length ? (

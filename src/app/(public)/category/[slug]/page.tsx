@@ -1,16 +1,9 @@
-import Image from 'next/image'
-import Link from 'next/link'
-import { ChevronRight } from 'lucide-react'
-import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { getCategoryBySlug } from '@/db/queries'
 import CategoryHero from './_components/category-hero'
 import SubcategoriesList from './_components/subcategories-list'
 import { getProductsByCategory } from '@/db/actions'
 import CategoriesGallery from './_components/categories-gallery'
 import { cn } from '@/lib/utils'
-import { ProductInDB } from '@/types'
 
 interface CategoryProps {
   params: Promise<{

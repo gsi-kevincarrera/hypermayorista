@@ -11,12 +11,12 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel'
-import { ProductInDB } from '@/types'
+import { BaseProduct } from '@/types'
 
 export default function LatestAcquisitions({
   products,
 }: {
-  products: ProductInDB[]
+  products: BaseProduct[]
 }) {
   const [api, setApi] = useState<CarouselApi>()
 

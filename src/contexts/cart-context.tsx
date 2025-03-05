@@ -1,6 +1,6 @@
 'use client'
 
-import { ProductInCart, ProductInDB } from '@/types'
+import { BaseProduct, ProductInCart } from '@/types'
 import { useAuth } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
 import {
@@ -16,15 +16,15 @@ interface CartContextType {
   addToCart: (product: ProductInCart) => void
   removeFromCart: (productId: number) => void
   isInCart: (productId: number) => boolean
-  selectedProduct: ProductInDB | null
-  setSelectedProduct: (product: ProductInDB | null) => void
+  selectedProduct: BaseProduct | null
+  setSelectedProduct: (product: BaseProduct | null) => void
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<ProductInCart[]>([])
-  const [selectedProduct, setSelectedProduct] = useState<ProductInDB | null>(
+  const [selectedProduct, setSelectedProduct] = useState<BaseProduct | null>(
     null
   )
   const router = useRouter()
@@ -62,7 +62,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     return cart.some((p) => p.id === productId)
   }
 
-  const selectProduct = (product: ProductInDB | null) => {
+  const selectProduct = (product: BaseProduct | null) => {
     if (!isSignedIn) {
       router.push('/sign-in')
       console.log('No estas logueado')

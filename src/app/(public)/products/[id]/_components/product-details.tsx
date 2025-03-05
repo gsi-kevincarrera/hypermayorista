@@ -1,13 +1,11 @@
-import { Button } from '@/components/ui/button'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Label } from '@/components/ui/label'
 
-import { ProductInDB } from '@/types'
+import { BaseProduct } from '@/types'
 import RelatedProducts from './related-products'
 import SpecificationsTable from './specifications-table'
 import ProductDescription from './product-description'
 import PriceTiers from './price-tiers'
-import ColorVariants from './color-variants'
 import ImageContainer from './image-container'
 import CallToActionButton from './call-to-action-button'
 
@@ -22,8 +20,8 @@ export default function ProducDetails({
   product,
   relatedProducts,
 }: {
-  product: ProductInDB
-  relatedProducts: ProductInDB[]
+  product: BaseProduct
+  relatedProducts: BaseProduct[]
 }) {
   return (
     <div className='container mx-auto p-6 mt-24 mb-16'>
@@ -31,7 +29,7 @@ export default function ProducDetails({
         {/* Left column: Images and related products */}
         <div className='w-full md:w-2/3 space-y-8'>
           <ImageContainer
-            images={[product.imageUrl ?? '/imageplaceholder.webp']}
+            images={[product.images?.[0] ?? '/imageplaceholder.webp']}
           />
           <RelatedProducts relatedProducts={relatedProducts} />
           <SpecificationsTable specifications={product.specifications} />
@@ -46,7 +44,6 @@ export default function ProducDetails({
 
           <div className='space-y-6'>
             <PriceTiers priceTiers={priceTiers} />
-            <ColorVariants colors={[product.color ?? '']} />
 
             {/* Storage variants */}
             <div className='space-y-2'>

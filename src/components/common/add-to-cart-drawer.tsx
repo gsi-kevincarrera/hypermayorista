@@ -34,9 +34,12 @@ export default function AddToCartDrawer() {
       return
     }
     addToCart({
-      ...selectedProduct,
-      selectedQuantity: quantity,
-      total: selectedProduct.price * quantity,
+      id: selectedProduct.id,
+      mainImageUrl: selectedProduct.images?.[0] ?? '/imageplaceholder.webp',
+      name: selectedProduct.name,
+      unitPrice: selectedProduct.basePrice,
+      total: selectedProduct.basePrice * quantity,
+      quantity
     })
     setSelectedProduct(null)
     setQuantity(1)
@@ -66,7 +69,7 @@ export default function AddToCartDrawer() {
           <div className='py-4'>
             <div className='flex items-center space-x-4'>
               <Image
-                src={selectedProduct.imageUrl ?? '/imageplaceholder.webp'}
+                src={selectedProduct.images?.[0] ?? '/imageplaceholder.webp'}
                 alt={selectedProduct.name}
                 width={80}
                 height={80}
@@ -75,7 +78,7 @@ export default function AddToCartDrawer() {
               <div>
                 <h3 className='font-semibold'>{selectedProduct.name}</h3>
                 <p className='text-sm text-gray-500'>
-                  ${selectedProduct.price} por unidad
+                  ${selectedProduct.basePrice} por unidad
                 </p>
               </div>
             </div>
@@ -135,7 +138,7 @@ export default function AddToCartDrawer() {
                 {new Intl.NumberFormat('es-CU', {
                   minimumFractionDigits: 0,
                   maximumFractionDigits: 2,
-                }).format((Number(selectedProduct.price) ?? 0) * quantity)}
+                }).format((Number(selectedProduct.basePrice) ?? 0) * quantity)}
               </p>
             </div>
           </div>

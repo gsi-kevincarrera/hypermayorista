@@ -3,10 +3,10 @@
 import { Button } from '@/components/ui/button'
 import { useCart } from '@/contexts/cart-context'
 import { cn } from '@/lib/utils'
-import { ProductInDB } from '@/types'
+import { BaseProduct, ProductInDB } from '@/types'
 import { ShoppingCart } from 'lucide-react'
 
-export default function AddToCartButton({ product }: { product: ProductInDB }) {
+export default function AddToCartButton({ product }: { product: BaseProduct }) {
   const { setSelectedProduct, isInCart } = useCart()
   return (
     <Button

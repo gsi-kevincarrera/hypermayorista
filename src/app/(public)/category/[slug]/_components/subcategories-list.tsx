@@ -14,7 +14,7 @@ export default function SubcategoriesList({
       <Card className='max-w-7xl mx-auto shadow-lg'>
         <CardContent className='p-6'>
           <h2 className='text-xl font-semibold mb-6'>
-            Categorias relacionadas
+            Categorías relacionadas
           </h2>
           <ScrollArea className='w-full whitespace-nowrap rounded-lg'>
             <div className='flex w-max space-x-4 pb-4'>

@@ -1,6 +1,7 @@
 import {
   AnyPgColumn,
   boolean,
+  doublePrecision,
   integer,
   jsonb,
   pgTable,
@@ -15,14 +16,13 @@ export const products = pgTable('Products', {
   id: serial('id').primaryKey(),
   name: varchar('name', { length: 255 }).notNull(),
   description: text('description'),
-  price: real('price').notNull(),
-  stock: integer('available_quantity').notNull(),
+  basePrice: doublePrecision('base_price').notNull(),
+  stock: integer('stock').notNull(),
   minQuantity: integer('min_quantity').notNull(),
-  imageUrl: varchar('image_url'),
+  images: text('images').array(),
   categoryId: integer('category_id')
     .notNull()
     .references(() => categories.id),
-  color: varchar('color'),
   featured: boolean('featured').default(false),
   latest_acquisition: boolean('latest_acquisition').default(false),
   specifications: jsonb('specifications'),

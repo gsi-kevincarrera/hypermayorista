@@ -1,3 +1,6 @@
+/**
+ * Product category with support for nested categories
+ */
 export type Category = {
   id: number
   name: string
@@ -7,24 +10,78 @@ export type Category = {
   slug: string | null
 }
 
-//TODO Theres still a need to figure out how to manage product variants
-type BaseProduct = {
+/**
+ * Base product with essential information
+ * Optimized for fast initial loading
+ */
+export type BaseProduct = {
   id: number
   name: string
   description?: string | null
-  price: number //TODO This could change in a future to be prices, cause the price could change depending on the selected quantity
-  stock?: number | null
-  imageUrl?: string | null //TODO This should be an array of images
-  color?: string | null //TODO This could be an array of colors
-  categoryName: string
-  specifications: Record<string, string> | unknown
-}
-
-export type ProductInDB = BaseProduct & {
+  basePrice: number
   minQuantity: number
+  categoryId: number
+  categoryName: string
+  images: string[] | null
+  specifications: Record<string, string> | unknown
+  stock?: number | null
 }
 
-export type ProductInCart = BaseProduct & {
-  selectedQuantity: number | null
-  total: number | null
+/**
+ * Configurable options for each product
+ */
+export type ProductOption = {
+  id: number
+  productId: number
+  name: string
+  values: string[]
+  isRequired: boolean
+}
+
+/**
+ * Product variants
+ */
+export type ProductVariant = {
+  id: number
+  productId: number
+  options: Record<string, string> | unknown
+  priceAdjustment: number
+  stock: number
+  sku?: string | null
+}
+
+/**
+ * Quantity-based price scale
+ */
+export type PriceBreak = {
+  id: number
+  productId: number
+  variantId?: number | null
+  minQuantity: number
+  maxQuantity?: number | null
+  unitPrice: number
+}
+
+/**
+ * Complete product as stored in the database
+ * Combination of previous types
+ */
+export type ProductInDB = BaseProduct & {
+  options?: ProductOption[]
+  variants?: ProductVariant[]
+  priceBreaks?: PriceBreak[]
+}
+
+/**
+ * Product in cart - Optimized to store only what's needed
+ */
+export type ProductInCart = {
+  id: number
+  variantId?: number | null
+  name: string
+  mainImageUrl: string | null
+  quantity: number
+  unitPrice: number // Price calculated based on variant and quantity
+  total: number
+  variantInfo?: string | null // Ex: "Size: XL, Color: Red" (for UI display)
 }

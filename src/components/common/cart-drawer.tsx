@@ -59,7 +59,7 @@ export default function CartDrawer() {
                 <CardContent className='flex items-center justify-between p-4'>
                   <div className='flex items-center space-x-4'>
                     <Image
-                      src={item.imageUrl ?? '/imageplaceholder.webp'}
+                      src={item.mainImageUrl ?? '/imageplaceholder.webp'}
                       alt={item.name}
                       width={50}
                       height={50}
@@ -68,7 +68,7 @@ export default function CartDrawer() {
                     <div>
                       <h4 className='font-semibold'>{item.name}</h4>
                       <p className='text-sm text-gray-500'>
-                        ${item.price} x {item.selectedQuantity}
+                        ${item.unitPrice} x {item.quantity}
                       </p>
                     </div>
                   </div>

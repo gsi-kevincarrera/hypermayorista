@@ -2,13 +2,13 @@
 
 import ProductGallery from '@/components/common/product-gallery'
 import { getNonSpecialProducts } from '@/db/actions'
-import { ProductInDB } from '@/types'
+import { BaseProduct } from '@/types'
 
 export default function BentoGridGallery({
   initialProducts,
   total,
 }: {
-  initialProducts: ProductInDB[]
+  initialProducts: BaseProduct[]
   total: number
 }) {
   return (

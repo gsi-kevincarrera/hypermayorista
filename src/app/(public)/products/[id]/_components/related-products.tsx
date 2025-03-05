@@ -6,12 +6,12 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel'
-import { ProductInDB } from '@/types'
+import { BaseProduct } from '@/types'
 
 export default function RelatedProducts({
   relatedProducts,
 }: {
-  relatedProducts: ProductInDB[]
+  relatedProducts: BaseProduct[]
 }) {
   return (
     <div>

@@ -1,15 +1,13 @@
-import ProductGallery from '@/components/common/product-gallery'
-import { Button } from '@/components/ui/button'
 import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import BentoGridGallery from './bento-grid-gallery'
-import { ProductInDB } from '@/types'
+import { BaseProduct } from '@/types'
 
 export default function ForYou({
   products,
   total,
 }: {
-  products: ProductInDB[]
+  products: BaseProduct[]
   total: number
 }) {
   return (

@@ -18,7 +18,7 @@ export default function ProducDetailsPage({
         {/* Left column: Images and related products */}
         <div className='w-full md:w-2/3 space-y-8'>
           <ImageContainer
-            images={[product.images?.[0] ?? '/imageplaceholder.webp']}
+            images={product.images ?? ['/imageplaceholder.webp']}
           />
           <RelatedProducts relatedProducts={relatedProducts} />
           <SpecificationsTable specifications={product.specifications} />

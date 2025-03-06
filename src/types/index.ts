@@ -32,7 +32,7 @@ export type BaseProduct = {
  */
 export type ProductOption = {
   id: number
-  productId: number
+  productId?: number
   name: string
   values: string[]
   isRequired: boolean
@@ -43,8 +43,8 @@ export type ProductOption = {
  */
 export type ProductVariant = {
   id: number
-  productId: number
-  options: Record<string, string> | unknown
+  productId?: number
+  options: Record<string, string>
   priceAdjustment: number
   stock: number
   sku?: string | null
@@ -55,7 +55,7 @@ export type ProductVariant = {
  */
 export type PriceBreak = {
   id: number
-  productId: number
+  productId?: number
   variantId?: number | null
   minQuantity: number
   maxQuantity?: number | null
@@ -66,10 +66,9 @@ export type PriceBreak = {
  * Complete product as stored in the database
  * Combination of previous types
  */
-export type ProductInDB = BaseProduct & {
-  options?: ProductOption[]
-  variants?: ProductVariant[]
-  priceBreaks?: PriceBreak[]
+export type ProductDetails = BaseProduct & {
+  options: ProductOption[] | null
+  priceBreaks: PriceBreak[] | null
 }
 
 /**

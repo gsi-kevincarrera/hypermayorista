@@ -1,83 +1,132 @@
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+'use client'
+
+import { ProductDetails as ProductDetailsType } from '@/types'
+import PriceTiers from './price-tiers'
+import ProductOptions from './product-options'
+import CallToActionButton from './call-to-action-button'
+import { useCallback, useEffect, useState } from 'react'
+import { calculatePrice, getVariantByOptions } from '@/db/actions'
+import { useDebouncedCallback } from 'use-debounce'
+import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
-import { BaseProduct } from '@/types'
-import RelatedProducts from './related-products'
-import SpecificationsTable from './specifications-table'
-import ProductDescription from './product-description'
-import PriceTiers from './price-tiers'
-import ImageContainer from './image-container'
-import CallToActionButton from './call-to-action-button'
-
-const priceTiers = [
-  { units: '1 - 19', price: '$35.00' },
-  { units: '20 - 199', price: '$34.00' },
-  { units: '200 - 999', price: '$33.00' },
-  { units: '>= 1000', price: '$32.00' },
-]
-
-export default function ProducDetails({
+export default function ProductDetails({
   product,
-  relatedProducts,
 }: {
-  product: BaseProduct
-  relatedProducts: BaseProduct[]
+  product: ProductDetailsType
 }) {
+  const [selectedOptions, setSelectedOptions] = useState<
+    Record<string, string>
+  >({})
+  const [price, setPrice] = useState(product.basePrice * product.minQuantity)
+  const [quantity, setQuantity] = useState(product.minQuantity)
+  const [calculatingPrice, setCalculatingPrice] = useState(false)
+
+  const updatePrice = useCallback(async () => {
+    setCalculatingPrice(true)
+    //Get variant by selected options, this is key to calculate the price using the price adjustments
+    const variant = await getVariantByOptions(product.id, selectedOptions)
+    if (variant) {
+      const { totalPrice } = await calculatePrice(
+        product.id,
+        quantity,
+        variant.id
+      )
+      setPrice(totalPrice)
+    } else {
+      //if there is no variant, calculate the price based on the base price and price breaks, ignoring price adjustments
+      const { totalPrice } = await calculatePrice(product.id, quantity)
+      setPrice(totalPrice)
+    }
+    setCalculatingPrice(false)
+  }, [product.id, selectedOptions, quantity])
+
+  const debouncedUpdatePrice = useDebouncedCallback(updatePrice, 500)
+
+  useEffect(() => {
+    const isAllRequiredOptionsSelected = () => {
+      //Get required options
+      const requiredOptions = product.options?.filter(
+        (option) => option.isRequired
+      )
+
+      //Check if all required options are selected
+      const allRequiredSelected = requiredOptions?.every(
+        (option) => selectedOptions[option.name]
+      )
+
+      return allRequiredSelected
+    }
+
+    if (!isAllRequiredOptionsSelected()) return
+    debouncedUpdatePrice()
+  }, [
+    selectedOptions,
+    product.options,
+    quantity,
+    product.id,
+    debouncedUpdatePrice,
+  ])
+
   return (
-    <div className='container mx-auto p-6 mt-24 mb-16'>
-      <div className='flex flex-col md:flex-row gap-8'>
-        {/* Left column: Images and related products */}
-        <div className='w-full md:w-2/3 space-y-8'>
-          <ImageContainer
-            images={[product.images?.[0] ?? '/imageplaceholder.webp']}
+    <div className='w-full md:w-1/3 space-y-6 md:sticky md:top-6 self-start'>
+      <div>
+        <h1 className='text-2xl font-bold'>{product.name}</h1>
+      </div>
+
+      <div className='space-y-6'>
+        <PriceTiers priceTiers={product.priceBreaks} quantity={quantity} />
+
+        {/* Options */}
+        <ProductOptions
+          options={product.options}
+          selectedValues={selectedOptions}
+          setSelectedValues={setSelectedOptions}
+        />
+
+        {/* Quantity */}
+        <div className='space-y-2'>
+          <Label htmlFor='quantity'>
+            Cantidad:{' '}
+            <span className='font-light text-xs'>
+              (Mínimo {product.minQuantity} unidad(es)) (Máximo {product.stock}{' '}
+              unidad(es))
+            </span>
+          </Label>
+          <Input
+            type='number'
+            id='quantity'
+            name='quantity'
+            max={product.stock ?? undefined}
+            min={product.minQuantity}
+            value={quantity}
+            onChange={(e) => {
+              const val = e.target.value
+              const num = parseInt(val, 10)
+              if (!isNaN(num)) {
+                setQuantity(
+                  Math.min(
+                    Math.max(product.minQuantity, num),
+                    product.stock ?? num
+                  )
+                )
+              }
+            }}
           />
-          <RelatedProducts relatedProducts={relatedProducts} />
-          <SpecificationsTable specifications={product.specifications} />
-          <ProductDescription description={product.description ?? ''} />
         </div>
 
-        {/* Right column: Product details */}
-        <div className='w-full md:w-1/3 space-y-6 md:sticky md:top-6 self-start'>
-          <div>
-            <h1 className='text-2xl font-bold'>{product.name}</h1>
-          </div>
+        <p>
+          Precio:{' '}
+          {calculatingPrice
+            ? 'Calculando...'
+            : `$ ${new Intl.NumberFormat('es-CU', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2,
+              }).format(Number(price) ?? 0)}`}
+        </p>
 
-          <div className='space-y-6'>
-            <PriceTiers priceTiers={priceTiers} />
-
-            {/* Storage variants */}
-            <div className='space-y-2'>
-              <Label>Almacenamiento</Label>
-              <RadioGroup defaultValue='1tb' className='grid grid-cols-2 gap-2'>
-                <div>
-                  <RadioGroupItem
-                    value='1tb'
-                    id='1tb'
-                    className='peer sr-only'
-                  />
-                  <Label
-                    htmlFor='1tb'
-                    className='flex flex-col items-center justify-between rounded-md border-2 border-muted p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary'
-                  >
-                    1TB
-                  </Label>
-                </div>
-              </RadioGroup>
-            </div>
-
-            {/* Camera specifications */}
-            <div className='space-y-2'>
-              <p className='text-sm font-medium'>Especificaciones de Cámara:</p>
-              <ul className='text-sm text-muted-foreground space-y-1'>
-                <li>• Cámara Trasera: 24.0MP</li>
-                <li>• Cámara Frontal: 32MP</li>
-              </ul>
-            </div>
-
-            {/* Call to action */}
-            <CallToActionButton product={product} />
-          </div>
-        </div>
+        {/* Call to action */}
+        <CallToActionButton disabled product={product} />
       </div>
     </div>
   )

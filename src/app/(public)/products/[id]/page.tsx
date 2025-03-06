@@ -4,7 +4,7 @@ import {
   getProducts,
   getRelatedProductsByCategory,
 } from '@/db/queries'
-import ProductDetails from './_components/product-details'
+import ProductDetailsPage from './_components/product-details-page'
 
 /**
  * Product detail page component that handles the display of a specific product and its related items
@@ -34,7 +34,10 @@ export default async function ProductDetailPage({
   return (
     <div>
       {product ? (
-        <ProductDetails product={product} relatedProducts={relatedProducts} />
+        <ProductDetailsPage
+          product={product}
+          relatedProducts={relatedProducts}
+        />
       ) : (
         <NotFound />
       )}

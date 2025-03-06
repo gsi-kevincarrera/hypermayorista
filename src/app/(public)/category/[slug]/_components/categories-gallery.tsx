@@ -1,6 +1,6 @@
 import ProductGallery from '@/components/common/product-gallery'
 import { getProductsByCategory } from '@/db/actions'
-import { BaseProduct, ProductInDB } from '@/types'
+import { BaseProduct, ProductDetails } from '@/types'
 
 export default function CategoriesGallery({
   initialProducts,

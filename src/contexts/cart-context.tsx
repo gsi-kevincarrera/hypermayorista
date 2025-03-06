@@ -65,7 +65,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const selectProduct = (product: BaseProduct | null) => {
     if (!isSignedIn) {
       router.push('/sign-in')
-      console.log('No estas logueado')
       return
     }
     setSelectedProduct(product)

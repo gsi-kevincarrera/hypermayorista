@@ -29,7 +29,6 @@ export default function Hero() {
   return (
     <section className='relative min-h-[600px] flex items-center justify-center text-white hero-pattern'>
       <div className='absolute inset-0 overflow-hidden'>
-        <div className="absolute inset-0 bg-[url('/hero-bg.jpg')] bg-cover bg-center" />
         <div className='absolute inset-0 bg-purple-900/70' />
       </div>
       <div className='relative z-10 text-center space-y-8 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto'>

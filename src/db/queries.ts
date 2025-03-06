@@ -1,4 +1,10 @@
-import { categories, products } from '@/db/schema'
+import {
+  categories,
+  priceBreaks,
+  productOptions,
+  products,
+  productVariants,
+} from '@/db/schema'
 import {
   eq,
   isNull,
@@ -114,20 +120,42 @@ export async function getProductById(id: number) {
   const { updated_at, created_at, featured, latest_acquisition, ...rest } =
     getTableColumns(products)
 
-  const [product] = await db
-    .select({
-      categoryName: categories.name,
-      ...rest,
-    })
-    .from(products)
-    .innerJoin(categories, eq(products.categoryId, categories.id))
-    .where(eq(products.id, id))
+  try {
+    const [product] = await db
+      .select({
+        ...rest,
+        categoryName: categories.name,
+      })
+      .from(products)
+      .innerJoin(categories, eq(products.categoryId, categories.id))
+      .where(eq(products.id, id))
 
-  if (!product) {
-    return null
+    if (!product) {
+      return null
+    }
+
+    const { productId, ...variantsRest } = getTableColumns(productVariants)
+
+    const options = await db
+      .select()
+      .from(productOptions)
+      .where(eq(productOptions.productId, id))
+
+    const priceBreaksList = await db
+      .select()
+      .from(priceBreaks)
+      .where(eq(priceBreaks.productId, id))
+      .orderBy(priceBreaks.minQuantity)
+
+    return {
+      ...product,
+      options,
+      priceBreaks: priceBreaksList,
+    }
+  } catch (error) {
+    console.error(error)
+    throw new Error('Error fetching product')
   }
-
-  return product
 }
 
 export async function getRelatedProductsByCategory(

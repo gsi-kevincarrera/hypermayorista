@@ -18,6 +18,9 @@ interface CartContextType {
   isInCart: (productId: number) => boolean
   selectedProduct: BaseProduct | null
   setSelectedProduct: (product: BaseProduct | null) => void
+  toggleItemSelection: (productId: number) => void
+  lastRemovedItem: ProductInCart | null
+  undoRemove: () => void
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
@@ -25,6 +28,9 @@ const CartContext = createContext<CartContextType | undefined>(undefined)
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<ProductInCart[]>([])
   const [selectedProduct, setSelectedProduct] = useState<BaseProduct | null>(
+    null
+  )
+  const [lastRemovedItem, setLastRemovedItem] = useState<ProductInCart | null>(
     null
   )
   const router = useRouter()
@@ -52,7 +58,35 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const removeFromCart = (productId: number) => {
     setCart((prev) => {
+      const itemToRemove = prev.find((item) => item.id === productId)
+      if (itemToRemove) {
+        setLastRemovedItem(itemToRemove)
+      }
       const newCart = prev.filter((item) => item.id !== productId)
+      localStorage.setItem('cart', JSON.stringify(newCart))
+      return newCart
+    })
+  }
+
+  const undoRemove = () => {
+    if (lastRemovedItem) {
+      setCart((prev) => {
+        const newCart = [...prev, lastRemovedItem]
+        localStorage.setItem('cart', JSON.stringify(newCart))
+        return newCart
+      })
+      setLastRemovedItem(null)
+    }
+  }
+
+  const toggleItemSelection = (productId: number) => {
+    setCart((prev) => {
+      const newCart = prev.map((item) => {
+        if (item.id === productId) {
+          return { ...item, isSelected: !item.isSelected }
+        }
+        return item
+      })
       localStorage.setItem('cart', JSON.stringify(newCart))
       return newCart
     })
@@ -79,6 +113,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
         isInCart,
         selectedProduct,
         setSelectedProduct: selectProduct,
+        toggleItemSelection,
+        lastRemovedItem,
+        undoRemove,
       }}
     >
       {children}

@@ -83,4 +83,5 @@ export type ProductInCart = {
   unitPrice: number // Price calculated based on variant and quantity
   total: number
   variantInfo?: string | null // Ex: "Size: XL, Color: Red" (for UI display)
+  isSelected: boolean
 }

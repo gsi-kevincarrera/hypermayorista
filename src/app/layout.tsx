@@ -61,7 +61,7 @@ export default async function RootLayout({
             </CartProvider>
             <Footer />
           </CategoriesProvider>
-          <Toaster richColors closeButton position='top-right' theme='light' />
+          <Toaster richColors closeButton position='top-center' theme='light' />
         </body>
       </html>
     </ClerkProvider>

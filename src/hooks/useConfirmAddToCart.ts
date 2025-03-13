@@ -178,6 +178,7 @@ export default function useConfirmAddToCart() {
       total: price,
       quantity,
       variantInfo: Object.keys(selectedOptions).length > 0 ? variantInfo : null,
+      isSelected: true,
     })
 
     toast.success('Producto agregado al carrito')

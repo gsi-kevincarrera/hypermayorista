@@ -1,9 +1,5 @@
 import NotFound from '@/components/navigation/personalized-not-found'
-import {
-  getProductById,
-  getProducts,
-  getRelatedProductsByCategory,
-} from '@/db/queries'
+import { getProductById, getRelatedProductsByCategory } from '@/db/queries'
 import ProductDetailsPage from './_components/product-details-page'
 
 /**

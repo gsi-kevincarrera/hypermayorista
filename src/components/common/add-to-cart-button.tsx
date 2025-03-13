@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { useCart } from '@/contexts/cart-context'
 import { cn } from '@/lib/utils'
-import { BaseProduct, ProductDetails } from '@/types'
+import { BaseProduct } from '@/types'
 import { ShoppingCart } from 'lucide-react'
 
 export default function AddToCartButton({ product }: { product: BaseProduct }) {

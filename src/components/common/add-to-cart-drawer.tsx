@@ -1,155 +1,174 @@
 'use client'
-import { Minus, Plus } from 'lucide-react'
+import { Minus, Plus, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-  SheetFooter,
-  Sheet,
-} from '@/components/ui/sheet'
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerDescription,
+  DrawerFooter,
+} from '@/components/ui/drawer'
 import Image from 'next/image'
-import { useCart } from '@/contexts/cart-context'
-import { useEffect, useState } from 'react'
-import { toast } from 'sonner'
+import PriceTiers from '@/app/(public)/products/[id]/_components/price-tiers'
+import ProductOptions from '@/app/(public)/products/[id]/_components/product-options'
+import { Label } from '@/components/ui/label'
+import useConfirmAddToCart from '@/hooks/useConfirmAddToCart'
+import InputQuantity from './input-quantity'
 
 export default function AddToCartDrawer() {
-  const { setSelectedProduct, selectedProduct, addToCart } = useCart()
-  const [quantity, setQuantity] = useState(selectedProduct?.minQuantity || 1)
-
-  useEffect(() => {
-    if (selectedProduct?.minQuantity) {
-      setQuantity(selectedProduct.minQuantity)
-    }
-  }, [selectedProduct])
-
-  const confirmAddToCart = () => {
-    if (!selectedProduct) return
-    if (quantity < selectedProduct.minQuantity) {
-      toast.error(
-        `La cantidad mínima para este producto es ${selectedProduct.minQuantity}`
-      )
-      return
-    }
-    addToCart({
-      id: selectedProduct.id,
-      mainImageUrl: selectedProduct.images?.[0] ?? '/imageplaceholder.webp',
-      name: selectedProduct.name,
-      unitPrice: selectedProduct.basePrice,
-      total: selectedProduct.basePrice * quantity,
-      quantity
-    })
-    setSelectedProduct(null)
-    setQuantity(1)
-  }
-  const goToCheckout = () => {
-    console.log('Going to checkout with:', { ...selectedProduct, quantity })
-    setSelectedProduct(null)
-    setQuantity(1)
-  }
+  const {
+    confirmAddToCart,
+    goToCheckout,
+    quantity,
+    setQuantity,
+    selectedOptions,
+    setSelectedOptions,
+    price,
+    isFormValid,
+    loading,
+    selectedProduct,
+    setSelectedProduct,
+    productDetails,
+    isCalculatingPrice,
+  } = useConfirmAddToCart()
 
   return (
-    <Sheet
+    <Drawer
       open={selectedProduct !== null}
-      onOpenChange={() => {
-        setSelectedProduct(null)
-        setQuantity(1)
+      onOpenChange={(open) => {
+        if (!open) {
+          setSelectedProduct(null)
+        }
       }}
     >
-      <SheetContent>
-        <SheetHeader>
-          <SheetTitle>Agregar al Carrito</SheetTitle>
-          <SheetDescription>
-            Revisa tu selección antes de agregar al carrito
-          </SheetDescription>
-        </SheetHeader>
-        {selectedProduct && (
-          <div className='py-4'>
-            <div className='flex items-center space-x-4'>
-              <Image
-                src={selectedProduct.images?.[0] ?? '/imageplaceholder.webp'}
-                alt={selectedProduct.name}
-                width={80}
-                height={80}
-                className='rounded-md aspect-auto'
-              />
-              <div>
-                <h3 className='font-semibold'>{selectedProduct.name}</h3>
-                <p className='text-sm text-gray-500'>
-                  ${selectedProduct.basePrice} por unidad
-                </p>
-              </div>
-            </div>
-            <div className='mt-4'>
-              <label
-                htmlFor='quantity'
-                className='block text-sm font-medium text-gray-700'
-              >
-                Cantidad
-              </label>
-              <div className='mt-1 flex rounded-md shadow-sm'>
-                <Button
-                  type='button'
-                  onClick={() =>
-                    setQuantity(
-                      Math.max(selectedProduct.minQuantity ?? 1, quantity - 1)
-                    )
-                  }
-                  className='rounded-l-md'
-                >
-                  <Minus className='h-4 w-4' />
-                </Button>
-                <Input
-                  type='number'
-                  name='quantity'
-                  id='quantity'
-                  className='flex-1 rounded-none text-center [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
-                  value={quantity}
-                  onChange={(e) => {
-                    const val = e.target.value
-                    if (val === '') {
-                      setQuantity(selectedProduct.minQuantity)
-                    } else {
-                      const num = parseInt(val, 10)
-                      if (!isNaN(num)) {
-                        setQuantity(
-                          Math.max(selectedProduct.minQuantity ?? 1, num)
-                        )
-                      }
-                    }
-                  }}
-                  min={selectedProduct.minQuantity}
-                />
+      <DrawerContent className='max-h-[85vh] '>
+        <div className='mx-auto w-full max-w-4xl px-4'>
+          <DrawerHeader className='px-0'>
+            <DrawerTitle>Agregar al Carrito</DrawerTitle>
+            <DrawerDescription>
+              Revisa tu selección antes de agregar al carrito
+            </DrawerDescription>
+          </DrawerHeader>
 
-                <Button
-                  type='button'
-                  onClick={() => setQuantity(quantity + 1)}
-                  className='rounded-r-md'
-                >
-                  <Plus className='h-4 w-4' />
-                </Button>
+          {selectedProduct && (
+            <div className='py-2'>
+              {/* Product Header */}
+              <div className='grid grid-cols-2 gap-4 items-center mb-6'>
+                <div className='flex items-center space-x-4'>
+                  <Image
+                    src={
+                      selectedProduct.images?.[0] ?? '/imageplaceholder.webp'
+                    }
+                    alt={selectedProduct.name}
+                    width={80}
+                    height={80}
+                    className='rounded-md aspect-auto'
+                  />
+                  <div>
+                    <h3 className='font-semibold'>{selectedProduct.name}</h3>
+                    <p className='text-sm text-gray-500'>
+                      Precio base: ${selectedProduct.basePrice} por unidad
+                    </p>
+                  </div>
+                </div>
+                <div>
+                  <Label>Descripción</Label>
+                  <p className='text-sm text-gray-500 truncate'>
+                    {selectedProduct.description}
+                  </p>
+                </div>
               </div>
+
+              {/* Loading State */}
+              {loading ? (
+                <div className='flex justify-center items-center py-8'>
+                  <Loader2 className='h-8 w-8 animate-spin text-primary' />
+                  <span className='ml-2'>
+                    Cargando detalles del producto...
+                  </span>
+                </div>
+              ) : (
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                  {/* Left Column */}
+                  <div className='flex justify-end flex-col gap-4'>
+                    {/* Price Tiers */}
+                    <div className='pt-0'>
+                      <PriceTiers
+                        priceTiers={productDetails?.priceBreaks || null}
+                        quantity={quantity}
+                      />
+                    </div>
+
+                    {/* Quantity */}
+                    <InputQuantity
+                      min={selectedProduct.minQuantity}
+                      max={selectedProduct.stock ?? undefined}
+                      setQuantity={setQuantity}
+                      disabled={loading || isCalculatingPrice}
+                      value={quantity}
+                    />
+
+                    {/* Price */}
+                    <div className='mt-6'>
+                      <p className='text-lg font-semibold'>
+                        Precio Total:{' '}
+                        {isCalculatingPrice
+                          ? 'Calculando...'
+                          : `$ ${new Intl.NumberFormat('es-CU', {
+                              minimumFractionDigits: 0,
+                              maximumFractionDigits: 2,
+                            }).format(Number(price) ?? 0)}`}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Right Column */}
+                  <div className='space-y-6'>
+                    {/* Product Options */}
+                    {productDetails?.options &&
+                    productDetails.options.length > 0 ? (
+                      <div>
+                        <h4 className='font-medium mb-2'>
+                          Opciones de Producto
+                        </h4>
+                        <ProductOptions
+                          options={productDetails.options}
+                          selectedValues={selectedOptions}
+                          setSelectedValues={setSelectedOptions}
+                        />
+                      </div>
+                    ) : (
+                      <p className=' text-gray-500'>
+                        No hay variantes disponibles para este producto.
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
-            <div className='mt-4'>
-              <p className='text-lg font-semibold'>
-                Total: $
-                {new Intl.NumberFormat('es-CU', {
-                  minimumFractionDigits: 0,
-                  maximumFractionDigits: 2,
-                }).format((Number(selectedProduct.basePrice) ?? 0) * quantity)}
-              </p>
-            </div>
-          </div>
-        )}
-        <SheetFooter className='sm:justify-center'>
-          <Button onClick={confirmAddToCart}>Agregar al carrito</Button>
-          <Button onClick={goToCheckout} variant='outline'>
-            Ir al Checkout
-          </Button>
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
+          )}
+
+          <DrawerFooter className='flex-row gap-2 justify-center mt-4 px-0'>
+            <Button
+              onClick={confirmAddToCart}
+              className='flex-1 max-w-[200px]'
+              disabled={!isFormValid || loading || isCalculatingPrice}
+            >
+              Agregar al carrito
+            </Button>
+            <Button
+              onClick={goToCheckout}
+              variant='outline'
+              className='flex-1 max-w-[200px]'
+              disabled={!isFormValid || loading || isCalculatingPrice}
+            >
+              Ir al Checkout
+            </Button>
+          </DrawerFooter>
+        </div>
+      </DrawerContent>
+    </Drawer>
   )
 }

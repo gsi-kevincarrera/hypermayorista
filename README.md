@@ -1,5 +1,3 @@
-{{ ... }}
-
 ## Pending Development
 
 ### Accessibility Improvements

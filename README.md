@@ -13,3 +13,7 @@
 - PDF generation functionality
 - Download invoice capability
 - Payment history tracking
+
+### Bugs detected
+
+- When changing the product options, the max and min quantity should change according to the variation stock

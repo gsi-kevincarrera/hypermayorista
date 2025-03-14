@@ -15,7 +15,7 @@ export default function Footer() {
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8'>
           <div>
             <h3 className='text-lg font-semibold mb-4'>
-              Acerca de HyperMayorista
+              Acerca de HiperMayorista
             </h3>
             <p className='text-gray-400'>
               Empoderando tu negocio con soluciones innovadoras.
@@ -67,7 +67,7 @@ export default function Footer() {
         </div>
         <div className='mt-8 pt-8 border-t border-gray-800 flex flex-col sm:flex-row justify-between items-center'>
           <p className='text-gray-400 text-sm'>
-            &copy; 2025 HyperMayorista. Todos los derechos reservados.
+            &copy; 2025 HiperMayorista. Todos los derechos reservados.
           </p>
           <div className='flex space-x-4 mt-4 sm:mt-0'>
             <Link

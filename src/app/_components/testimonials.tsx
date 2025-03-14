@@ -13,28 +13,28 @@ const testimonials = [
     name: 'Esteban Reyes',
     role: 'CEO, TechInnovate',
     content:
-      'Hypermayorista ha revolucionado nuestra gestión de la cadena de suministro. La eficiencia de la plataforma y su alcance global han incrementado significativamente nuestra productividad.',
+      'Hipermayorista ha revolucionado nuestra gestión de la cadena de suministro. La eficiencia de la plataforma y su alcance global han incrementado significativamente nuestra productividad.',
     avatar: '',
   },
   {
     name: 'Miguel Fernández',
     role: 'Gerente de Compras, GlobalRetail',
     content:
-      'La calidad de los proveedores en Hypermayorista es incomparable. Hemos encontrado socios confiables que nos han ayudado a escalar nuestras operaciones de manera fluida.',
+      'La calidad de los proveedores en Hipermayorista es incomparable. Hemos encontrado socios confiables que nos han ayudado a escalar nuestras operaciones de manera fluida.',
     avatar: '',
   },
   {
     name: 'Emma Rodríguez',
     role: 'Fundadora, EcoGoods',
     content:
-      'Como pequeña empresa, Hypermayorista ha sido fundamental en nuestro crecimiento. La interfaz fácil de usar de la plataforma y su equipo de soporte son excepcionales.',
+      'Como pequeña empresa, Hipermayorista ha sido fundamental en nuestro crecimiento. La interfaz fácil de usar de la plataforma y su equipo de soporte son excepcionales.',
     avatar: '',
   },
   {
     name: 'David Pérez',
     role: 'Director de Operaciones, AfriTech',
     content:
-      'La red global de Hypermayorista ha abierto nuevos mercados para nosotros. Los análisis basados en datos han sido cruciales en nuestra estrategia de expansión internacional.',
+      'La red global de Hipermayorista ha abierto nuevos mercados para nosotros. Los análisis basados en datos han sido cruciales en nuestra estrategia de expansión internacional.',
     avatar: '',
   },
 ]

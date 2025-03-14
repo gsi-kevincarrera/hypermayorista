@@ -8,10 +8,10 @@ export default function About() {
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-12 items-center'>
           <div>
             <h2 className='text-3xl font-bold mb-6'>
-              Acerca de Hypermayorista
+              Acerca de Hipermayorista
             </h2>
             <p className='text-gray-600 mb-6'>
-              En <strong>Hypermayorista</strong>, nos dedicamos a ofrecer
+              En <strong>Hipermayorista</strong>, nos dedicamos a ofrecer
               soluciones innovadoras y eficientes para el comercio mayorista,
               conectando a empresas de todo el mundo en un solo lugar. Nuestra
               plataforma optimiza la gestión de compras y ventas, brindando a
@@ -34,7 +34,7 @@ export default function About() {
           <div className='relative h-[400px] rounded-lg overflow-hidden shadow-xl'>
             <Image
               src='/about-image.webp'
-              alt='Hypermayorista Team'
+              alt='Hipermayorista Team'
               fill
               className='object-cover'
             />

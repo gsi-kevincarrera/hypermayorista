@@ -1,6 +1,7 @@
 'use server'
 import {
   categories,
+  contracts,
   priceBreaks,
   productOptions,
   products,
@@ -261,5 +262,21 @@ export async function getAllCategoriesNames() {
   } catch (error) {
     console.error(error)
     throw new Error('Error fetching categories')
+  }
+}
+
+export async function getContractByUserId(userId: string | null) {
+  if (!userId) {
+    return null
+  }
+  try {
+    const [contract] = await db
+      .select()
+      .from(contracts)
+      .where(and(eq(contracts.userId, userId), eq(contracts.isActive, true)))
+    return contract
+  } catch (error) {
+    console.error(error)
+    throw new Error('Error fetching contract')
   }
 }

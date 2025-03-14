@@ -48,7 +48,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const addToCart = (product: ProductInCart) => {
     setCart((prev) => {
       if (!prev.some((item) => item.id === product.id)) {
-        const newCart = [...prev, product]
+        const newCart = [product, ...prev]
         localStorage.setItem('cart', JSON.stringify(newCart))
         return newCart
       }
@@ -71,7 +71,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const undoRemove = () => {
     if (lastRemovedItem) {
       setCart((prev) => {
-        const newCart = [...prev, lastRemovedItem]
+        const newCart = [lastRemovedItem, ...prev]
         localStorage.setItem('cart', JSON.stringify(newCart))
         return newCart
       })

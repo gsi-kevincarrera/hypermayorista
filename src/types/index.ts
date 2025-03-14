@@ -85,3 +85,16 @@ export type ProductInCart = {
   variantInfo?: string | null // Ex: "Size: XL, Color: Red" (for UI display)
   isSelected: boolean
 }
+
+/**
+ * Contract
+ */
+export type Contract = {
+  id: number
+  userId: string
+  filePath: string
+  status: 'pending' | 'approved' | 'rejected'
+  reason?: string | null
+  createdAt: Date
+  isActive: boolean
+}

@@ -2,7 +2,13 @@
 
 import { eq, and, sql, getTableColumns } from 'drizzle-orm'
 import { db } from '.'
-import { products, categories, productVariants, priceBreaks } from './schema'
+import {
+  products,
+  categories,
+  productVariants,
+  priceBreaks,
+  contracts,
+} from './schema'
 
 export async function getNonSpecialProducts(
   offset: number,
@@ -170,5 +176,54 @@ export async function calculatePrice(
   } catch (error) {
     console.error(error)
     throw new Error('Error calculating price')
+  }
+}
+
+export async function saveContract(filePath: string, userId: string | null) {
+  if (!userId) {
+    throw new Error('Unauthorized: User not authenticated')
+  }
+
+  try {
+    // Insert the contract into the database
+    const [result] = await db
+      .insert(contracts)
+      .values({
+        userId,
+        filePath,
+        status: 'pending',
+      })
+      .returning({ id: contracts.id })
+
+    return { success: true, contractId: result.id }
+  } catch (error) {
+    return {
+      success: false,
+      error: 'Error al guardar el contrato',
+    }
+  }
+}
+
+export async function deactivatePreviousContracts(
+  userId: string | null | undefined
+) {
+  if (!userId) {
+    throw new Error('Unauthorized: User not authenticated')
+  }
+
+  try {
+    // Update all previous contracts to inactive
+    await db
+      .update(contracts)
+      .set({ isActive: false })
+      .where(and(eq(contracts.userId, userId), eq(contracts.isActive, true)))
+
+    return { success: true }
+  } catch (error) {
+    console.error('Error deactivating previous contracts:', error)
+    return {
+      success: false,
+      error: 'Error al actualizar contratos anteriores',
+    }
   }
 }

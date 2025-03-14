@@ -76,3 +76,13 @@ export const priceBreaks = pgTable('PriceBreaks', {
   maxQuantity: integer('max_quantity'),
   unitPrice: real('unit_price').notNull(),
 })
+
+export const contracts = pgTable('Contracts', {
+  id: serial('id').primaryKey(),
+  userId: text('user_id').notNull(),
+  filePath: text('file_path').notNull(),
+  status: varchar('status').notNull().default('pending'),
+  reason: text('reason'),
+  isActive: boolean('is_active').default(true),
+  createdAt: timestamp('created_at').defaultNow(),
+})

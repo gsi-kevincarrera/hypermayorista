@@ -38,6 +38,7 @@ export default function CartDrawer() {
   const router = useRouter()
   const [showUndoButton, setShowUndoButton] = useState(false)
   const [progressValue, setProgressValue] = useState(100)
+  const [open, setOpen] = useState(false)
 
   // Reset the undo button when lastRemovedItem changes
   useEffect(() => {
@@ -97,12 +98,18 @@ export default function CartDrawer() {
     setShowUndoButton(false)
   }
 
+  const handleGoToCheckout = () => {
+    setOpen(false) // Close the drawer
+    router.push('/checkout')
+  }
+
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button
           className='fixed bottom-4 right-4 h-16 w-16 rounded-full shadow-lg bg-purple-600 hover:bg-purple-700'
           size='icon'
+          onClick={() => setOpen(true)}
         >
           <ShoppingCart className='h-6 w-6' />
           {cart.length > 0 && (
@@ -127,7 +134,7 @@ export default function CartDrawer() {
                   title='Ir al checkout'
                   className='bg-gray-50/80 text-black hover:bg-secondary'
                   disabled={getSelectedItemsCount() === 0}
-                  onClick={() => router.push('/checkout')}
+                  onClick={handleGoToCheckout}
                 >
                   <ShoppingCartIcon className='h-5 w-5 mr-2' />
                   Checkout
@@ -242,7 +249,7 @@ export default function CartDrawer() {
               <Button
                 className='w-full disabled:opacity-50'
                 disabled={getSelectedItemsCount() === 0}
-                onClick={() => router.push('/checkout')}
+                onClick={handleGoToCheckout}
               >
                 Ir al Checkout
               </Button>

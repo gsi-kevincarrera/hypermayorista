@@ -76,14 +76,15 @@ export type ProductDetails = BaseProduct & {
  */
 export type ProductInCart = {
   id: number
-  variantId?: number | null
   name: string
   mainImageUrl: string | null
-  quantity: number
   unitPrice: number // Price calculated based on variant and quantity
+  quantity: number
   total: number
-  variantInfo?: string | null // Ex: "Size: XL, Color: Red" (for UI display)
   isSelected: boolean
+  variantId?: number | null
+  variantInfo?: string | null // Ex: "Size: XL, Color: Red" (for UI display)
+  isBeingRemoved?: boolean
 }
 
 /**

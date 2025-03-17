@@ -5,8 +5,11 @@ import { ProductOption, PriceBreak } from '@/types'
 import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { useDebouncedCallback } from 'use-debounce'
+import { useRouter } from 'next/navigation'
+
 export default function useConfirmAddToCart() {
-  const { setSelectedProduct, selectedProduct, addToCart } = useCart()
+  const { setSelectedProduct, selectedProduct, addToCart, isAddingToCart } =
+    useCart()
   const [quantity, setQuantity] = useState(1)
   const [selectedOptions, setSelectedOptions] = useState<
     Record<string, string>
@@ -15,10 +18,17 @@ export default function useConfirmAddToCart() {
   const [isCalculatingPrice, setIsCalculatingPrice] = useState(false)
   const [isFormValid, setIsFormValid] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [addingToCart, setAddingToCart] = useState(false)
+  const router = useRouter()
   const [productDetails, setProductDetails] = useState<{
     options: ProductOption[] | null
     priceBreaks: PriceBreak[] | null
   } | null>(null)
+
+  // Track the selected variant ID
+  const [selectedVariantId, setSelectedVariantId] = useState<number | null>(
+    null
+  )
 
   useEffect(() => {
     setQuantity(selectedProduct?.minQuantity || 1)
@@ -51,8 +61,9 @@ export default function useConfirmAddToCart() {
     }
 
     fetchProductDetails()
-    // Reset selected options when product changes
+    // Reset selected options and variant ID when product changes
     setSelectedOptions({})
+    setSelectedVariantId(null)
   }, [selectedProduct])
 
   const updatePrice = useCallback(async () => {
@@ -87,6 +98,9 @@ export default function useConfirmAddToCart() {
         )
 
         if (variant) {
+          // Store the variant ID for later use
+          setSelectedVariantId(variant.id)
+
           const { totalPrice } = await calculatePrice(
             selectedProduct.id,
             quantity,
@@ -108,6 +122,9 @@ export default function useConfirmAddToCart() {
         // Fallback to simple calculation
         setPrice(selectedProduct.basePrice * quantity)
       }
+
+      // No variant was found, reset the variant ID
+      setSelectedVariantId(null)
     } catch (error) {
       console.error('Error calculating price:', error)
       toast.error(
@@ -155,8 +172,8 @@ export default function useConfirmAddToCart() {
     debouncedUpdatePrice,
   ])
 
-  const confirmAddToCart = () => {
-    if (!selectedProduct || !isFormValid || loading) return
+  const confirmAddToCart = async () => {
+    if (!selectedProduct || !isFormValid || loading || isAddingToCart) return
 
     if (quantity < selectedProduct.minQuantity) {
       toast.error(
@@ -165,41 +182,56 @@ export default function useConfirmAddToCart() {
       return
     }
 
-    // Create variant info string for display
-    const variantInfo = Object.entries(selectedOptions)
-      .map(([key, value]) => `${key}: ${value}`)
-      .join(', ')
+    setAddingToCart(true)
 
-    addToCart({
-      id: selectedProduct.id,
-      mainImageUrl: selectedProduct.images?.[0] ?? '/imageplaceholder.webp',
-      name: selectedProduct.name,
-      unitPrice: price / quantity, // Calculate unit price from total
-      total: price,
-      quantity,
-      variantInfo: Object.keys(selectedOptions).length > 0 ? variantInfo : null,
-      isSelected: true,
-    })
+    try {
+      // Create variant info string for display
+      const variantInfo = Object.entries(selectedOptions)
+        .map(([key, value]) => `${key}: ${value}`)
+        .join(', ')
 
-    toast.success('Producto agregado al carrito')
-    setSelectedProduct(null)
-    setQuantity(1)
-    setSelectedOptions({})
-    setProductDetails(null)
+      const success = await addToCart({
+        id: selectedProduct.id,
+        variantId: selectedVariantId,
+        mainImageUrl: selectedProduct.images?.[0] ?? '/imageplaceholder.webp',
+        name: selectedProduct.name,
+        unitPrice: price / quantity, // Calculate unit price from total
+        total: price,
+        quantity,
+        variantInfo:
+          Object.keys(selectedOptions).length > 0 ? variantInfo : null,
+        isSelected: true,
+      })
+
+      if (success) {
+        toast.success('Producto agregado al carrito')
+        // Don't close the drawer immediately, let the user see the success message
+        setTimeout(() => {
+          setSelectedProduct(null)
+          setQuantity(1)
+          setSelectedOptions({})
+          setProductDetails(null)
+          setSelectedVariantId(null)
+        }, 500)
+      } else {
+        toast.error('Error al agregar al carrito. Intente nuevamente.')
+      }
+    } catch (error) {
+      console.error('Error adding to cart:', error)
+      toast.error('Error al agregar al carrito. Intente nuevamente.')
+    } finally {
+      setAddingToCart(false)
+    }
   }
 
   const goToCheckout = () => {
     if (!isFormValid || loading) return
-    console.log('Going to checkout with:', {
-      ...selectedProduct,
-      quantity,
-      options: selectedOptions,
-      price,
+
+    // First add to cart
+    confirmAddToCart().then(() => {
+      // Then navigate to checkout
+      router.push('/checkout')
     })
-    setSelectedProduct(null)
-    setQuantity(1)
-    setSelectedOptions({})
-    setProductDetails(null)
   }
 
   return {
@@ -216,5 +248,6 @@ export default function useConfirmAddToCart() {
     setSelectedProduct,
     productDetails,
     isCalculatingPrice,
+    isAddingToCart: addingToCart || isAddingToCart,
   }
 }

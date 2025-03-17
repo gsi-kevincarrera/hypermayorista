@@ -86,3 +86,20 @@ export const contracts = pgTable('Contracts', {
   isActive: boolean('is_active').default(true),
   createdAt: timestamp('created_at').defaultNow(),
 })
+
+export const cartItems = pgTable('CartItems', {
+  id: serial('id').primaryKey(),
+  userId: text('user_id').notNull(),
+  productId: integer('product_id')
+    .notNull()
+    .references(() => products.id),
+  variantId: integer('variant_id').references(() => productVariants.id),
+  variantInfo: text('variant_info'),
+  quantity: integer('quantity').notNull(),
+  unitPrice: real('unit_price').notNull(),
+  isSelected: boolean('is_selected').default(true),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at')
+    .defaultNow()
+    .$onUpdate(() => new Date()),
+})

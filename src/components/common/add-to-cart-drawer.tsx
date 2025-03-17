@@ -28,6 +28,7 @@ export default function AddToCartDrawer() {
     price,
     isFormValid,
     loading,
+    isAddingToCart,
     selectedProduct,
     setSelectedProduct,
     productDetails,
@@ -154,17 +155,31 @@ export default function AddToCartDrawer() {
             <Button
               onClick={confirmAddToCart}
               className='flex-1 max-w-[200px]'
-              disabled={!isFormValid || loading || isCalculatingPrice}
+              disabled={!isFormValid || loading || isCalculatingPrice || isAddingToCart}
             >
-              Agregar al carrito
+              {isAddingToCart ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Agregando...
+                </>
+              ) : (
+                'Agregar al carrito'
+              )}
             </Button>
             <Button
               onClick={goToCheckout}
               variant='outline'
               className='flex-1 max-w-[200px]'
-              disabled={!isFormValid || loading || isCalculatingPrice}
+              disabled={!isFormValid || loading || isCalculatingPrice || isAddingToCart}
             >
-              Ir al Checkout
+              {isAddingToCart ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Procesando...
+                </>
+              ) : (
+                'Ir al Checkout'
+              )}
             </Button>
           </DrawerFooter>
         </div>

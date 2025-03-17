@@ -5,6 +5,7 @@ import {
   X,
   ExternalLink,
   Undo2,
+  Loader2,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -23,8 +24,9 @@ import { Checkbox } from '@/components/ui/checkbox'
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { useRouter } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useOptimistic, useTransition } from 'react'
 import { Progress } from '@/components/ui/progress'
+import { cn } from '@/lib/utils'
 
 const UNDO_TIMEOUT_MS = 5000
 export default function CartDrawer() {
@@ -34,11 +36,22 @@ export default function CartDrawer() {
     toggleItemSelection,
     lastRemovedItem,
     undoRemove,
+    removingItemIds,
   } = useCart()
   const router = useRouter()
   const [showUndoButton, setShowUndoButton] = useState(false)
   const [progressValue, setProgressValue] = useState(100)
   const [open, setOpen] = useState(false)
+  const [isPending, startTransition] = useTransition()
+
+  // Use optimistic UI for cart items
+  const [optimisticCart, addOptimisticRemoval] = useOptimistic(
+    cart,
+    (state, productId: number) =>
+      state.map((item) =>
+        item.id === productId ? { ...item, isBeingRemoved: true } : item
+      )
+  )
 
   // Reset the undo button when lastRemovedItem changes
   useEffect(() => {
@@ -88,9 +101,16 @@ export default function CartDrawer() {
     toggleItemSelection(productId)
   }
 
-  const handleRemoveItem = (e: React.MouseEvent, productId: number) => {
+  const handleRemoveItem = async (e: React.MouseEvent, productId: number) => {
     e.preventDefault() // Prevent navigation when clicking the remove button
-    removeFromCart(productId)
+
+    // Apply optimistic UI update inside a transition
+    startTransition(() => {
+      addOptimisticRemoval(productId)
+    })
+
+    // Perform actual removal
+    await removeFromCart(productId)
   }
 
   const handleUndoRemove = () => {
@@ -170,66 +190,86 @@ export default function CartDrawer() {
         )}
 
         <div className='mt-4 space-y-4'>
-          {cart.map((item, index) => (
-            <div key={index} className='flex items-center gap-4'>
-              <Checkbox
-                checked={item.isSelected}
-                onCheckedChange={() => handleCheckboxChange(item.id)}
-              />
-              <Link
-                href={`/products/${item.id}`}
-                className='w-full hover:opacity-90 transition-opacity'
+          {optimisticCart.map((item, index) => {
+            const isBeingRemoved =
+              item.isBeingRemoved || removingItemIds.includes(item.id)
+
+            return (
+              <div
+                key={index}
+                className={cn(
+                  'flex items-center gap-4 transition-opacity duration-300',
+                  isBeingRemoved ? 'opacity-50' : 'opacity-100'
+                )}
               >
-                <Card className='w-full'>
-                  <CardContent className='flex items-center justify-between p-4'>
-                    <div className='flex items-center space-x-4'>
-                      <Image
-                        src={item.mainImageUrl ?? '/imageplaceholder.webp'}
-                        alt={item.name}
-                        width={50}
-                        height={50}
-                        className='object-cover rounded'
-                      />
-                      <div>
-                        <div className='flex items-center gap-2'>
-                          <h4 className='font-semibold'>{item.name}</h4>
-                          <ExternalLink className='h-3 w-3 text-muted-foreground' />
+                <Checkbox
+                  checked={item.isSelected}
+                  onCheckedChange={() => handleCheckboxChange(item.id)}
+                  disabled={isBeingRemoved}
+                />
+                <Link
+                  href={`/products/${item.id}`}
+                  className={cn(
+                    'w-full hover:opacity-90 transition-opacity',
+                    isBeingRemoved ? 'pointer-events-none' : ''
+                  )}
+                >
+                  <Card className='w-full'>
+                    <CardContent className='flex items-center justify-between p-4'>
+                      <div className='flex items-center space-x-4'>
+                        <Image
+                          src={item.mainImageUrl ?? '/imageplaceholder.webp'}
+                          alt={item.name}
+                          width={50}
+                          height={50}
+                          className='object-cover rounded'
+                        />
+                        <div>
+                          <div className='flex items-center gap-2'>
+                            <h4 className='font-semibold'>{item.name}</h4>
+                            <ExternalLink className='h-3 w-3 text-muted-foreground' />
+                          </div>
+                          {item.variantInfo && (
+                            <Badge variant='outline' className='mt-1 text-xs'>
+                              {item.variantInfo}
+                            </Badge>
+                          )}
+                          <p className='text-sm text-gray-500 mt-1'>
+                            $
+                            {new Intl.NumberFormat('es-CU', {
+                              minimumFractionDigits: 0,
+                              maximumFractionDigits: 2,
+                            }).format(item.unitPrice)}{' '}
+                            x {item.quantity}
+                          </p>
+                          <p className='text-sm font-medium'>
+                            Total: $
+                            {new Intl.NumberFormat('es-CU', {
+                              minimumFractionDigits: 0,
+                              maximumFractionDigits: 2,
+                            }).format(item.total)}
+                          </p>
                         </div>
-                        {item.variantInfo && (
-                          <Badge variant='outline' className='mt-1 text-xs'>
-                            {item.variantInfo}
-                          </Badge>
-                        )}
-                        <p className='text-sm text-gray-500 mt-1'>
-                          $
-                          {new Intl.NumberFormat('es-CU', {
-                            minimumFractionDigits: 0,
-                            maximumFractionDigits: 2,
-                          }).format(item.unitPrice)}{' '}
-                          x {item.quantity}
-                        </p>
-                        <p className='text-sm font-medium'>
-                          Total: $
-                          {new Intl.NumberFormat('es-CU', {
-                            minimumFractionDigits: 0,
-                            maximumFractionDigits: 2,
-                          }).format(item.total)}
-                        </p>
                       </div>
-                    </div>
-                    <Button
-                      variant='ghost'
-                      size='icon'
-                      onClick={(e) => handleRemoveItem(e, item.id)}
-                      className='text-red-500 hover:text-red-700'
-                    >
-                      <X className='h-5 w-5' />
-                    </Button>
-                  </CardContent>
-                </Card>
-              </Link>
-            </div>
-          ))}
+                      <Button
+                        variant='ghost'
+                        size='icon'
+                        onClick={(e) => handleRemoveItem(e, item.id)}
+                        className='text-red-500 hover:text-red-700'
+                        disabled={isBeingRemoved || isPending}
+                      >
+                        {isBeingRemoved ? (
+                          <Loader2 className='h-5 w-5 animate-spin' />
+                        ) : (
+                          <X className='h-5 w-5' />
+                        )}
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </div>
+            )
+          })}
         </div>
         {cart.length > 0 && (
           <SheetFooter className='mt-6 flex-col'>

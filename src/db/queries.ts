@@ -7,6 +7,7 @@ import {
   productOptions,
   products,
   productVariants,
+  cartItems,
 } from '@/db/schema'
 import {
   eq,
@@ -19,6 +20,7 @@ import {
 } from 'drizzle-orm'
 import { combineConditions } from './utils'
 import { db } from '@/db'
+import { ProductInCart } from '@/types'
 
 //Product queries
 export type Filters = {
@@ -279,5 +281,226 @@ export async function getContractByUserId(userId: string | null) {
   } catch (error) {
     console.error(error)
     throw new Error('Error fetching contract')
+  }
+}
+
+//Cart queries
+export async function getUserCart(userId: string) {
+  try {
+    const items = await db
+      .select({
+        id: cartItems.id,
+        productId: cartItems.productId,
+        variantId: cartItems.variantId,
+        variantInfo: cartItems.variantInfo,
+        quantity: cartItems.quantity,
+        unitPrice: cartItems.unitPrice,
+        isSelected: cartItems.isSelected,
+        name: products.name,
+        images: products.images,
+      })
+      .from(cartItems)
+      .innerJoin(products, eq(cartItems.productId, products.id))
+      .where(eq(cartItems.userId, userId))
+      .orderBy(cartItems.createdAt)
+
+    // Transform to ProductInCart format
+    return items.map(
+      (item) =>
+        ({
+          id: item.productId,
+          variantId: item.variantId,
+          name: item.name,
+          mainImageUrl:
+            item.images && item.images.length > 0 ? item.images[0] : null,
+          quantity: item.quantity,
+          unitPrice: item.unitPrice,
+          total: item.quantity * item.unitPrice,
+          isSelected: item.isSelected,
+          variantInfo: item.variantInfo,
+        } as ProductInCart)
+    )
+  } catch (error) {
+    console.error('Error fetching user cart:', error)
+    throw new Error('Error fetching user cart')
+  }
+}
+
+export async function addToCartDb(
+  userId: string,
+  item: {
+    productId: number
+    variantId?: number | null
+    variantInfo?: string | null
+    quantity: number
+    unitPrice: number
+  }
+) {
+  try {
+    // Check if item already exists in cart
+    const existingItems = await db
+      .select()
+      .from(cartItems)
+      .where(
+        and(
+          eq(cartItems.userId, userId),
+          eq(cartItems.productId, item.productId),
+          item.variantId
+            ? eq(cartItems.variantId, item.variantId)
+            : isNull(cartItems.variantId)
+        )
+      )
+
+    if (existingItems.length > 0) {
+      // Item already exists, don't add it again
+      return false
+    }
+
+    // Add new item to cart
+    await db.insert(cartItems).values({
+      userId,
+      productId: item.productId,
+      variantId: item.variantId || null,
+      variantInfo: item.variantInfo || null,
+      quantity: item.quantity,
+      unitPrice: item.unitPrice,
+      isSelected: true,
+    })
+
+    return true
+  } catch (error) {
+    console.error('Error adding item to cart:', error)
+    throw new Error('Error adding item to cart')
+  }
+}
+
+export async function removeFromCartDb(
+  userId: string,
+  productId: number,
+  variantId?: number | null
+) {
+  try {
+    await db
+      .delete(cartItems)
+      .where(
+        and(
+          eq(cartItems.userId, userId),
+          eq(cartItems.productId, productId),
+          variantId
+            ? eq(cartItems.variantId, variantId)
+            : isNull(cartItems.variantId)
+        )
+      )
+
+    return true
+  } catch (error) {
+    console.error('Error removing item from cart:', error)
+    throw new Error('Error removing item from cart')
+  }
+}
+
+export async function updateCartItemSelectionDb(
+  userId: string,
+  productId: number,
+  isSelected: boolean,
+  variantId?: number | null
+) {
+  try {
+    await db
+      .update(cartItems)
+      .set({ isSelected })
+      .where(
+        and(
+          eq(cartItems.userId, userId),
+          eq(cartItems.productId, productId),
+          variantId
+            ? eq(cartItems.variantId, variantId)
+            : isNull(cartItems.variantId)
+        )
+      )
+
+    return true
+  } catch (error) {
+    console.error('Error updating cart item selection:', error)
+    throw new Error('Error updating cart item selection')
+  }
+}
+
+export async function syncCartWithDb(
+  userId: string,
+  cartItems: ProductInCart[]
+) {
+  try {
+    // First, get current cart from DB
+    const dbCart = await getUserCart(userId)
+
+    // Create a map of DB items for easy lookup
+    const dbItemMap = new Map(
+      dbCart.map((item) => [`${item.id}-${item.variantId || 'null'}`, item])
+    )
+
+    // Create a map of local items for easy lookup
+    const localItemMap = new Map(
+      cartItems.map((item) => [`${item.id}-${item.variantId || 'null'}`, item])
+    )
+
+    // Items to add to DB (in local but not in DB)
+    const itemsToAdd = cartItems.filter(
+      (item) => !dbItemMap.has(`${item.id}-${item.variantId || 'null'}`)
+    )
+
+    // Items to remove from DB (in DB but not in local)
+    const itemsToRemove = dbCart.filter(
+      (item) => !localItemMap.has(`${item.id}-${item.variantId || 'null'}`)
+    )
+
+    // Items that might need selection state update
+    const itemsToUpdate = cartItems.filter((localItem) => {
+      const key = `${localItem.id}-${localItem.variantId || 'null'}`
+      const dbItem = dbItemMap.get(key)
+      return dbItem && dbItem.isSelected !== localItem.isSelected
+    })
+
+    // Perform batch operations
+    const addPromises = itemsToAdd.map((item) =>
+      addToCartDb(userId, {
+        productId: item.id,
+        variantId: item.variantId,
+        variantInfo: item.variantInfo,
+        quantity: item.quantity,
+        unitPrice: item.unitPrice,
+      })
+    )
+
+    const removePromises = itemsToRemove.map((item) =>
+      removeFromCartDb(userId, item.id, item.variantId)
+    )
+
+    const updatePromises = itemsToUpdate.map((item) =>
+      updateCartItemSelectionDb(
+        userId,
+        item.id,
+        item.isSelected,
+        item.variantId
+      )
+    )
+
+    await Promise.all([...addPromises, ...removePromises, ...updatePromises])
+
+    return true
+  } catch (error) {
+    console.error('Error syncing cart with database:', error)
+    throw new Error('Error syncing cart with database')
+  }
+}
+
+export async function clearCartDb(userId: string) {
+  try {
+    await db.delete(cartItems).where(eq(cartItems.userId, userId))
+
+    return true
+  } catch (error) {
+    console.error('Error clearing cart:', error)
+    throw new Error('Error clearing cart')
   }
 }

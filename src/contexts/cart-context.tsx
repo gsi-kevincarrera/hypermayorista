@@ -19,33 +19,84 @@ import {
   updateCartItemSelectionDb,
   syncCartWithDb,
 } from '@/db/queries'
+import { useDebouncedCallback } from 'use-debounce'
 
-interface CartContextType {
-  cart: ProductInCart[]
-  addToCart: (product: ProductInCart) => Promise<boolean>
-  removeFromCart: (productId: number) => Promise<void>
-  isInCart: (productId: number) => boolean
-  selectedProduct: BaseProduct | null
-  setSelectedProduct: (product: BaseProduct | null) => void
-  toggleItemSelection: (productId: number) => void
-  lastRemovedItem: ProductInCart | null
-  undoRemove: () => void
-  isLoading: boolean
-  isAddingToCart: boolean
-  removingItemIds: number[]
-}
-
-const CartContext = createContext<CartContextType | undefined>(undefined)
-
-// Key used for localStorage
+/**
+ * Key used for localStorage to persist cart data between sessions
+ */
 const CART_STORAGE_KEY = 'cart'
 
-// Create a user-specific storage key
+/**
+ * Creates a user-specific storage key for localStorage
+ * @param userId - The user's ID from authentication
+ * @returns A storage key that is either user-specific or generic
+ */
 const getUserCartKey = (userId: string | null | undefined) => {
   return userId ? `${CART_STORAGE_KEY}_${userId}` : CART_STORAGE_KEY
 }
 
+/**
+ * Interface defining all cart operations and state available through the context
+ */
+interface CartContextType {
+  /** Array of products currently in the cart */
+  cart: ProductInCart[]
+
+  /** Adds a product to the cart and syncs with database */
+  addToCart: (product: ProductInCart) => Promise<boolean>
+
+  /** Removes a product from the cart and syncs with database */
+  removeFromCart: (productId: number) => Promise<void>
+
+  /** Checks if a product is already in the cart */
+  isInCart: (productId: number) => boolean
+
+  /** Currently selected product (used for product details/add to cart flow) */
+  selectedProduct: BaseProduct | null
+
+  /** Sets the currently selected product, redirects to sign-in if not authenticated */
+  setSelectedProduct: (product: BaseProduct | null) => void
+
+  /** Toggles selection state of a specific item in cart (for checkout) */
+  toggleItemSelection: (productId: number) => void
+
+  /** Toggles selection state of all items in cart (for checkout) */
+  toggleAllItemsSelection: (selected: boolean) => void
+
+  /** Last item removed from cart (for undo functionality) */
+  lastRemovedItem: ProductInCart | null
+
+  /** Restores the last removed item back to the cart */
+  undoRemove: () => void
+
+  /** Indicates if the cart is currently loading */
+  isLoading: boolean
+
+  /** Indicates if an item is currently being added to cart */
+  isAddingToCart: boolean
+
+  /** IDs of items currently being removed (for optimistic UI updates) */
+  removingItemIds: number[]
+}
+
+/**
+ * Context that provides cart functionality throughout the application
+ */
+const CartContext = createContext<CartContextType | undefined>(undefined)
+
+/**
+ * CartProvider component that manages cart state and operations
+ *
+ * This provider implements a hybrid approach to cart management:
+ * 1. Database is the source of truth for authenticated users
+ * 2. LocalStorage is used for immediate updates and offline support
+ * 3. Optimistic UI updates are used for better user experience
+ * 4. Debounced operations are used to prevent excessive database calls
+ *
+ * @param children - React children to be wrapped by the provider
+ */
 export function CartProvider({ children }: { children: ReactNode }) {
+  // Core cart state
   const [cart, setCart] = useState<ProductInCart[]>([])
   const [selectedProduct, setSelectedProduct] = useState<BaseProduct | null>(
     null
@@ -53,16 +104,31 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [lastRemovedItem, setLastRemovedItem] = useState<ProductInCart | null>(
     null
   )
+
+  // UI state indicators
   const [isLoading, setIsLoading] = useState(true)
   const [isAddingToCart, setIsAddingToCart] = useState(false)
   const [removingItemIds, setRemovingItemIds] = useState<number[]>([])
+
+  // Hooks
   const router = useRouter()
   const { isSignedIn, userId } = useAuth()
 
-  // Keep track of the previous user ID to detect user changes
+  // Track user changes to handle sign-in/sign-out scenarios
   const prevUserIdRef = useRef<string | null | undefined>(null)
 
-  // Load cart from database and sync with localStorage
+  /**
+   * Loads cart data from database and syncs with localStorage
+   *
+   * This function handles several scenarios:
+   * 1. User changes (sign-in/sign-out): Reset cart state
+   * 2. Not signed in: Clear cart and localStorage
+   * 3. Signed in: Load cart from database (source of truth)
+   * 4. Conflict resolution: If localStorage and DB differ, determine which to use
+   *
+   * Design decision: Database is the source of truth, but we use localStorage
+   * for immediate updates and offline support.
+   */
   const loadCart = useCallback(async () => {
     const userChanged = prevUserIdRef.current !== userId
     prevUserIdRef.current = userId
@@ -120,11 +186,84 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, [isSignedIn, userId])
 
-  // Effect to handle user changes and initial load
+  // Load cart on initial render and when authentication state changes
   useEffect(() => {
     loadCart()
   }, [loadCart])
 
+  /**
+   * Debounced function to update item selection in database
+   *
+   * Design decision: Use debouncing to prevent excessive database calls
+   * when users rapidly toggle selections, improving performance and reducing
+   * database load.
+   */
+  const debouncedUpdateDb = useDebouncedCallback(
+    async (
+      userId: string,
+      productId: number,
+      isSelected: boolean,
+      variantId?: number | null
+    ) => {
+      try {
+        await updateCartItemSelectionDb(
+          userId,
+          productId,
+          isSelected,
+          variantId
+        )
+      } catch (error) {
+        console.error('Error updating item selection in database:', error)
+      }
+    },
+    500
+  )
+
+  /**
+   * Debounced function to update multiple items' selection states in database
+   *
+   * Design decision: Batch updates for multiple items to reduce database calls
+   * and improve performance when selecting/deselecting all items.
+   */
+  const debouncedBulkUpdateDb = useDebouncedCallback(
+    async (
+      userId: string,
+      items: {
+        productId: number
+        isSelected: boolean
+        variantId?: number | null
+      }[]
+    ) => {
+      try {
+        // Process all updates in parallel
+        await Promise.all(
+          items.map((item) =>
+            updateCartItemSelectionDb(
+              userId,
+              item.productId,
+              item.isSelected,
+              item.variantId
+            )
+          )
+        )
+      } catch (error) {
+        console.error('Error updating multiple items in database:', error)
+      }
+    },
+    500
+  )
+
+  /**
+   * Adds a product to the cart
+   *
+   * Design decisions:
+   * 1. Optimistic UI: Update local state immediately for better UX
+   * 2. Database sync: Update database after local state for persistence
+   * 3. Authentication check: Redirect to sign-in if not authenticated
+   *
+   * @param product - The product to add to the cart
+   * @returns Promise resolving to success status
+   */
   const addToCart = async (product: ProductInCart): Promise<boolean> => {
     if (!isSignedIn || !userId) {
       router.push('/sign-in')
@@ -164,6 +303,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  /**
+   * Removes a product from the cart
+   *
+   * Design decisions:
+   * 1. Optimistic UI: Mark item as being removed immediately
+   * 2. Undo functionality: Store removed item for potential restoration
+   * 3. Database sync: Remove from database before updating local state
+   *
+   * @param productId - ID of the product to remove
+   */
   const removeFromCart = async (productId: number) => {
     // Find the item to remove
     const itemToRemove = cart.find((item) => item.id === productId)
@@ -196,6 +345,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  /**
+   * Restores the last removed item back to the cart
+   *
+   * Design decision: Provide undo functionality for accidental removals,
+   * improving user experience by allowing easy recovery from mistakes.
+   */
   const undoRemove = async () => {
     if (lastRemovedItem && userId) {
       setCart((prev) => {
@@ -222,22 +377,29 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  /**
+   * Toggles the selection state of a specific item in the cart
+   *
+   * Design decisions:
+   * 1. Optimistic UI: Update local state immediately
+   * 2. Debounced database update: Prevent excessive database calls
+   *
+   * @param productId - ID of the product to toggle selection
+   */
   const toggleItemSelection = async (productId: number) => {
     setCart((prev) => {
       const newCart = prev.map((item) => {
         if (item.id === productId) {
           const updatedItem = { ...item, isSelected: !item.isSelected }
 
-          // Update in database
+          // Schedule database update without blocking UI
           if (isSignedIn && userId) {
-            updateCartItemSelectionDb(
+            debouncedUpdateDb(
               userId,
               productId,
               updatedItem.isSelected,
               item.variantId
-            ).catch((error) => {
-              console.error('Error updating item selection in database:', error)
-            })
+            )
           }
 
           return updatedItem
@@ -251,10 +413,56 @@ export function CartProvider({ children }: { children: ReactNode }) {
     })
   }
 
+  /**
+   * Toggles the selection state of all items in the cart
+   *
+   * Design decisions:
+   * 1. Batch updates: Update all items at once for efficiency
+   * 2. Debounced database update: Prevent excessive database calls
+   *
+   * @param selected - Whether to select or deselect all items
+   */
+  const toggleAllItemsSelection = async (selected: boolean) => {
+    setCart((prev) => {
+      const newCart = prev.map((item) => {
+        return { ...item, isSelected: selected }
+      })
+
+      // Schedule database update without blocking UI
+      if (isSignedIn && userId) {
+        const updateItems = newCart.map((item) => ({
+          productId: item.id,
+          isSelected: selected,
+          variantId: item.variantId === undefined ? null : item.variantId,
+        }))
+
+        debouncedBulkUpdateDb(userId, updateItems)
+      }
+
+      const userCartKey = getUserCartKey(userId)
+      localStorage.setItem(userCartKey, JSON.stringify(newCart))
+      return newCart
+    })
+  }
+
+  /**
+   * Checks if a product is already in the cart
+   *
+   * @param productId - ID of the product to check
+   * @returns Boolean indicating if the product is in the cart
+   */
   const isInCart = (productId: number) => {
     return cart.some((p) => p.id === productId)
   }
 
+  /**
+   * Sets the currently selected product
+   *
+   * Design decision: Redirect to sign-in if not authenticated,
+   * ensuring users are signed in before proceeding with product selection.
+   *
+   * @param product - The product to select or null to clear selection
+   */
   const selectProduct = (product: BaseProduct | null) => {
     if (product && !isSignedIn) {
       router.push('/sign-in')
@@ -273,6 +481,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         selectedProduct,
         setSelectedProduct: selectProduct,
         toggleItemSelection,
+        toggleAllItemsSelection,
         lastRemovedItem,
         undoRemove,
         isLoading,
@@ -285,6 +494,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
   )
 }
 
+/**
+ * Custom hook to access the cart context
+ *
+ * Design decision: Provide a custom hook for easier access to cart functionality
+ * throughout the application, with built-in error handling for misuse.
+ *
+ * @returns The cart context value
+ * @throws Error if used outside of CartProvider
+ */
 export function useCart() {
   const context = useContext(CartContext)
   if (context === undefined) {

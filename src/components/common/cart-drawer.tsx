@@ -24,7 +24,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { useRouter } from 'next/navigation'
-import { useState, useEffect, useOptimistic, useTransition } from 'react'
+import { useState, useEffect, useTransition, useOptimistic } from 'react'
 import { Progress } from '@/components/ui/progress'
 import { cn } from '@/lib/utils'
 
@@ -34,6 +34,7 @@ export default function CartDrawer() {
     cart,
     removeFromCart,
     toggleItemSelection,
+    toggleAllItemsSelection,
     lastRemovedItem,
     undoRemove,
     removingItemIds,
@@ -97,8 +98,22 @@ export default function CartDrawer() {
       .reduce((total, item) => total + item.total, 0)
   }
 
+  const areAllItemsSelected = () => {
+    return cart.length > 0 && cart.every((item) => item.isSelected)
+  }
+
   const handleCheckboxChange = (productId: number) => {
+    // Find current state to toggle
+    const item = cart.find((item) => item.id === productId)
+    if (!item) return
+
+    // Immediately toggle the item's selection state
     toggleItemSelection(productId)
+  }
+
+  const handleSelectAllChange = (checked: boolean) => {
+    // Immediately update all items' selection state
+    toggleAllItemsSelection(checked)
   }
 
   const handleRemoveItem = async (e: React.MouseEvent, productId: number) => {
@@ -143,7 +158,7 @@ export default function CartDrawer() {
         <SheetHeader>
           <SheetTitle>Tu Carrito</SheetTitle>
           <SheetDescription>
-            <div className='flex justify-between items-center'>
+            <span className='flex justify-between items-center'>
               {cart.length === 0
                 ? 'Tu carrito esta vacío'
                 : `Tienes ${cart.length} producto${
@@ -160,7 +175,7 @@ export default function CartDrawer() {
                   Checkout
                 </Button>
               )}
-            </div>
+            </span>
           </SheetDescription>
         </SheetHeader>
 
@@ -189,8 +204,23 @@ export default function CartDrawer() {
           </div>
         )}
 
+        {cart.length > 0 && (
+          <div className='mt-4 flex items-center gap-2 px-1'>
+            <Checkbox
+              checked={areAllItemsSelected()}
+              onCheckedChange={handleSelectAllChange}
+              id='select-all'
+            />
+            <label htmlFor='select-all' className='text-sm cursor-pointer'>
+              {areAllItemsSelected()
+                ? 'Deseleccionar todos'
+                : 'Seleccionar todos'}
+            </label>
+          </div>
+        )}
+
         <div className='mt-4 space-y-4'>
-          {optimisticCart.map((item, index) => {
+          {cart.map((item, index) => {
             const isBeingRemoved =
               item.isBeingRemoved || removingItemIds.includes(item.id)
 

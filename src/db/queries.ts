@@ -1,4 +1,5 @@
 'use server'
+//TO-DO investigate potential issues with the uer of 'use server', cause importing this queries on a client file means it will become an endpoint the user could hit, so maybe theres the need to re-verify if the user is authenticated on every query to avoid security vulnerabilities. But maybe the clerk middleware take care of it.
 import {
   categories,
   contracts,

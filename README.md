@@ -8,11 +8,12 @@
 
 ### Features to Implement
 
-- Add contract flow
-- Checkout integration with payment methods
-- PDF generation functionality
-- Download invoice capability
-- Payment history tracking
+- [x]Add contract flow
+- [] Add cart to database
+- [] Checkout integration with payment methods
+- [] PDF generation functionality
+- [] Download invoice capability
+- [] Payment history tracking
 
 ### Bugs detected
 

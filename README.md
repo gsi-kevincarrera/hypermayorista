@@ -6,7 +6,7 @@
 - [] Allow adding the same item with different variations to the cart
 - [] Improve cart functionality: when adding an identical item, increase the quantity instead of creating a duplicate entry
 - [] Improve error managment and display
-- [] Add loading status for the checkout
+- [x] Add loading status for the checkout
 
 ### Features to Implement
 

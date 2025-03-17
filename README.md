@@ -2,10 +2,11 @@
 
 ### Accessibility Improvements
 
-- [] Add checkbox to the cart drawer to select all and unselect all products
+- [x] Add checkbox to the cart drawer to select all and unselect all products
 - [] Allow adding the same item with different variations to the cart
 - [] Improve cart functionality: when adding an identical item, increase the quantity instead of creating a duplicate entry
 - [] Improve error managment and display
+- [] Add loading status for the checkout
 
 ### Features to Implement
 

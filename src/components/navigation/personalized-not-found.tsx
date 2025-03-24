@@ -8,7 +8,7 @@ interface NotFoundProps {
 
 export default function NotFound({
   // eslint-disable-next-line quotes
-  message = "Oops! No pudimos encontrar lo que estaba buscando.",
+  message = 'Ups! No pudimos encontrar lo que estaba buscando.',
 }: NotFoundProps) {
   return (
     <div className='min-h-screen bg-gray-50 flex items-center justify-center'>
@@ -29,7 +29,8 @@ export default function NotFound({
           </Link>
         </div>
         <p className='mt-8 text-sm text-gray-500'>
-        Si crees que esto es un error, por favor contacta a nuestro equipo de soporte.
+          Si crees que esto es un error, por favor contacta a nuestro equipo de
+          soporte.
         </p>
       </div>
     </div>

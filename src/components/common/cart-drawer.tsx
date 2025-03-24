@@ -27,6 +27,7 @@ import { useRouter } from 'next/navigation'
 import { useState, useEffect, useTransition, useOptimistic } from 'react'
 import { Progress } from '@/components/ui/progress'
 import { cn } from '@/lib/utils'
+import { toast } from 'sonner'
 
 const UNDO_TIMEOUT_MS = 5000
 export default function CartDrawer() {
@@ -119,21 +120,38 @@ export default function CartDrawer() {
   const handleRemoveItem = async (e: React.MouseEvent, productId: number) => {
     e.preventDefault() // Prevent navigation when clicking the remove button
 
-    // Apply optimistic UI update inside a transition
-    startTransition(() => {
-      addOptimisticRemoval(productId)
-    })
+    try {
+      // Apply optimistic UI update inside a transition
+      startTransition(() => {
+        addOptimisticRemoval(productId)
+      })
 
-    // Perform actual removal
-    await removeFromCart(productId)
+      // Perform actual removal
+      await removeFromCart(productId)
+    } catch (error) {
+      // Error handling is done in the cart context
+      // This is just a fallback
+      toast.error('No se pudo eliminar el producto del carrito')
+    }
   }
 
   const handleUndoRemove = () => {
-    undoRemove()
-    setShowUndoButton(false)
+    try {
+      undoRemove()
+      setShowUndoButton(false)
+    } catch (error) {
+      // Error handling is done in the cart context
+      // This is just a fallback
+      toast.error('No se pudo restaurar el producto al carrito')
+    }
   }
 
   const handleGoToCheckout = () => {
+    if (getSelectedItemsCount() === 0) {
+      toast.error('Selecciona al menos un producto para continuar al checkout')
+      return
+    }
+
     setOpen(false) // Close the drawer
     router.push('/checkout')
   }

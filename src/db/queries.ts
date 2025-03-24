@@ -21,6 +21,7 @@ import {
 import { combineConditions } from './utils'
 import { db } from '@/db'
 import { ProductInCart } from '@/types'
+import { auth } from '@clerk/nextjs/server'
 
 //Product queries
 export type Filters = {
@@ -268,10 +269,13 @@ export async function getAllCategoriesNames() {
   }
 }
 
-export async function getContractByUserId(userId: string | null) {
+export async function getContractByUserId() {
+  const { userId } = await auth()
+
   if (!userId) {
     return null
   }
+
   try {
     const [contract] = await db
       .select()

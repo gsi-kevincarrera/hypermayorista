@@ -3,12 +3,10 @@ import Shipping from './_components/shipping'
 import ContractUpload from './_components/contract-upload'
 import ContractPending from './_components/contract-pending'
 import ContractRejected from './_components/contract-rejected'
-import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 
 export default async function Checkout() {
-  const { userId } = await auth()
-  const contract = await getContractByUserId(userId)
+  const contract = await getContractByUserId()
 
   if (contract === null) {
     return redirect('/sign-in')

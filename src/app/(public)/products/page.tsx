@@ -9,7 +9,6 @@ import { Filter } from 'lucide-react'
 import { getProducts } from '@/db/queries'
 import AppPagination from '@/components/navigation/app-pagination'
 import ProductsGrid from './_components/products-grid'
-import { ProductDetails } from '@/types'
 import Filters from './_components/filters'
 
 export default async function ProductsPage({

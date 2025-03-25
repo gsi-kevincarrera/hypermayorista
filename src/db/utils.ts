@@ -1,6 +1,6 @@
-import { and, eq, ilike, inArray, sql } from 'drizzle-orm'
+import { and, ilike, inArray } from 'drizzle-orm'
 import { Filters } from './queries'
-import { categories, products } from './schema'
+import { products } from './schema'
 
 export const combineConditions = (filters: Filters, categoryIds?: number[]) => {
   const conditions = []

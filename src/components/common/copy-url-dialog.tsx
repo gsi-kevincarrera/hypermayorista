@@ -13,9 +13,11 @@ import { Button } from '@/components/ui/button'
 import { Share2 } from 'lucide-react'
 import { useState } from 'react'
 
-const currentUrl = window.location.href
-
 export default function CopyUrlDialog() {
+  let currentUrl = ''
+  if (window) {
+    currentUrl = window.location.href
+  }
   const [open, setOpen] = useState(false)
 
   return (

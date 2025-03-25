@@ -271,32 +271,42 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
 
     setIsAddingToCart(true)
-    try {
-      // First update local state for immediate feedback
-      setCart((prev) => {
-        if (!prev.some((item) => item.id === product.id)) {
-          const newCart = [product, ...prev]
-          const userCartKey = getUserCartKey(userId)
-          localStorage.setItem(userCartKey, JSON.stringify(newCart))
-          return newCart
-        }
-        return prev
-      })
 
-      // Then update database
-      if (userId) {
-        await addToCartDb(userId, {
-          productId: product.id,
-          variantId: product.variantId,
-          variantInfo: product.variantInfo,
-          quantity: product.quantity,
-          unitPrice: product.unitPrice,
-        })
-      }
+    try {
+      const userCartKey = getUserCartKey(userId)
+
+      // Determine if the product already exists in the cart
+      const isUpdate = cart.some(
+        (item) => item.id === product.id && item.variantId === product.variantId
+      )
+
+      // Create the new cart
+      const newCart = isUpdate
+        ? cart.map((item) =>
+            item.id === product.id && item.variantId === product.variantId
+              ? { ...item, quantity: item.quantity + product.quantity }
+              : item
+          )
+        : [product, ...cart] // Add the product at the beginning if it doesn't exist
+
+      // Update the cart state
+      setCart(newCart)
+
+      // Save the cart to localStorage
+      localStorage.setItem(userCartKey, JSON.stringify(newCart))
+
+      await addToCartDb(userId, {
+        productId: product.id,
+        variantId: product.variantId,
+        variantInfo: product.variantInfo,
+        quantity: product.quantity,
+        unitPrice: product.unitPrice,
+        isUpdate, // This flag is to avoid the query
+      })
 
       return true
     } catch (error) {
-      console.error('Error adding to cart in database:', error)
+      console.error('Error adding to cart:', error)
       return false
     } finally {
       setIsAddingToCart(false)

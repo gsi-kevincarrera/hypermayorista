@@ -46,7 +46,7 @@ interface CartContextType {
   addToCart: (product: ProductInCart) => Promise<boolean>
 
   /** Removes a product from the cart and syncs with database */
-  removeFromCart: (productId: number) => Promise<void>
+  removeFromCart: (productId: number, variantId: number | null) => Promise<void>
 
   /** Checks if a product is already in the cart */
   isInCart: (productId: number) => boolean
@@ -76,7 +76,7 @@ interface CartContextType {
   isAddingToCart: boolean
 
   /** IDs of items currently being removed (for optimistic UI updates) */
-  removingItemIds: number[]
+  removingItemIds: string[]
 }
 
 /**
@@ -108,7 +108,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   // UI state indicators
   const [isLoading, setIsLoading] = useState(true)
   const [isAddingToCart, setIsAddingToCart] = useState(false)
-  const [removingItemIds, setRemovingItemIds] = useState<number[]>([])
+  const [removingItemIds, setRemovingItemIds] = useState<string[]>([])
 
   // Hooks
   const router = useRouter()
@@ -323,13 +323,18 @@ export function CartProvider({ children }: { children: ReactNode }) {
    *
    * @param productId - ID of the product to remove
    */
-  const removeFromCart = async (productId: number) => {
+  const removeFromCart = async (
+    productId: number,
+    variantId: number | null
+  ) => {
     // Find the item to remove
-    const itemToRemove = cart.find((item) => item.id === productId)
+    const itemToRemove = cart.find(
+      (item) => item.id === productId && item.variantId === variantId
+    )
     if (!itemToRemove) return
 
     // Add to removing items list for optimistic UI
-    setRemovingItemIds((prev) => [...prev, productId])
+    setRemovingItemIds((prev) => [...prev, `${productId}-${variantId}`])
 
     // Store the item for potential undo
     setLastRemovedItem(itemToRemove)
@@ -342,7 +347,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
       // Update local state after DB operation succeeds
       setCart((prev) => {
-        const newCart = prev.filter((item) => item.id !== productId)
+        const newCart = prev.filter(
+          (item) => item.id !== productId || item.variantId !== variantId
+        )
         const userCartKey = getUserCartKey(userId)
         localStorage.setItem(userCartKey, JSON.stringify(newCart))
         return newCart
@@ -351,7 +358,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
       console.error('Error removing item from cart:', error)
     } finally {
       // Remove from the removing list
-      setRemovingItemIds((prev) => prev.filter((id) => id !== productId))
+      setRemovingItemIds((prev) =>
+        prev.filter((id) => id !== `${productId}-${variantId}`)
+      )
     }
   }
 

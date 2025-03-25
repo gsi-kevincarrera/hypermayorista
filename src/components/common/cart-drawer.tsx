@@ -49,9 +49,11 @@ export default function CartDrawer() {
   // Use optimistic UI for cart items
   const [optimisticCart, addOptimisticRemoval] = useOptimistic(
     cart,
-    (state, productId: number) =>
+    (state, { productId, variantId }) =>
       state.map((item) =>
-        item.id === productId ? { ...item, isBeingRemoved: true } : item
+        item.id === productId && item.variantId === variantId
+          ? { ...item, isBeingRemoved: true }
+          : item
       )
   )
 
@@ -117,17 +119,21 @@ export default function CartDrawer() {
     toggleAllItemsSelection(checked)
   }
 
-  const handleRemoveItem = async (e: React.MouseEvent, productId: number) => {
+  const handleRemoveItem = async (
+    e: React.MouseEvent,
+    productId: number,
+    variantId: number | null
+  ) => {
     e.preventDefault() // Prevent navigation when clicking the remove button
 
     try {
       // Apply optimistic UI update inside a transition
       startTransition(() => {
-        addOptimisticRemoval(productId)
+        addOptimisticRemoval({ productId, variantId })
       })
 
       // Perform actual removal
-      await removeFromCart(productId)
+      await removeFromCart(productId, variantId)
     } catch (error) {
       // Error handling is done in the cart context
       // This is just a fallback
@@ -240,7 +246,8 @@ export default function CartDrawer() {
         <div className='mt-4 space-y-4'>
           {cart.map((item, index) => {
             const isBeingRemoved =
-              item.isBeingRemoved || removingItemIds.includes(item.id)
+              item.isBeingRemoved ||
+              removingItemIds.includes(`${item.id}-${item.variantId}`)
 
             return (
               <div
@@ -302,7 +309,9 @@ export default function CartDrawer() {
                       <Button
                         variant='ghost'
                         size='icon'
-                        onClick={(e) => handleRemoveItem(e, item.id)}
+                        onClick={(e) =>
+                          handleRemoveItem(e, item.id, item.variantId ?? null)
+                        }
                         className='text-red-500 hover:text-red-700'
                         disabled={isBeingRemoved || isPending}
                       >

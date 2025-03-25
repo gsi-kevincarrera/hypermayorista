@@ -7,7 +7,7 @@ import { BaseProduct } from '@/types'
 import { Loader2, ShoppingCart } from 'lucide-react'
 
 export default function AddToCartButton({ product }: { product: BaseProduct }) {
-  const { setSelectedProduct, isInCart, isAddingToCart } = useCart()
+  const { setSelectedProduct, isAddingToCart } = useCart()
   return (
     <Button
       onClick={(e) => {
@@ -18,10 +18,10 @@ export default function AddToCartButton({ product }: { product: BaseProduct }) {
       )}
       size='icon'
       title='Agregar al carrito'
-      disabled={isInCart(product.id) || isAddingToCart}
+      disabled={isAddingToCart}
     >
       {isAddingToCart ? (
-        <Loader2 className="h-4 w-4 text-white animate-spin" />
+        <Loader2 className='h-4 w-4 text-white animate-spin' />
       ) : (
         <ShoppingCart className='h-4 w-4 text-white' />
       )}

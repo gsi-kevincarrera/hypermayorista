@@ -1,23 +1,21 @@
 'use client'
 import { Button } from '@/components/ui/button'
-import { useCart } from '@/contexts/cart-context'
-import { ProductDetails } from '@/types'
+import { ProductInCart } from '@/types'
 
 export default function CallToActionButton({
-  product,
   disabled,
+  onAction,
 }: {
-  product: ProductDetails
-  disabled?: boolean
+  disabled: boolean
+  onAction: () => void
 }) {
-  const { setSelectedProduct } = useCart()
   return (
     <Button
       className='w-full bg-primary hover:bg-purple-700 h-12 text-lg'
-      onClick={() => setSelectedProduct(product)}
+      onClick={() => onAction()}
       disabled={disabled}
     >
-      Iniciar Pedido
+      Agregar al carrito
     </Button>
   )
 }

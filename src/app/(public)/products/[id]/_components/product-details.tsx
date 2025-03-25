@@ -4,69 +4,26 @@ import { ProductDetails as ProductDetailsType } from '@/types'
 import PriceTiers from './price-tiers'
 import ProductOptions from './product-options'
 import CallToActionButton from './call-to-action-button'
-import { useCallback, useEffect, useState } from 'react'
-import { calculatePrice, getVariantByOptions } from '@/db/actions'
-import { useDebouncedCallback } from 'use-debounce'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import useConfirmAddToCart from '@/hooks/useConfirmAddToCart'
 
 export default function ProductDetails({
   product,
 }: {
   product: ProductDetailsType
 }) {
-  const [selectedOptions, setSelectedOptions] = useState<
-    Record<string, string>
-  >({})
-  const [price, setPrice] = useState(product.basePrice * product.minQuantity)
-  const [quantity, setQuantity] = useState(product.minQuantity)
-  const [calculatingPrice, setCalculatingPrice] = useState(false)
-
-  const updatePrice = useCallback(async () => {
-    setCalculatingPrice(true)
-    //Get variant by selected options, this is key to calculate the price using the price adjustments
-    const variant = await getVariantByOptions(product.id, selectedOptions)
-    if (variant) {
-      const { totalPrice } = await calculatePrice(
-        product.id,
-        quantity,
-        variant.id
-      )
-      setPrice(totalPrice)
-    } else {
-      //if there is no variant, calculate the price based on the base price and price breaks, ignoring price adjustments
-      const { totalPrice } = await calculatePrice(product.id, quantity)
-      setPrice(totalPrice)
-    }
-    setCalculatingPrice(false)
-  }, [product.id, selectedOptions, quantity])
-
-  const debouncedUpdatePrice = useDebouncedCallback(updatePrice, 500)
-
-  useEffect(() => {
-    const isAllRequiredOptionsSelected = () => {
-      //Get required options
-      const requiredOptions = product.options?.filter(
-        (option) => option.isRequired
-      )
-
-      //Check if all required options are selected
-      const allRequiredSelected = requiredOptions?.every(
-        (option) => selectedOptions[option.name]
-      )
-
-      return allRequiredSelected
-    }
-
-    if (!isAllRequiredOptionsSelected()) return
-    debouncedUpdatePrice()
-  }, [
-    selectedOptions,
-    product.options,
+  const {
     quantity,
-    product.id,
-    debouncedUpdatePrice,
-  ])
+    selectedOptions,
+    setSelectedOptions,
+    price,
+    isCalculatingPrice,
+    isFormValid,
+    setQuantity,
+    confirmAddToCart,
+    isAddingToCart,
+  } = useConfirmAddToCart(product)
 
   return (
     <div className='w-full md:w-1/3 space-y-6 md:sticky md:top-6 self-start'>
@@ -117,7 +74,7 @@ export default function ProductDetails({
 
         <p>
           Precio:{' '}
-          {calculatingPrice
+          {isCalculatingPrice
             ? 'Calculando...'
             : `$ ${new Intl.NumberFormat('es-CU', {
                 minimumFractionDigits: 0,
@@ -126,7 +83,10 @@ export default function ProductDetails({
         </p>
 
         {/* Call to action */}
-        <CallToActionButton disabled product={product} />
+        <CallToActionButton
+          disabled={isCalculatingPrice || !isFormValid || isAddingToCart}
+          onAction={confirmAddToCart}
+        />
       </div>
     </div>
   )

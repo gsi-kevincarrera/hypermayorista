@@ -166,7 +166,8 @@ export async function getProductById(id: number) {
 
 export async function getRelatedProductsByCategory(
   categoryId: number,
-  productId: number
+  productId: number,
+  limit: number = 6
 ) {
   const { updated_at, created_at, featured, latest_acquisition, ...rest } =
     getTableColumns(products)
@@ -183,6 +184,7 @@ export async function getRelatedProductsByCategory(
         and(eq(categories.id, categoryId), not(eq(products.id, productId)))
       )
       .orderBy(products.name)
+      .limit(limit)
   } catch (error) {
     console.error(error)
     throw new Error('Error fetching category')
@@ -270,10 +272,14 @@ export async function getAllCategoriesNames() {
 }
 
 export async function getContractByUserId() {
-  const { userId } = await auth()
+  const CONTRACT_REASON = {
+    UNAUTHORIZED: 'No Autorizado',
+    NOT_FOUND: 'No Encontrado',
+  }
 
+  const { userId } = await auth()
   if (!userId) {
-    return null
+    return { status: 'none', reason: CONTRACT_REASON.UNAUTHORIZED }
   }
 
   try {
@@ -281,6 +287,9 @@ export async function getContractByUserId() {
       .select()
       .from(contracts)
       .where(and(eq(contracts.userId, userId), eq(contracts.isActive, true)))
+    if (!contract) {
+      return { status: 'none', reason: CONTRACT_REASON.NOT_FOUND }
+    }
     return contract
   } catch (error) {
     console.error(error)
@@ -338,43 +347,41 @@ export async function addToCartDb(
     variantInfo?: string | null
     quantity: number
     unitPrice: number
+    isUpdate?: boolean
   }
 ) {
   try {
-    // Check if item already exists in cart
-    const existingItems = await db
-      .select()
-      .from(cartItems)
-      .where(
-        and(
-          eq(cartItems.userId, userId),
-          eq(cartItems.productId, item.productId),
-          item.variantId
-            ? eq(cartItems.variantId, item.variantId)
-            : isNull(cartItems.variantId)
+    if (item.isUpdate) {
+      // If we already know it exists, we only update the quantity
+      await db
+        .update(cartItems)
+        .set({ quantity: sql`${cartItems.quantity} + ${item.quantity}` })
+        .where(
+          and(
+            eq(cartItems.userId, userId),
+            eq(cartItems.productId, item.productId),
+            item.variantId
+              ? eq(cartItems.variantId, item.variantId)
+              : isNull(cartItems.variantId)
+          )
         )
-      )
-
-    if (existingItems.length > 0) {
-      // Item already exists, don't add it again
-      return false
+    } else {
+      // Insert the new product
+      await db.insert(cartItems).values({
+        userId,
+        productId: item.productId,
+        variantId: item.variantId || null,
+        variantInfo: item.variantInfo || null,
+        quantity: item.quantity,
+        unitPrice: item.unitPrice,
+        isSelected: true,
+      })
     }
-
-    // Add new item to cart
-    await db.insert(cartItems).values({
-      userId,
-      productId: item.productId,
-      variantId: item.variantId || null,
-      variantInfo: item.variantInfo || null,
-      quantity: item.quantity,
-      unitPrice: item.unitPrice,
-      isSelected: true,
-    })
 
     return true
   } catch (error) {
-    console.error('Error adding item to cart:', error)
-    throw new Error('Error adding item to cart')
+    console.error('Error updating/inserting item in cart:', error)
+    throw new Error('Error updating/inserting item in cart')
   }
 }
 

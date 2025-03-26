@@ -3,6 +3,7 @@
 ## Todays Plan
 
 - [ ] Fix BD !!Urgent
+- [ ] Use SKU as identifier for product variants
 
 ### Accessibility Improvements
 
@@ -26,5 +27,7 @@
 ### Bugs detected
 
 - [ ] When changing the product options, the max and min quantity should change according to the variation stock
+- [ ] When updating the product quantity, the request should be rejected if the new quantity is greater than the variation stock
+- [ ] Price cache is not being applied when the product has no variants
 - [x] When updating the quantity of a product, also update the price(note the price breaks)
 - [x] When deleting a product from the cart, use also the variation ID to delete the correct entry

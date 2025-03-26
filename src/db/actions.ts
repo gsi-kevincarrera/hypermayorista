@@ -9,6 +9,8 @@ import {
   priceBreaks,
   contracts,
 } from './schema'
+import { PriceBreak } from '@/types'
+import { auth } from '@clerk/nextjs/server'
 
 export async function getNonSpecialProducts(
   offset: number,
@@ -128,8 +130,14 @@ export async function getProductPriceBreaks(productId: number) {
 export async function calculatePrice(
   productId: number,
   quantity: number,
+  priceBreaks: PriceBreak[],
   variantId?: number
 ) {
+  const { userId } = await auth()
+  if (!userId) {
+    throw new Error('Unauthorized: User not authenticated')
+  }
+
   try {
     let basePrice = 0
     let priceAdjustment = 0
@@ -154,15 +162,13 @@ export async function calculatePrice(
       priceAdjustment = variant.priceAdjustment
     }
 
-    //Get the price breaks
-    const priceBreaksList = await getProductPriceBreaks(productId)
-
     let unitPrice = basePrice + priceAdjustment
 
-    for (const priceBreak of priceBreaksList) {
+    for (const priceBreak of priceBreaks) {
       if (
         quantity >= priceBreak.minQuantity &&
-        (priceBreak.maxQuantity === null || quantity <= priceBreak.maxQuantity)
+        (priceBreak.maxQuantity === null ||
+          quantity <= (priceBreak.maxQuantity ?? Infinity))
       ) {
         unitPrice = priceBreak.unitPrice + priceAdjustment
         break

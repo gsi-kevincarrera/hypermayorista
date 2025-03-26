@@ -4,9 +4,11 @@ import { Button } from '@/components/ui/button'
 export default function CallToActionButton({
   disabled,
   onAction,
+  text,
 }: {
   disabled: boolean
   onAction: () => void
+  text: string
 }) {
   return (
     <Button
@@ -14,7 +16,7 @@ export default function CallToActionButton({
       onClick={() => onAction()}
       disabled={disabled}
     >
-      Agregar al carrito
+      {text}
     </Button>
   )
 }

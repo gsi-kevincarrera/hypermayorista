@@ -58,7 +58,7 @@ interface CartContextType {
   setSelectedProduct: (product: BaseProduct | null) => void
 
   /** Toggles selection state of a specific item in cart (for checkout) */
-  toggleItemSelection: (productId: number) => void
+  toggleItemSelection: (productId: number, variantId: number | null) => void
 
   /** Toggles selection state of all items in cart (for checkout) */
   toggleAllItemsSelection: (selected: boolean) => void
@@ -405,10 +405,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
    *
    * @param productId - ID of the product to toggle selection
    */
-  const toggleItemSelection = async (productId: number) => {
+  const toggleItemSelection = async (
+    productId: number,
+    variantId: number | null
+  ) => {
     setCart((prev) => {
       const newCart = prev.map((item) => {
-        if (item.id === productId) {
+        if (item.id === productId && item.variantId === variantId) {
           const updatedItem = { ...item, isSelected: !item.isSelected }
 
           // Schedule database update without blocking UI
@@ -452,7 +455,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         const updateItems = newCart.map((item) => ({
           productId: item.id,
           isSelected: selected,
-          variantId: item.variantId === undefined ? null : item.variantId,
+          variantId: item.variantId ?? null,
         }))
 
         debouncedBulkUpdateDb(userId, updateItems)

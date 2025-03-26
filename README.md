@@ -1,5 +1,9 @@
 ## Pending Development
 
+## Todays Plan
+
+- [ ] Fix BD !!Urgent
+
 ### Accessibility Improvements
 
 - [x] Add checkbox to the cart drawer to select all and unselect all products

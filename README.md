@@ -8,6 +8,7 @@
 - [x] Improve error managment and display
 - [x] Add loading status for the checkout
 - [x] Allow to add multiple products from the product card
+- [ ] Find a way to improve product quantity selection, when updating the quantity of a product, beacause each product has a minQuantity, but it does not consider, the quantity already in the cart
 
 ### Features to Implement
 
@@ -21,5 +22,5 @@
 ### Bugs detected
 
 - [ ] When changing the product options, the max and min quantity should change according to the variation stock
-- [ ] When updating the quantity of a product, also update the price(note the price breaks)
+- [x] When updating the quantity of a product, also update the price(note the price breaks)
 - [x] When deleting a product from the cart, use also the variation ID to delete the correct entry

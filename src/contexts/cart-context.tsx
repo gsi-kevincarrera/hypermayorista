@@ -20,6 +20,7 @@ import {
   syncCartWithDb,
 } from '@/db/queries'
 import { useDebouncedCallback } from 'use-debounce'
+import { calculatePrice } from '@/db/actions'
 
 /**
  * Key used for localStorage to persist cart data between sessions
@@ -264,6 +265,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
    * @param product - The product to add to the cart
    * @returns Promise resolving to success status
    */
+
+  //This code works for now, but performance can be improved when updating a product quantity
+  //Needs a new approach to avoid price recalculations
   const addToCart = async (product: ProductInCart): Promise<boolean> => {
     if (!isSignedIn || !userId) {
       router.push('/sign-in')
@@ -276,18 +280,34 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const userCartKey = getUserCartKey(userId)
 
       // Determine if the product already exists in the cart
-      const isUpdate = cart.some(
+      const productToUpdate = cart.find(
         (item) => item.id === product.id && item.variantId === product.variantId
       )
 
       // Create the new cart
-      const newCart = isUpdate
-        ? cart.map((item) =>
-            item.id === product.id && item.variantId === product.variantId
-              ? { ...item, quantity: item.quantity + product.quantity }
-              : item
-          )
-        : [product, ...cart] // Add the product at the beginning if it doesn't exist
+      let newCart
+      if (productToUpdate) {
+        const newQuantity = productToUpdate.quantity + product.quantity
+        const { unitPrice, totalPrice } = await calculatePrice(
+          productToUpdate.id,
+          newQuantity,
+          undefined,
+          productToUpdate.variantId
+        )
+
+        newCart = cart.map((item) =>
+          item.id === product.id && item.variantId === product.variantId
+            ? {
+                ...item,
+                quantity: newQuantity,
+                total: totalPrice,
+                unitPrice: unitPrice,
+              }
+            : item
+        )
+      } else {
+        newCart = [product, ...cart] // Add the product at the beginning if it doesn't exist
+      }
 
       // Update the cart state
       setCart(newCart)
@@ -301,7 +321,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         variantInfo: product.variantInfo,
         quantity: product.quantity,
         unitPrice: product.unitPrice,
-        isUpdate, // This flag is to avoid the query
+        productToUpdate: !!productToUpdate, // This flag is to avoid the query
       })
 
       return true

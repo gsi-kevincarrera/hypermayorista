@@ -130,8 +130,8 @@ export async function getProductPriceBreaks(productId: number) {
 export async function calculatePrice(
   productId: number,
   quantity: number,
-  priceBreaks: PriceBreak[],
-  variantId?: number
+  priceBreaks?: PriceBreak[],
+  variantId?: number | null
 ) {
   const { userId } = await auth()
   if (!userId) {
@@ -163,14 +163,21 @@ export async function calculatePrice(
     }
 
     let unitPrice = basePrice + priceAdjustment
+    let currentPriceBreakLimits
+    let priceBreaksList =
+      priceBreaks ?? (await getProductPriceBreaks(productId))
 
-    for (const priceBreak of priceBreaks) {
+    for (const priceBreak of priceBreaksList) {
       if (
         quantity >= priceBreak.minQuantity &&
         (priceBreak.maxQuantity === null ||
           quantity <= (priceBreak.maxQuantity ?? Infinity))
       ) {
         unitPrice = priceBreak.unitPrice + priceAdjustment
+        currentPriceBreakLimits = {
+          minQuantity: priceBreak.minQuantity,
+          maxQuantity: priceBreak.maxQuantity ?? Infinity,
+        }
         break
       }
     }
@@ -178,6 +185,7 @@ export async function calculatePrice(
     return {
       unitPrice,
       totalPrice: unitPrice * quantity,
+      currentPriceBreakLimits,
     }
   } catch (error) {
     console.error(error)

@@ -1,7 +1,7 @@
 import { useCart } from '@/contexts/cart-context'
 import { calculatePrice, getVariantByOptions } from '@/db/actions'
 import { getProductById } from '@/db/queries'
-import { ProductOption, PriceBreak } from '@/types'
+import { ProductOption, PriceBreak, ProductVariant } from '@/types'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { useDebouncedCallback } from 'use-debounce'
@@ -9,6 +9,11 @@ import { useRouter } from 'next/navigation'
 import { isAllRequiredOptionsSelected } from '@/lib/utils'
 import { ProductDetails } from '@/types'
 
+//This hook was originally created to be used in the product card
+//But now it is used in the product details page as well
+//This is to avoid code duplication
+//But there are some performance and code readability issues that can be improved
+//TO-DO Extract the reusable functions into helpers, in order to avoid current dual-product logic
 export default function useConfirmAddToCart(productOverride?: ProductDetails) {
   const { setSelectedProduct, selectedProduct, addToCart, isAddingToCart } =
     useCart()
@@ -37,6 +42,14 @@ export default function useConfirmAddToCart(productOverride?: ProductDetails) {
   const [selectedVariantId, setSelectedVariantId] = useState<number | null>(
     null
   )
+  const [cachedVariantPrice, setCachedVariantPrice] = useState<Record<
+    number,
+    number
+  > | null>(null)
+  const [cachedVariantByOptions, setCachedVariantByOptions] = useState<Record<
+    string,
+    ProductVariant | null
+  > | null>(null)
 
   useEffect(() => {
     if (!product) return
@@ -67,11 +80,23 @@ export default function useConfirmAddToCart(productOverride?: ProductDetails) {
       }
     }
 
-    fetchProductDetails()
+    if (!productOverride) {
+      fetchProductDetails()
+      // Reset selected options and variant ID when product changes
+      setSelectedOptions({})
+      setSelectedVariantId(null)
+      return
+    }
+
+    // If there is a product override, use it instead of fetching from the database
+    setProductDetails({
+      options: productOverride.options || null,
+      priceBreaks: productOverride.priceBreaks || null,
+    })
     // Reset selected options and variant ID when product changes
     setSelectedOptions({})
     setSelectedVariantId(null)
-  }, [product])
+  }, [product, productOverride])
 
   const updatePrice = useCallback(async () => {
     if (!product) return
@@ -91,24 +116,51 @@ export default function useConfirmAddToCart(productOverride?: ProductDetails) {
     setIsCalculatingPrice(true)
     try {
       //Get variant by selected options, this is key to calculate the price using the price adjustments
-      const variant = await getVariantByOptions(product.id, selectedOptions)
+      let variant: ProductVariant | null
+      if (cachedVariantByOptions?.[JSON.stringify(selectedOptions)]) {
+        variant = cachedVariantByOptions[JSON.stringify(selectedOptions)] //use cached variant if available
+      } else {
+        //Get variant by options
+        variant = (await getVariantByOptions(
+          product.id,
+          selectedOptions
+        )) as ProductVariant
+        setCachedVariantByOptions((prev) => ({
+          ...prev,
+          [JSON.stringify(selectedOptions)]: variant,
+        }))
+      }
 
       if (variant) {
         // Store the variant ID for later use
         setSelectedVariantId(variant.id)
 
-        const { totalPrice } = await calculatePrice(
-          product.id,
-          quantity,
-          variant.id
-        )
-        setPrice(totalPrice)
+        if (cachedVariantPrice?.[variant.id]) {
+          const totalPrice = cachedVariantPrice[variant.id]
+          setPrice(totalPrice)
+        } else {
+          const { totalPrice } = await calculatePrice(
+            product.id,
+            quantity,
+            productDetails.priceBreaks || [],
+            variant.id
+          )
+          setCachedVariantPrice({
+            ...cachedVariantPrice,
+            [variant.id]: totalPrice,
+          })
+          setPrice(totalPrice)
+        }
         return
       }
 
       // If we have price breaks or no variant was found, calculate price based on base price and price breaks
       if (hasPriceBreaks) {
-        const { totalPrice } = await calculatePrice(product.id, quantity)
+        const { totalPrice } = await calculatePrice(
+          product.id,
+          quantity,
+          productDetails.priceBreaks || []
+        )
         setPrice(totalPrice)
       } else {
         // Fallback to simple calculation
@@ -127,7 +179,14 @@ export default function useConfirmAddToCart(productOverride?: ProductDetails) {
     } finally {
       setIsCalculatingPrice(false)
     }
-  }, [product, selectedOptions, quantity, productDetails])
+  }, [
+    product,
+    selectedOptions,
+    quantity,
+    productDetails,
+    cachedVariantPrice,
+    cachedVariantByOptions,
+  ])
 
   const debouncedUpdatePrice = useDebouncedCallback(updatePrice, 500)
 
@@ -220,5 +279,6 @@ export default function useConfirmAddToCart(productOverride?: ProductDetails) {
     productDetails,
     isCalculatingPrice,
     isAddingToCart: isAddingToCart,
+    selectedVariantId,
   }
 }

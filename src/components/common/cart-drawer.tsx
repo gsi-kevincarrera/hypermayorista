@@ -105,13 +105,18 @@ export default function CartDrawer() {
     return cart.length > 0 && cart.every((item) => item.isSelected)
   }
 
-  const handleCheckboxChange = (productId: number) => {
+  const handleCheckboxChange = (
+    productId: number,
+    variantId: number | null
+  ) => {
     // Find current state to toggle
-    const item = cart.find((item) => item.id === productId)
+    const item = cart.find(
+      (item) => item.id === productId && item.variantId === variantId
+    )
     if (!item) return
 
     // Immediately toggle the item's selection state
-    toggleItemSelection(productId)
+    toggleItemSelection(productId, variantId)
   }
 
   const handleSelectAllChange = (checked: boolean) => {
@@ -259,7 +264,9 @@ export default function CartDrawer() {
               >
                 <Checkbox
                   checked={item.isSelected}
-                  onCheckedChange={() => handleCheckboxChange(item.id)}
+                  onCheckedChange={() =>
+                    handleCheckboxChange(item.id, item.variantId ?? null)
+                  }
                   disabled={isBeingRemoved}
                 />
                 <Link

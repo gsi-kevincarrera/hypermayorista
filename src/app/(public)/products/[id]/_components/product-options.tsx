@@ -9,11 +9,7 @@ interface Props {
   selectedValues: Record<string, string>
 }
 
-export default function ProductOptions({
-  options,
-  setSelectedValues,
-  selectedValues,
-}: Props) {
+export default function ProductOptions({ options, setSelectedValues }: Props) {
   if (!options || options.length === 0) return null
 
   const handleValueChange = (optionName: string, value: string) => {

@@ -23,6 +23,7 @@ export default function ProductDetails({
     setQuantity,
     confirmAddToCart,
     isAddingToCart,
+    goToCheckout,
   } = useConfirmAddToCart(product)
 
   return (
@@ -83,10 +84,18 @@ export default function ProductDetails({
         </p>
 
         {/* Call to action */}
-        <CallToActionButton
-          disabled={isCalculatingPrice || !isFormValid || isAddingToCart}
-          onAction={confirmAddToCart}
-        />
+        <div className='flex gap-2'>
+          <CallToActionButton
+            disabled={isCalculatingPrice || !isFormValid || isAddingToCart}
+            onAction={confirmAddToCart}
+            text='Agregar al carrito'
+          />
+          <CallToActionButton
+            disabled={isCalculatingPrice || !isFormValid || isAddingToCart}
+            onAction={goToCheckout}
+            text='Comprar'
+          />
+        </div>
       </div>
     </div>
   )

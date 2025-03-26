@@ -23,3 +23,14 @@ export const isAllRequiredOptionsSelected = (
   // Check if all required options are selected
   return requiredOptions.every((option) => selectedOptions[option.name])
 }
+
+export const isInPriceBreakLimits = (
+  quantity: number,
+  priceBreakLimits: { minQuantity: number; maxQuantity: number | null }
+) => {
+  return (
+    quantity >= priceBreakLimits.minQuantity &&
+    (priceBreakLimits.maxQuantity === null ||
+      quantity <= priceBreakLimits.maxQuantity)
+  )
+}

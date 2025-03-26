@@ -7,6 +7,7 @@ import CallToActionButton from './call-to-action-button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import useConfirmAddToCart from '@/hooks/useConfirmAddToCart'
+import { Loader2Icon } from 'lucide-react'
 
 export default function ProductDetails({
   product,
@@ -73,14 +74,16 @@ export default function ProductDetails({
           />
         </div>
 
-        <p>
-          Precio:{' '}
-          {isCalculatingPrice
-            ? 'Calculando...'
-            : `$ ${new Intl.NumberFormat('es-CU', {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 2,
-              }).format(Number(price) ?? 0)}`}
+        <p className='flex items-center gap-2'>
+          Precio:
+          {isCalculatingPrice ? (
+            <Loader2Icon className='animate-spin' />
+          ) : (
+            `$ ${new Intl.NumberFormat('es-CU', {
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 2,
+            }).format(Number(price) ?? 0)}`
+          )}
         </p>
 
         {/* Call to action */}

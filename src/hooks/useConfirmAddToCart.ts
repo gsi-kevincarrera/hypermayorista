@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { useDebouncedCallback } from 'use-debounce'
 import { useRouter } from 'next/navigation'
-import { isAllRequiredOptionsSelected } from '@/lib/utils'
+import { isAllRequiredOptionsSelected, isInPriceBreakLimits } from '@/lib/utils'
 import { ProductDetails } from '@/types'
 
 //This hook was originally created to be used in the product card
@@ -42,9 +42,12 @@ export default function useConfirmAddToCart(productOverride?: ProductDetails) {
   const [selectedVariantId, setSelectedVariantId] = useState<number | null>(
     null
   )
-  const [cachedVariantPrice, setCachedVariantPrice] = useState<Record<
+  const [cachedVariantUnitPrice, setCachedVariantUnitPrice] = useState<Record<
     number,
-    number
+    {
+      unitPrice: number
+      priceBreakLimits: { maxQuantity: number; minQuantity: number }
+    }
   > | null>(null)
   const [cachedVariantByOptions, setCachedVariantByOptions] = useState<Record<
     string,
@@ -132,23 +135,37 @@ export default function useConfirmAddToCart(productOverride?: ProductDetails) {
       }
 
       if (variant) {
-        // Store the variant ID for later use
+        // Store the variant for later use
         setSelectedVariantId(variant.id)
 
-        if (cachedVariantPrice?.[variant.id]) {
-          const totalPrice = cachedVariantPrice[variant.id]
-          setPrice(totalPrice)
-        } else {
-          const { totalPrice } = await calculatePrice(
-            product.id,
+        if (
+          cachedVariantUnitPrice?.[variant.id] && //use cache if available
+          isInPriceBreakLimits(
             quantity,
-            productDetails.priceBreaks || [],
-            variant.id
+            cachedVariantUnitPrice?.[variant.id].priceBreakLimits
           )
-          setCachedVariantPrice({
-            ...cachedVariantPrice,
-            [variant.id]: totalPrice,
-          })
+        ) {
+          const cache = cachedVariantUnitPrice[variant.id]
+          setPrice(cache.unitPrice * quantity)
+        } else {
+          const { totalPrice, unitPrice, currentPriceBreakLimits } =
+            await calculatePrice(
+              product.id,
+              quantity,
+              productDetails.priceBreaks || [],
+              variant.id
+            )
+          setCachedVariantUnitPrice((prev) => ({
+            ...prev,
+            [variant.id]: {
+              unitPrice,
+              priceBreakLimits: currentPriceBreakLimits || {
+                minQuantity: 0,
+                maxQuantity: Infinity,
+              },
+            },
+          }))
+
           setPrice(totalPrice)
         }
         return
@@ -184,7 +201,7 @@ export default function useConfirmAddToCart(productOverride?: ProductDetails) {
     selectedOptions,
     quantity,
     productDetails,
-    cachedVariantPrice,
+    cachedVariantUnitPrice,
     cachedVariantByOptions,
   ])
 

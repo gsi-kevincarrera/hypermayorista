@@ -1,7 +1,6 @@
 'use client'
-import { Minus, Plus, Loader2 } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import {
   Drawer,
   DrawerContent,
@@ -113,14 +112,16 @@ export default function AddToCartDrawer() {
 
                     {/* Price */}
                     <div className='mt-6'>
-                      <p className='text-lg font-semibold'>
+                      <p className='text-lg font-semibold flex items-center gap-2'>
                         Precio Total:{' '}
-                        {isCalculatingPrice
-                          ? 'Calculando...'
-                          : `$ ${new Intl.NumberFormat('es-CU', {
-                              minimumFractionDigits: 0,
-                              maximumFractionDigits: 2,
-                            }).format(Number(price) ?? 0)}`}
+                        {isCalculatingPrice ? (
+                          <Loader2 className='animate-spin' />
+                        ) : (
+                          `$ ${new Intl.NumberFormat('es-CU', {
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 2,
+                          }).format(Number(price) ?? 0)}`
+                        )}
                       </p>
                     </div>
                   </div>
@@ -155,11 +156,13 @@ export default function AddToCartDrawer() {
             <Button
               onClick={confirmAddToCart}
               className='flex-1 max-w-[200px]'
-              disabled={!isFormValid || loading || isCalculatingPrice || isAddingToCart}
+              disabled={
+                !isFormValid || loading || isCalculatingPrice || isAddingToCart
+              }
             >
               {isAddingToCart ? (
                 <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  <Loader2 className='h-4 w-4 mr-2 animate-spin' />
                   Agregando...
                 </>
               ) : (
@@ -170,11 +173,13 @@ export default function AddToCartDrawer() {
               onClick={goToCheckout}
               variant='outline'
               className='flex-1 max-w-[200px]'
-              disabled={!isFormValid || loading || isCalculatingPrice || isAddingToCart}
+              disabled={
+                !isFormValid || loading || isCalculatingPrice || isAddingToCart
+              }
             >
               {isAddingToCart ? (
                 <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  <Loader2 className='h-4 w-4 mr-2 animate-spin' />
                   Procesando...
                 </>
               ) : (

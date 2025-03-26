@@ -347,11 +347,11 @@ export async function addToCartDb(
     variantInfo?: string | null
     quantity: number
     unitPrice: number
-    isUpdate?: boolean
+    productToUpdate?: boolean
   }
 ) {
   try {
-    if (item.isUpdate) {
+    if (item.productToUpdate) {
       // If we already know it exists, we only update the quantity
       await db
         .update(cartItems)

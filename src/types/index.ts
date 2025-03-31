@@ -99,3 +99,21 @@ export type Contract = {
   createdAt: Date
   isActive: boolean
 }
+
+/**
+ * Address
+ */
+export type Address = {
+  id: number
+  userId: string
+  fullName: string
+  address: string
+  province: string
+  municipality: string
+  phone: string
+  isDefault: boolean | null // Allow null from DB
+  additionalInfo?: string | null
+  createdAt: Date | null // Allow null from DB
+  updatedAt: Date | null // Allow null from DB
+  isOptimistic?: boolean
+}

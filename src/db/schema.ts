@@ -103,3 +103,19 @@ export const cartItems = pgTable('CartItems', {
     .defaultNow()
     .$onUpdate(() => new Date()),
 })
+
+export const addresses = pgTable('Addresses', {
+  id: serial('id').primaryKey(),
+  userId: text('user_id').notNull(),
+  fullName: text('full_name').notNull(),
+  address: text('address').notNull(),
+  province: text('province').notNull(),
+  municipality: text('municipality').notNull(),
+  phone: text('phone').notNull(),
+  additionalInfo: text('additional_info'),
+  isDefault: boolean('is_default').default(false),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at')
+    .defaultNow()
+    .$onUpdate(() => new Date()),
+})

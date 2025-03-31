@@ -19,6 +19,7 @@
 
 - [x] Add contract flow
 - [x] Add cart to database
+- [x] Add user personal info to database
 - [ ] Checkout integration with payment methods
 - [ ] PDF generation functionality
 - [ ] Download invoice capability

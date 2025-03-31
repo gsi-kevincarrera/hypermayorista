@@ -8,8 +8,17 @@ import {
 } from '@/components/ui/card'
 import OrderHistory from './_components/order-history'
 import Addresses from './_components/addresses'
+import { auth } from '@clerk/nextjs/server'
+import { redirect } from 'next/navigation'
+import { getUserAddresses } from '@/db/queries'
+import { Suspense } from 'react'
+import { Loader2 } from 'lucide-react'
 
-export default function AccountPage() {
+export default async function AccountPage() {
+  const { userId } = await auth()
+  if (!userId) return redirect('/login')
+
+  const addressesPromise = getUserAddresses(userId)
   return (
     <div className='container mx-auto p-6 mt-28 min-h-dvh'>
       <div className='flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4'>
@@ -44,11 +53,19 @@ export default function AccountPage() {
             <CardHeader>
               <CardTitle>Direcciones</CardTitle>
               <CardDescription>
-                Administra tus direcciones de facturación y envío.
+                Administra tus direcciones de envío.
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Addresses />
+              <Suspense
+                fallback={
+                  <div className='flex justify-center items-center h-full'>
+                    <Loader2 className='animate-spin' />
+                  </div>
+                }
+              >
+                <Addresses addressesPromise={addressesPromise} />
+              </Suspense>
             </CardContent>
           </Card>
         </TabsContent>

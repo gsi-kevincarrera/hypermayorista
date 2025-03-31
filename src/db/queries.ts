@@ -8,6 +8,7 @@ import {
   products,
   productVariants,
   cartItems,
+  addresses,
 } from '@/db/schema'
 import {
   eq,
@@ -17,10 +18,11 @@ import {
   and,
   not,
   inArray,
+  desc,
 } from 'drizzle-orm'
 import { combineConditions } from './utils'
 import { db } from '@/db'
-import { ProductInCart } from '@/types'
+import { Address, ProductInCart } from '@/types'
 import { auth } from '@clerk/nextjs/server'
 
 //Product queries
@@ -513,5 +515,218 @@ export async function clearCartDb(userId: string) {
   } catch (error) {
     console.error('Error clearing cart:', error)
     throw new Error('Error clearing cart')
+  }
+}
+
+//Addresses
+
+export type AddAddressInput = Omit<
+  typeof addresses.$inferInsert,
+  'id' | 'userId' | 'createdAt' | 'updatedAt' | 'isDefault'
+>
+
+export async function addAddressDb(addressData: AddAddressInput): Promise<{
+  success: boolean
+  data: Address | null
+  code: number
+  message: string | null
+}> {
+  try {
+    const { userId } = await auth()
+    if (!userId) {
+      return { success: false, message: 'Unauthorized', code: 401, data: null }
+    }
+
+    const [newAddress] = await db
+      .insert(addresses)
+      .values({
+        ...addressData,
+        userId: userId, // Set userId from auth
+        isDefault: false, // New addresses are not default
+      })
+      .returning()
+
+    if (!newAddress) {
+      return {
+        success: false,
+        message: 'Failed to create address',
+        code: 500,
+        data: null,
+      }
+    }
+
+    return {
+      success: true,
+      data: newAddress,
+      code: 201,
+      message: 'Address added successfully',
+    }
+  } catch (error) {
+    console.error('Database error adding address:', error)
+    return {
+      success: false,
+      message: 'Database error',
+      code: 500,
+      data: null,
+    }
+  }
+}
+
+export type UpdateAddressInput = Omit<
+  typeof addresses.$inferInsert,
+  'createdAt' | 'updatedAt' | 'isDefault' // isDefault handled by setDefaultAddressDb
+> & { id: number; userId: string } // Explicitly require id and userId
+
+export async function updateAddressDb(
+  addressData: UpdateAddressInput
+): Promise<{
+  success: boolean
+  data: Address | null
+  code: number
+  message: string | null
+}> {
+  try {
+    const { userId: authUserId } = await auth()
+    if (!authUserId) {
+      return { success: false, message: 'Unauthorized', code: 401, data: null }
+    }
+
+    // Ensure the user is updating their own address
+    if (addressData.userId !== authUserId) {
+      return {
+        success: false,
+        message: 'Forbidden: Cannot update the address',
+        code: 403,
+        data: null,
+      }
+    }
+
+    const [updatedAddress] = await db
+      .update(addresses)
+      .set({
+        fullName: addressData.fullName,
+        address: addressData.address,
+        province: addressData.province,
+        municipality: addressData.municipality,
+        phone: addressData.phone,
+        additionalInfo: addressData.additionalInfo,
+        updatedAt: new Date(), // Update the timestamp
+      })
+      .where(
+        and(eq(addresses.id, addressData.id), eq(addresses.userId, authUserId)) // Use addressData.id here
+      )
+      .returning()
+
+    if (!updatedAddress) {
+      return {
+        success: false,
+        message: 'Address not found or update failed',
+        code: 404,
+        data: null,
+      }
+    }
+    return {
+      success: true,
+      data: updatedAddress,
+      message: 'Address updated successfully',
+      code: 200,
+    }
+  } catch (error) {
+    console.error('Database error updating address:', error)
+    return {
+      success: false,
+      message: 'Database error',
+      code: 500,
+      data: null,
+    }
+  }
+}
+
+export async function deleteAddressDb(id: number) {
+  const { userId } = await auth() //This adds an additional security layer
+  if (!userId) {
+    return { success: false, data: null, code: 401, message: 'Unauthorized' }
+  }
+
+  try {
+    const [result] = await db.delete(addresses).where(eq(addresses.id, id))
+
+    return { success: true, data: result, code: 200, message: null }
+  } catch (error) {
+    console.error('Error deleting address:', error)
+    return {
+      success: false,
+      message: 'Error deleting address',
+      code: 500,
+      data: null,
+    }
+  }
+}
+
+export async function setDefaultAddressDb(id: number) {
+  const { userId } = await auth()
+  if (!userId) {
+    return { success: false, data: null, code: 401, message: 'Unauthorized' }
+  }
+
+  try {
+    // Use a transaction to ensure atomicity
+    const result = await db.transaction(async (tx) => {
+      // Unset current default address for the user
+      await tx
+        .update(addresses)
+        .set({ isDefault: false, updatedAt: new Date() })
+        .where(and(eq(addresses.userId, userId), eq(addresses.isDefault, true)))
+
+      // Set the new default address
+      const [updated] = await tx
+        .update(addresses)
+        .set({ isDefault: true, updatedAt: new Date() })
+        .where(and(eq(addresses.id, id), eq(addresses.userId, userId)))
+        .returning()
+
+      if (!updated) {
+        throw new Error('Address not found or update failed')
+      }
+      return updated // Return the updated address
+    })
+
+    return {
+      success: true,
+      data: result,
+      code: 200,
+      message: 'Default address updated',
+    }
+  } catch (error) {
+    console.error('Error setting default address:', error)
+    return {
+      success: false,
+      message: 'Error setting default address',
+      code: 500,
+      data: null,
+    }
+  }
+}
+
+export async function getUserAddresses(userId: string) {
+  const { userId: id } = await auth() //This adds an additional security layer
+  if (!id || !userId)
+    return { success: false, message: 'Unauthorized', code: 401, data: null }
+
+  try {
+    const addressesList = await db
+      .select()
+      .from(addresses)
+      .where(eq(addresses.userId, id))
+      .orderBy(desc(addresses.isDefault))
+    return { success: true, data: addressesList, code: 200, message: null }
+  } catch (error) {
+    console.error('Error getting user addresses:', error)
+    return {
+      success: false,
+      message: 'Error getting user addresses',
+      code: 500,
+      data: null,
+    }
   }
 }

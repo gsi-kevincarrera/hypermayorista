@@ -2,8 +2,8 @@
 
 ## Todays Plan
 
-- [ ] Fix BD !!Urgent
-- [ ] Use SKU as identifier for product variants
+- [x] Fix BD !!Urgent
+- [ ] Use SKU as identifier for product variants. Priority: Low
 
 ### Accessibility Improvements
 
@@ -13,7 +13,7 @@
 - [x] Improve error managment and display
 - [x] Add loading status for the checkout
 - [x] Allow to add multiple products from the product card
-- [ ] Find a way to improve product quantity selection, when updating the quantity of a product, beacause each product has a minQuantity, but it does not consider, the quantity already in the cart
+- [ ] Find a way to improve product quantity selection when updating the quantity of a product, beacause each product has a minQuantity, but it does not consider, the quantity already in the cart
 
 ### Features to Implement
 

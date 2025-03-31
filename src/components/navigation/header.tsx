@@ -15,6 +15,13 @@ import { usePathname } from 'next/navigation'
 import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs'
 import { useCategories } from '@/contexts/categories/hook'
 import HeaderLogo from './header-logo'
+import { ChevronDown, ChevronUp } from 'lucide-react'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 
 export default function Header() {
   const {
@@ -23,6 +30,7 @@ export default function Header() {
   const [showSearch, setShowSearch] = useState(false)
   const [value, setValue] = useState('')
   const [category, setCategory] = useState<string | null>(null)
+  const [dropdownOpen, setDropdownOpen] = useState(false)
   const pathname = usePathname()
 
   useEffect(() => {
@@ -91,7 +99,26 @@ export default function Header() {
             <SignInButton />
           </SignedOut>
           <SignedIn>
-            <UserButton />
+            <div className='flex items-center space-x-1'>
+              <UserButton />
+              <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
+                <DropdownMenuTrigger asChild>
+                  <Button variant='ghost' size='icon' className='rounded-full'>
+                    {dropdownOpen ? (
+                      <ChevronUp className='h-4 w-4' />
+                    ) : (
+                      <ChevronDown className='h-4 w-4' />
+                    )}
+                    <span className='sr-only'>Open user menu</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align='end'>
+                  <DropdownMenuItem asChild>
+                    <Link href='/account'>Mi espacio personal</Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </SignedIn>
         </div>
         {showSearch && (
